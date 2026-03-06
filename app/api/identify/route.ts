@@ -1,14 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAuthUserId } from '@/lib/auth';
 import { identifySpecies } from '@/lib/openai';
-import { uploadImage } from '@/lib/blob';
-import { db } from '@/lib/db';
-import { observations } from '@/lib/db/schema';
 import { randomUUID } from 'crypto';
+
+async function getOptionalUserId(): Promise<string | null> {
+  try {
+    const { auth } = await import('@clerk/nextjs/server');
+    const { userId } = await auth();
+    return userId;
+  } catch {
+    return null;
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = await getAuthUserId();
+    const userId = await getOptionalUserId();
     const body = await request.json();
 
     let imageData: string = body.image_data || '';
@@ -24,48 +30,56 @@ export async function POST(request: NextRequest) {
     const latitude: number | null = body.latitude ?? null;
     const longitude: number | null = body.longitude ?? null;
 
-    // Upload to Vercel Blob (with sharp compression)
-    const filename = `${userId}-${randomUUID()}`;
-    const { url: imageUrl, pathname: imageBlobPathname } = await uploadImage(
-      imageData,
-      filename
-    );
-
     // Call GPT-4o for identification
     const result = await identifySpecies(imageData);
 
-    // Build observation record
-    const isError = 'error' in result;
-    const id = randomUUID();
+    // If we have auth + DB + blob storage, persist the observation
+    let id: string | null = null;
+    let imageUrl: string | null = null;
 
-    const record = {
-      id,
-      userId,
-      imageUrl,
-      imageBlobPathname,
-      latitude,
-      longitude,
-      commonName: isError ? null : result.identification.common_name,
-      nombreComun: isError ? null : result.identification.nombre_comun,
-      scientificName: isError ? null : result.identification.scientific_name,
-      breed: isError ? null : result.identification.breed,
-      confidence: isError ? null : result.confidence,
-      taxonomy: isError ? null : result.taxonomy,
-      ecology: isError ? null : result.ecology,
-      geography: isError ? null : result.geography,
-      conservation: isError ? null : result.conservation,
-      similarSpecies: isError ? null : result.similar_species,
-      description: isError ? null : result.description,
-      descripcion: isError ? null : result.descripcion,
-      funFact: isError ? null : result.fun_fact,
-      error: isError ? result.error : null,
-      suggestion: isError ? (result.suggestion ?? null) : null,
-    };
+    if (userId && process.env.DATABASE_URL && process.env.BLOB_READ_WRITE_TOKEN) {
+      try {
+        const { uploadImage } = await import('@/lib/blob');
+        const { db } = await import('@/lib/db');
+        const { observations } = await import('@/lib/db/schema');
 
-    await db.insert(observations).values(record);
+        const filename = `${userId}-${randomUUID()}`;
+        const blob = await uploadImage(imageData, filename);
+        imageUrl = blob.url;
 
-    // Return the result + observation ID for navigation
-    return NextResponse.json({ ...result, id, imageUrl });
+        const isError = 'error' in result;
+        id = randomUUID();
+
+        await db.insert(observations).values({
+          id,
+          userId,
+          imageUrl: blob.url,
+          imageBlobPathname: blob.pathname,
+          latitude,
+          longitude,
+          commonName: isError ? null : result.identification.common_name,
+          nombreComun: isError ? null : result.identification.nombre_comun,
+          scientificName: isError ? null : result.identification.scientific_name,
+          breed: isError ? null : result.identification.breed,
+          confidence: isError ? null : result.confidence,
+          taxonomy: isError ? null : result.taxonomy,
+          ecology: isError ? null : result.ecology,
+          geography: isError ? null : result.geography,
+          conservation: isError ? null : result.conservation,
+          similarSpecies: isError ? null : result.similar_species,
+          description: isError ? null : result.description,
+          descripcion: isError ? null : result.descripcion,
+          funFact: isError ? null : result.fun_fact,
+          error: isError ? result.error : null,
+          suggestion: isError ? (result.suggestion ?? null) : null,
+        });
+      } catch (persistError) {
+        console.error('Failed to persist observation (continuing):', persistError);
+      }
+    }
+
+    // Return the result (+ observation ID if persisted)
+    return NextResponse.json({ ...result, ...(id ? { id, imageUrl } : {}) });
   } catch (error) {
     console.error('Identify error:', error);
     return NextResponse.json(
