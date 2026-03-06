@@ -63,10 +63,15 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
       });
   }, [cameraActive, stopCamera]);
 
-  const handleFile = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
+  const handleIdentify = () => {
+    if (imageData) {
+      onIdentify(imageData);
+    }
+  };
+
+  const processFile = useCallback(
+    (file: File) => {
+      if (!file.type.startsWith('image/')) return;
       const reader = new FileReader();
       reader.onload = (ev) => {
         const data = ev.target?.result as string;
@@ -74,29 +79,65 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
         stopCamera();
       };
       reader.readAsDataURL(file);
-      e.target.value = '';
     },
     [stopCamera]
   );
 
-  const handleIdentify = () => {
-    if (imageData) {
-      onIdentify(imageData);
-    }
-  };
+  const handleFile = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) processFile(file);
+      e.target.value = '';
+    },
+    [processFile]
+  );
+
+  const [dragOver, setDragOver] = useState(false);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOver(false);
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragOver(false);
+      const file = e.dataTransfer.files?.[0];
+      if (file) processFile(file);
+    },
+    [processFile]
+  );
 
   const hasImage = !!imageData;
 
   return (
     <div className="capture-area">
-      <div className={`preview-box ${hasImage ? 'has-image' : ''}`}>
+      <div
+        className={`preview-box ${hasImage ? 'has-image' : ''} ${dragOver ? 'drag-over' : ''}`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={() => {
+          if (!hasImage && !cameraActive) fileInputRef.current?.click();
+        }}
+        style={{ cursor: !hasImage && !cameraActive ? 'pointer' : undefined }}
+      >
         {!hasImage && !cameraActive && (
           <div className="placeholder">
             <ViewfinderIcon className="icon icon-lg" />
             <p>
               {t(
-                'Mammals, birds, reptiles, amphibians\n\u2014 wild or domestic',
-                'Mamiferos, aves, reptiles, anfibios\n\u2014 silvestres o domesticos'
+                'Drag & drop a photo here, or click to upload\nMammals, birds, reptiles, amphibians \u2014 wild or domestic',
+                'Arrastra una foto aqui, o haz clic para subir\nMamiferos, aves, reptiles, anfibios \u2014 silvestres o domesticos'
               )}
             </p>
           </div>
