@@ -2,7 +2,7 @@ import { db } from '@/lib/db';
 import { observations } from '@/lib/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { ObservationList } from '@/components/observation-list';
-import { ViewfinderIcon } from '@/components/icons';
+import { HeroSection } from '@/components/hero-section';
 import Link from 'next/link';
 import type { Observation } from '@/lib/types';
 
@@ -19,18 +19,9 @@ async function getAuthUserId(): Promise<string | null> {
 export default async function DashboardPage() {
   const userId = await getAuthUserId();
 
-  // Without auth or DB, show empty state
+  // Without auth or DB, show welcome page
   if (!userId || !process.env.DATABASE_URL) {
-    return (
-      <div className="empty-state">
-        <ViewfinderIcon className="icon icon-lg" />
-        <h2>No observations yet</h2>
-        <p>Photograph any living thing and let AI identify it</p>
-        <Link href="/identify" className="btn btn-primary">
-          Start Identifying
-        </Link>
-      </div>
-    );
+    return <HeroSection count={0} />;
   }
 
   const rows = await db
@@ -52,16 +43,7 @@ export default async function DashboardPage() {
   }));
 
   if (obs.length === 0) {
-    return (
-      <div className="empty-state">
-        <ViewfinderIcon className="icon icon-lg" />
-        <h2>No observations yet</h2>
-        <p>Photograph any living thing and let AI identify it</p>
-        <Link href="/identify" className="btn btn-primary">
-          Start Identifying
-        </Link>
-      </div>
-    );
+    return <HeroSection count={0} />;
   }
 
   return (
@@ -73,6 +55,11 @@ export default async function DashboardPage() {
         <p>{obs.length} species identified</p>
       </div>
       <ObservationList observations={obs} />
+      <div style={{ textAlign: 'center', padding: '1.5rem' }}>
+        <Link href="/identify" className="btn btn-primary" style={{ display: 'inline-flex', padding: '0.7rem 1.5rem' }}>
+          Identify Another
+        </Link>
+      </div>
     </>
   );
 }

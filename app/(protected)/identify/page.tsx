@@ -66,8 +66,8 @@ export default function IdentifyPage() {
         </h1>
         <p>
           {t(
-            'Photograph any living thing and let AI identify it',
-            'Fotografia cualquier ser vivo y deja que la IA lo identifique'
+            'Photograph any animal and let AI identify it',
+            'Fotografia cualquier animal y deja que la IA lo identifique'
           )}
         </p>
       </div>

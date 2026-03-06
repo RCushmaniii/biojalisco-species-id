@@ -95,8 +95,8 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
             <ViewfinderIcon className="icon icon-lg" />
             <p>
               {t(
-                'Any plant, animal, insect, or fungus\n\u2014 wild or domestic',
-                'Cualquier planta, animal, insecto u hongo\n\u2014 silvestre o domestico'
+                'Mammals, birds, reptiles, amphibians\n\u2014 wild or domestic',
+                'Mamiferos, aves, reptiles, anfibios\n\u2014 silvestres o domesticos'
               )}
             </p>
           </div>
