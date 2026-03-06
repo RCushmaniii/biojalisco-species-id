@@ -1,0 +1,31 @@
+import { pgTable, uuid, text, real, integer, jsonb, timestamp, index } from 'drizzle-orm/pg-core';
+
+export const observations = pgTable('observations', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  userId: text('user_id').notNull(),
+  imageUrl: text('image_url').notNull(),
+  imageBlobPathname: text('image_blob_pathname'),
+  latitude: real('latitude'),
+  longitude: real('longitude'),
+  commonName: text('common_name'),
+  nombreComun: text('nombre_comun'),
+  scientificName: text('scientific_name'),
+  breed: text('breed'),
+  confidence: integer('confidence'),
+  taxonomy: jsonb('taxonomy'),
+  ecology: jsonb('ecology'),
+  geography: jsonb('geography'),
+  conservation: jsonb('conservation'),
+  similarSpecies: jsonb('similar_species'),
+  description: text('description'),
+  descripcion: text('descripcion'),
+  funFact: text('fun_fact'),
+  error: text('error'),
+  suggestion: text('suggestion'),
+  identifiedAt: timestamp('identified_at', { withTimezone: true }).defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index('idx_observations_user_id').on(table.userId),
+  index('idx_observations_created_at').on(table.createdAt),
+  index('idx_observations_scientific_name').on(table.scientificName),
+]);
