@@ -1,7 +1,9 @@
 import OpenAI from 'openai';
 import type { IdentifyResponse } from './types';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+function getOpenAI() {
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+}
 
 const SYSTEM_PROMPT = `You are a world-class field biologist and taxonomist working for BioJalisco,
 a biodiversity atlas project in Jalisco, Mexico. When shown a photo, identify the species with
@@ -78,7 +80,7 @@ If the image doesn't contain a clearly identifiable organism, respond with:
 Always respond with valid JSON only, no markdown formatting.`;
 
 export async function identifySpecies(base64Image: string): Promise<IdentifyResponse> {
-  const response = await openai.chat.completions.create({
+  const response = await getOpenAI().chat.completions.create({
     model: 'gpt-4o',
     messages: [
       { role: 'system', content: SYSTEM_PROMPT },

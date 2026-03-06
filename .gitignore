@@ -18,8 +18,17 @@
 # production
 /build
 
-# misc
+# OS
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# misc
 *.pem
 
 # debug
