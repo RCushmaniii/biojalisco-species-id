@@ -1,6 +1,9 @@
+import Link from 'next/link';
 import { UserButton } from '@clerk/nextjs';
 import { NavLinks } from '@/components/nav-links';
 import { LanguageToggle } from '@/components/language-toggle';
+
+export const dynamic = 'force-dynamic';
 
 export default function ProtectedLayout({
   children,
@@ -11,9 +14,9 @@ export default function ProtectedLayout({
     <>
       <LanguageToggle />
       <nav className="nav-bar">
-        <a href="/" className="nav-brand">
+        <Link href="/" className="nav-brand">
           <span className="accent">Bio</span>Jalisco
-        </a>
+        </Link>
         <div className="nav-links">
           <NavLinks />
           <UserButton

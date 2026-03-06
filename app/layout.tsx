@@ -8,20 +8,28 @@ export const metadata: Metadata = {
   description: 'AI-powered species identification for Jalisco biodiversity research',
 };
 
+// Clerk key must be a real key (starts with pk_live_ or pk_test_ followed by actual chars)
+const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '';
+const hasClerkKey = clerkKey.length > 20 && !clerkKey.endsWith('...');
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <ClerkProvider>
-      <html lang="en">
-        <body>
-          <LanguageProvider>
-            {children}
-          </LanguageProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+  const content = (
+    <html lang="en">
+      <body>
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
+      </body>
+    </html>
   );
+
+  if (!hasClerkKey) {
+    return content;
+  }
+
+  return <ClerkProvider>{content}</ClerkProvider>;
 }
