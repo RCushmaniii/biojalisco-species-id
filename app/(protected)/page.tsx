@@ -1,4 +1,3 @@
-import { auth } from '@clerk/nextjs/server';
 import { db } from '@/lib/db';
 import { observations } from '@/lib/db/schema';
 import { eq, desc } from 'drizzle-orm';
@@ -7,9 +6,32 @@ import { ViewfinderIcon } from '@/components/icons';
 import Link from 'next/link';
 import type { Observation } from '@/lib/types';
 
+async function getAuthUserId(): Promise<string | null> {
+  try {
+    const { auth } = await import('@clerk/nextjs/server');
+    const { userId } = await auth();
+    return userId;
+  } catch {
+    return null;
+  }
+}
+
 export default async function DashboardPage() {
-  const { userId } = await auth();
-  if (!userId) return null;
+  const userId = await getAuthUserId();
+
+  // Without auth or DB, show empty state
+  if (!userId || !process.env.DATABASE_URL) {
+    return (
+      <div className="empty-state">
+        <ViewfinderIcon className="icon icon-lg" />
+        <h2>No observations yet</h2>
+        <p>Photograph any living thing and let AI identify it</p>
+        <Link href="/identify" className="btn btn-primary">
+          Start Identifying
+        </Link>
+      </div>
+    );
+  }
 
   const rows = await db
     .select()

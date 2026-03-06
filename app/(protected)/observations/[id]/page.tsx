@@ -1,4 +1,3 @@
-import { auth } from '@clerk/nextjs/server';
 import { db } from '@/lib/db';
 import { observations } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
@@ -8,14 +7,24 @@ import { ArrowLeftIcon } from '@/components/icons';
 import { ObservationDetail } from '@/components/observation-detail';
 import type { Observation } from '@/lib/types';
 
+async function getAuthUserId(): Promise<string | null> {
+  try {
+    const { auth } = await import('@clerk/nextjs/server');
+    const { userId } = await auth();
+    return userId;
+  } catch {
+    return null;
+  }
+}
+
 export default async function ObservationPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const { userId } = await auth();
-  if (!userId) return null;
+  const userId = await getAuthUserId();
+  if (!userId) return notFound();
 
   const rows = await db
     .select()

@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { UserButton } from '@clerk/nextjs';
 import { NavLinks } from '@/components/nav-links';
 import { LanguageToggle } from '@/components/language-toggle';
+import { ClerkUserButton } from '@/components/clerk-user-button';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,13 +19,7 @@ export default function ProtectedLayout({
         </Link>
         <div className="nav-links">
           <NavLinks />
-          <UserButton
-            appearance={{
-              elements: {
-                avatarBox: { width: '28px', height: '28px' },
-              },
-            }}
-          />
+          <ClerkUserButton />
         </div>
       </nav>
       {children}
