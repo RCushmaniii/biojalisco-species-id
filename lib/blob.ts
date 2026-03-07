@@ -1,4 +1,4 @@
-import { put, del } from '@vercel/blob';
+import { put, del, getDownloadUrl } from '@vercel/blob';
 
 export async function uploadImage(
   base64Data: string,
@@ -15,11 +15,15 @@ export async function uploadImage(
     .toBuffer();
 
   const blob = await put(`observations/${filename}.jpg`, compressed, {
-    access: 'public',
+    access: 'private',
     contentType: 'image/jpeg',
   });
 
   return { url: blob.url, pathname: blob.pathname };
+}
+
+export async function getImageUrl(blobUrl: string): Promise<string> {
+  return getDownloadUrl(blobUrl);
 }
 
 export async function deleteImage(url: string): Promise<void> {

@@ -3,6 +3,7 @@ import { observations } from '@/lib/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { ObservationList } from '@/components/observation-list';
 import { HeroSection } from '@/components/hero-section';
+import { getImageUrl } from '@/lib/blob';
 import Link from 'next/link';
 import type { Observation } from '@/lib/types';
 
@@ -31,16 +32,30 @@ export default async function DashboardPage() {
     .orderBy(desc(observations.createdAt))
     .limit(50);
 
-  const obs: Observation[] = rows.map((r) => ({
-    ...r,
-    taxonomy: r.taxonomy as Observation['taxonomy'],
-    ecology: r.ecology as Observation['ecology'],
-    geography: r.geography as Observation['geography'],
-    conservation: r.conservation as Observation['conservation'],
-    similarSpecies: r.similarSpecies as Observation['similarSpecies'],
-    identifiedAt: r.identifiedAt,
-    createdAt: r.createdAt,
-  }));
+  // Resolve signed URLs for private blob images
+  const obs: Observation[] = await Promise.all(
+    rows.map(async (r) => {
+      let resolvedImageUrl = r.imageUrl;
+      try {
+        if (r.imageUrl.includes('vercel-storage.com')) {
+          resolvedImageUrl = await getImageUrl(r.imageUrl);
+        }
+      } catch {
+        // Fall back to stored URL
+      }
+      return {
+        ...r,
+        imageUrl: resolvedImageUrl,
+        taxonomy: r.taxonomy as Observation['taxonomy'],
+        ecology: r.ecology as Observation['ecology'],
+        geography: r.geography as Observation['geography'],
+        conservation: r.conservation as Observation['conservation'],
+        similarSpecies: r.similarSpecies as Observation['similarSpecies'],
+        identifiedAt: r.identifiedAt,
+        createdAt: r.createdAt,
+      };
+    })
+  );
 
   if (obs.length === 0) {
     return <HeroSection count={0} />;
