@@ -81,9 +81,13 @@ export async function POST(request: NextRequest) {
     // Return the result (+ observation ID if persisted)
     return NextResponse.json({ ...result, ...(id ? { id, imageUrl } : {}) });
   } catch (error) {
-    console.error('Identify error:', error);
+    const message = error instanceof Error ? error.message : 'Internal server error';
+    console.error('Identify error:', message, error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      {
+        error: message,
+        suggestion: 'Check server logs for details. Make sure OPENAI_API_KEY is configured.',
+      },
       { status: 500 }
     );
   }
