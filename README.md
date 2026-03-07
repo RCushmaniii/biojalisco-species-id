@@ -5,19 +5,21 @@
 ![GPT-4o](https://img.shields.io/badge/GPT--4o-Vision-412991?logo=openai)
 ![iNaturalist](https://img.shields.io/badge/iNaturalist-Data-74ac00?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjgiIGZpbGw9IiM3NGFjMDAiLz48L3N2Zz4=)
 ![GBIF](https://img.shields.io/badge/GBIF-Verified-4e9a06)
+![CONABIO](https://img.shields.io/badge/CONABIO-EncicloVida-00695c)
 ![Vercel](https://img.shields.io/badge/Vercel-Deployed-black?logo=vercel)
 
-> AI-powered species identification for Jalisco biodiversity research. Snap a photo, get a verified identification with taxonomy, ecology, conservation status, and distribution data.
+> AI-powered species identification for Jalisco biodiversity research. Four-API pipeline delivers verified taxonomy, IUCN status, Mexico-specific conservation data (NOM-059), and endemic classification in seconds.
 
 ## Overview
 
-BioJalisco Species Identifier is a field research tool built for Dr. Veronica Rosas and her conservation biology team in Jalisco, Mexico. Researchers photograph any vertebrate animal and the app returns a comprehensive identification powered by a three-API pipeline:
+BioJalisco Species Identifier is a field research tool built for Dr. Veronica Rosas and her conservation biology team in Jalisco, Mexico. Researchers photograph any vertebrate animal and the app returns a comprehensive identification powered by a four-API pipeline:
 
 1. **iNaturalist** provides regional species context -- what's actually been observed near the GPS coordinates
 2. **GPT-4o Vision** identifies the species from the photo, informed by local species data
 3. **GBIF** overlays verified taxonomy, IUCN Red List status, and authoritative distribution data
+4. **EncicloVida (CONABIO)** adds Mexico-specific data: endemic/native/exotic classification, NOM-059-SEMARNAT protection status, indigenous language names, and Wikipedia summaries in Spanish
 
-Results are bilingual (English/Spanish) with confidence scoring, presented in a tabbed interface covering taxonomy, ecology, geographic range, conservation status, and similar species.
+No other tool combines all four of these sources in a single identification flow. Results are bilingual (English/Spanish) with confidence scoring, presented in a tabbed interface covering taxonomy, ecology, geographic range, conservation status, and similar species.
 
 ## The Challenge
 
@@ -27,21 +29,21 @@ A proof-of-concept (Flask + vanilla HTML) proved AI-assisted identification work
 
 ## The Solution
 
-**Three-API identification pipeline:**
-Rather than relying on a single AI model, the app chains three data sources. iNaturalist's public observations API provides a "regional field guide" of species documented within 50km of the user's GPS coordinates. GPT-4o Vision performs the visual identification with this geographic context, dramatically reducing cross-continental misidentifications. GBIF then validates the result with authoritative taxonomy, IUCN conservation status, and verified distribution data.
+**Four-API identification pipeline:**
+Rather than relying on a single AI model, the app chains four independent data sources. iNaturalist's public observations API provides a "regional field guide" of species documented within 50km of the user's GPS coordinates. GPT-4o Vision performs the visual identification with this geographic context. GBIF validates the result with authoritative taxonomy, IUCN conservation status, and verified distribution data. EncicloVida (CONABIO) adds Mexico-specific enrichment -- endemic/native/exotic classification, NOM-059-SEMARNAT protection status, and common names in indigenous languages (Nahuatl, Maya, etc.).
 
 **Verified data, not AI guesses:**
-Taxonomy, IUCN Red List status, and distribution localities come from GBIF's backbone taxonomy -- sourced from the Catalogue of Life, IUCN, and ITIS. The app shows "Verified" badges when GBIF confirms the data, so researchers know which information is authoritative vs. AI-generated.
+Taxonomy and IUCN Red List status come from GBIF's backbone taxonomy (Catalogue of Life, IUCN, ITIS). Endemic status and NOM-059 protection come from CONABIO's authoritative catalog. The app shows "Verified" badges so researchers know which data is authoritative vs. AI-generated.
 
 **Bilingual by default:**
-A language toggle switches all UI text and species descriptions between English and Spanish instantly. Built for Mexican research teams who work across both languages.
+A language toggle switches all UI text and species descriptions between English and Spanish instantly. EncicloVida provides Wikipedia summaries in Spanish and CONABIO-verified common names.
 
 **Graceful degradation:**
-The app works with just an OpenAI API key. Authentication (Clerk), persistence (Neon + Blob), and enrichment (iNat + GBIF) are optional layers that enhance the experience when configured.
+The app works with just an OpenAI API key. Authentication (Clerk), persistence (Neon + Blob), and enrichment (iNat + GBIF + EncicloVida) are optional layers that enhance the experience when configured.
 
 ## Technical Highlights
 
-- **Three-API pipeline**: iNaturalist (regional context) + GPT-4o Vision (identification) + GBIF (verification) -- each with independent timeouts and graceful fallbacks
+- **Four-API pipeline**: iNaturalist (regional context) + GPT-4o Vision (identification) + GBIF (verification) + EncicloVida (Mexico-specific data) -- each with independent timeouts and graceful fallbacks
 - **Grid-stacked tab panels**: All 6 content panels occupy the same CSS grid cell, so switching tabs never changes layout height -- eliminates the common tab-content jumping problem
 - **Sticky tab navigation**: Tab bar pins to viewport top when scrolling long panel content
 - **Image pipeline**: Client capture -> base64 -> sharp compression (~1MB JPEG) -> Vercel Blob storage -> GPT-4o analysis
@@ -117,7 +119,7 @@ biojalisco-species-id/
 │   │   ├── identify/page.tsx            # Camera/upload + AI identification
 │   │   └── observations/[id]/page.tsx   # Single observation detail
 │   └── api/
-│       └── identify/route.ts            # POST: iNat + GPT-4o + GBIF pipeline
+│       └── identify/route.ts            # POST: iNat + GPT-4o + GBIF + EncicloVida pipeline
 ├── components/
 │   ├── hero-section.tsx                 # Landing page with species icons
 │   ├── capture-area.tsx                 # Camera/upload/drag-drop with preview
@@ -127,6 +129,7 @@ biojalisco-species-id/
 │   ├── openai.ts                        # GPT-4o Vision integration
 │   ├── inaturalist.ts                   # iNaturalist regional species API
 │   ├── gbif.ts                          # GBIF enrichment (taxonomy, IUCN, range)
+│   ├── enciclovida.ts                   # EncicloVida/CONABIO (endemic status, NOM-059)
 │   ├── types.ts                         # All TypeScript interfaces
 │   ├── db/                              # Neon + Drizzle (optional)
 │   └── blob.ts                          # Vercel Blob upload/delete (optional)
@@ -154,19 +157,20 @@ Vercel Pro is recommended. The full pipeline (iNat context + GPT-4o Vision + GBI
 - [x] Observation delete verifies user ownership before removal
 - [x] No secrets in client bundle -- all API keys server-side only
 - [x] Image data discarded server-side after Blob upload
-- [x] External API calls (iNat, GBIF) use timeouts and graceful degradation
+- [x] External API calls (iNat, GBIF, EncicloVida) use timeouts and graceful degradation
 
 ## Results
 
 | Metric | Value |
 |--------|-------|
-| Identification latency | 8-20s (iNat + GPT-4o + GBIF pipeline) |
+| Identification latency | 8-20s (full four-API pipeline) |
 | Image compression | ~1MB per photo (sharp) |
 | Supported organisms | Vertebrates: mammals, birds, reptiles, amphibians |
 | Languages | English + Spanish (bilingual toggle) |
-| Data sources | 3 APIs (iNaturalist, GPT-4o, GBIF) |
-| Verified data | Taxonomy, IUCN status, distributions (via GBIF) |
+| Data sources | 4 APIs (iNaturalist, GPT-4o, GBIF, EncicloVida) |
+| Verified data | Taxonomy, IUCN status (GBIF) + NOM-059, endemic status (CONABIO) |
 | Regional context | 50km radius species observations (via iNaturalist) |
+| Mexico-specific data | Endemic/native/exotic classification, NOM-059 protection (via CONABIO) |
 
 ## Contact
 
