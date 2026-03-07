@@ -75,6 +75,8 @@ IMPORTANT RULES:
 - "similar_species" should include 1-3 species that could be confused with this one.
 - For domestic breeds, use "Domesticated" for iucn_status and describe breed-specific traits.
 - All fields are required. Use "Unknown" for genuinely unknown values.
+- GEOGRAPHIC CONTEXT IS CRITICAL: This app is used in Jalisco, Mexico. When GPS coordinates are provided, strongly weight species that are native to or found in that region. Do NOT identify a species as one found only in Europe, Asia, or other continents unless the morphology is unmistakable AND no similar New World species exists. For example, a gray snake with zigzag markings in Mexico is far more likely to be Storeria storerioides (Mexican Brown Snake) than Vipera berus (European Adder), which does not exist in the Americas.
+- When location data suggests Mexico/Central America, prioritize Neotropical fauna in your identification. Consider range maps as a key factor alongside morphology.
 
 If the image doesn't contain a clearly identifiable organism, respond with:
 {
@@ -84,7 +86,23 @@ If the image doesn't contain a clearly identifiable organism, respond with:
 
 Always respond with valid JSON only, no markdown formatting.`;
 
-export async function identifySpecies(base64Image: string): Promise<IdentifyResponse> {
+export async function identifySpecies(
+  base64Image: string,
+  latitude?: number | null,
+  longitude?: number | null,
+  regionalSpeciesContext?: string,
+): Promise<IdentifyResponse> {
+  let userText = 'Identify the species in this photo.';
+  if (latitude != null && longitude != null) {
+    userText += ` Photo taken at GPS coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)} (use this location to inform your identification — prioritize species found in this geographic region).`;
+  } else {
+    userText += ' No GPS coordinates available, but assume the photo was taken in Jalisco, Mexico unless the species is clearly from another region.';
+  }
+
+  if (regionalSpeciesContext) {
+    userText += '\n\n' + regionalSpeciesContext;
+  }
+
   const response = await getOpenAI().chat.completions.create({
     model: 'gpt-4o',
     messages: [
@@ -92,7 +110,7 @@ export async function identifySpecies(base64Image: string): Promise<IdentifyResp
       {
         role: 'user',
         content: [
-          { type: 'text', text: 'Identify the species in this photo.' },
+          { type: 'text', text: userText },
           {
             type: 'image_url',
             image_url: {

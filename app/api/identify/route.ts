@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { identifySpecies } from '@/lib/openai';
+import { getLocalSpecies, formatSpeciesContext } from '@/lib/inaturalist';
 import { randomUUID } from 'crypto';
 
 async function getOptionalUserId(): Promise<string | null> {
@@ -30,8 +31,18 @@ export async function POST(request: NextRequest) {
     const latitude: number | null = body.latitude ?? null;
     const longitude: number | null = body.longitude ?? null;
 
-    // Call GPT-4o for identification
-    const result = await identifySpecies(imageData);
+    // Fetch regional species data from iNaturalist (non-blocking, best-effort)
+    let speciesContext = '';
+    if (latitude != null && longitude != null) {
+      const localSpecies = await getLocalSpecies(latitude, longitude);
+      speciesContext = formatSpeciesContext(localSpecies);
+      if (localSpecies.length > 0) {
+        console.log(`iNaturalist: found ${localSpecies.length} local species for ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
+      }
+    }
+
+    // Call GPT-4o for identification (with location + regional species context)
+    const result = await identifySpecies(imageData, latitude, longitude, speciesContext);
 
     // If we have auth + DB + blob storage, persist the observation
     let id: string | null = null;

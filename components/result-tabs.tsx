@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useLanguage } from '@/hooks/use-language';
 import { ConfidenceGauge } from './confidence-gauge';
 import { OverviewPanel } from './tab-panels/overview-panel';
@@ -22,6 +22,28 @@ export function ResultTabs({ data }: ResultTabsProps) {
   const id = data.identification;
   const conf = typeof data.confidence === 'number' ? data.confidence : 75;
   const name = lang === 'es' ? (id.nombre_comun || id.common_name) : id.common_name;
+
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const checkOverflow = useCallback(() => {
+    const el = tabsRef.current;
+    const wrapper = wrapperRef.current;
+    if (!el || !wrapper) return;
+    const hasOverflow = el.scrollWidth > el.clientWidth && el.scrollLeft + el.clientWidth < el.scrollWidth - 2;
+    wrapper.classList.toggle('has-overflow', hasOverflow);
+  }, []);
+
+  useEffect(() => {
+    checkOverflow();
+    const el = tabsRef.current;
+    el?.addEventListener('scroll', checkOverflow);
+    window.addEventListener('resize', checkOverflow);
+    return () => {
+      el?.removeEventListener('scroll', checkOverflow);
+      window.removeEventListener('resize', checkOverflow);
+    };
+  }, [checkOverflow]);
 
   const tabs = [
     { key: 'overview', label: t('Overview', 'General') },
@@ -46,16 +68,18 @@ export function ResultTabs({ data }: ResultTabsProps) {
         </div>
       </div>
 
-      <div className="tabs">
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            className={`tab-btn ${activeTab === tab.key ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab.key)}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="tabs-wrapper" ref={wrapperRef}>
+        <div className="tabs" ref={tabsRef}>
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              className={`tab-btn ${activeTab === tab.key ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.key)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className={`tab-panel ${activeTab === 'overview' ? 'active' : ''}`}>
