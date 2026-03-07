@@ -1,45 +1,54 @@
 # BioJalisco Species Identifier
 
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![GPT-4o](https://img.shields.io/badge/GPT--4o-Vision-412991?logo=openai)
-![Neon](https://img.shields.io/badge/Neon-Postgres-00e599?logo=postgresql)
+![iNaturalist](https://img.shields.io/badge/iNaturalist-Data-74ac00?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PGNpcmNsZSBjeD0iOCIgY3k9IjgiIHI9IjgiIGZpbGw9IiM3NGFjMDAiLz48L3N2Zz4=)
+![GBIF](https://img.shields.io/badge/GBIF-Verified-4e9a06)
 ![Vercel](https://img.shields.io/badge/Vercel-Deployed-black?logo=vercel)
 
-> AI-powered species identification for Jalisco biodiversity research. Point your camera at any living thing and get a detailed identification in seconds.
+> AI-powered species identification for Jalisco biodiversity research. Snap a photo, get a verified identification with taxonomy, ecology, conservation status, and distribution data.
 
 ## Overview
 
-BioJalisco Species Identifier is a field research tool built for Dr. Veronica Rosas and her conservation biology team in Jalisco, Mexico. Researchers photograph any organism -- plant, animal, insect, or fungus -- and the app returns a comprehensive identification including taxonomy, ecology, geographic range, conservation status, and similar species.
+BioJalisco Species Identifier is a field research tool built for Dr. Veronica Rosas and her conservation biology team in Jalisco, Mexico. Researchers photograph any vertebrate animal and the app returns a comprehensive identification powered by a three-API pipeline:
 
-The app uses GPT-4o Vision for identification, producing bilingual results (English/Spanish) with confidence scoring. All observations persist to a database with geotagged photos, building a searchable record of the team's fieldwork.
+1. **iNaturalist** provides regional species context -- what's actually been observed near the GPS coordinates
+2. **GPT-4o Vision** identifies the species from the photo, informed by local species data
+3. **GBIF** overlays verified taxonomy, IUCN Red List status, and authoritative distribution data
 
-This is the productionized version of a successful proof-of-concept that demonstrated AI-assisted species identification during the Atlas de Biodiversidad de Jalisco pitch.
+Results are bilingual (English/Spanish) with confidence scoring, presented in a tabbed interface covering taxonomy, ecology, geographic range, conservation status, and similar species.
 
 ## The Challenge
 
 Conservation biologists working in Jalisco face a practical identification bottleneck. Field teams encounter thousands of species across diverse ecosystems, and traditional identification requires reference materials, expert consultation, or lab work -- all of which slow down data collection.
 
-The existing proof-of-concept (Flask + vanilla HTML) proved the concept works, but lacked persistence, authentication, and the reliability needed for real fieldwork. Observations were lost on page refresh, there was no way to review past identifications, and no access control for the research team.
+A proof-of-concept (Flask + vanilla HTML) proved AI-assisted identification works, but GPT-4o Vision alone frequently misidentifies species when it lacks geographic context. A European Adder looks like a Mexican Brown Snake in a photo, but only one of them exists in Mexico. Without regional awareness, AI vision models default to the most globally common lookalike.
 
 ## The Solution
 
-A production-grade web app that preserves everything researchers valued about the PoC -- the dark-themed UI, bilingual support, comprehensive species cards -- while adding the infrastructure needed for real use:
+**Three-API identification pipeline:**
+Rather than relying on a single AI model, the app chains three data sources. iNaturalist's public observations API provides a "regional field guide" of species documented within 50km of the user's GPS coordinates. GPT-4o Vision performs the visual identification with this geographic context, dramatically reducing cross-continental misidentifications. GBIF then validates the result with authoritative taxonomy, IUCN conservation status, and verified distribution data.
 
-**Persistent observations** -- Every identification is stored in Neon Postgres with the original photo in Vercel Blob storage, geotagged with GPS coordinates from the device.
+**Verified data, not AI guesses:**
+Taxonomy, IUCN Red List status, and distribution localities come from GBIF's backbone taxonomy -- sourced from the Catalogue of Life, IUCN, and ITIS. The app shows "Verified" badges when GBIF confirms the data, so researchers know which information is authoritative vs. AI-generated.
 
-**Invite-only access** -- Clerk authentication with sign-up disabled. Only authorized researchers can access the tool, with Veronica's team added manually.
+**Bilingual by default:**
+A language toggle switches all UI text and species descriptions between English and Spanish instantly. Built for Mexican research teams who work across both languages.
 
-**Faithful AI identification** -- The GPT-4o system prompt is ported character-for-character from the proven PoC. It identifies all living organisms (wild and domestic) with structured JSON output covering taxonomy, ecology, geography, and conservation.
+**Graceful degradation:**
+The app works with just an OpenAI API key. Authentication (Clerk), persistence (Neon + Blob), and enrichment (iNat + GBIF) are optional layers that enhance the experience when configured.
 
 ## Technical Highlights
 
-- **GPT-4o Vision integration** with a carefully tuned system prompt that returns structured JSON across 8 data categories
-- **Image pipeline**: client capture -> base64 -> sharp compression (~1MB JPEG) -> Vercel Blob storage -> GPT-4o analysis
-- **Single-table schema** with JSONB columns for flexible nested data (taxonomy, ecology, geography, conservation) -- avoids premature normalization
-- **Lazy service initialization** -- database and OpenAI clients initialize on first use, not at import time, enabling builds without env vars
-- **Bilingual throughout** -- React context-based EN/ES toggle affects all UI text and species descriptions
-- **CSS ported from PoC** -- 200+ lines of carefully tuned dark theme CSS variables, no Tailwind, preserving the proven look and feel
+- **Three-API pipeline**: iNaturalist (regional context) + GPT-4o Vision (identification) + GBIF (verification) -- each with independent timeouts and graceful fallbacks
+- **Grid-stacked tab panels**: All 6 content panels occupy the same CSS grid cell, so switching tabs never changes layout height -- eliminates the common tab-content jumping problem
+- **Sticky tab navigation**: Tab bar pins to viewport top when scrolling long panel content
+- **Image pipeline**: Client capture -> base64 -> sharp compression (~1MB JPEG) -> Vercel Blob storage -> GPT-4o analysis
+- **JSONB schema design**: Single observations table with JSONB columns for taxonomy, ecology, geography, and conservation -- avoids premature normalization
+- **Lazy initialization**: Database and OpenAI clients initialize on first use, enabling builds without environment variables
+- **CushLabs design language**: Glass-morphism cards with backdrop-filter blur, gold accent system, scanning border animations, DM Sans + Playfair Display typography
+- **Drag-and-drop upload**: Photo capture via camera, file picker, or drag-and-drop with visual feedback
 
 ## Getting Started
 
@@ -47,10 +56,8 @@ A production-grade web app that preserves everything researchers valued about th
 
 - Node.js >= 18
 - pnpm
-- Clerk account (for authentication)
-- Neon account (for Postgres database)
 - OpenAI API key (with GPT-4o access)
-- Vercel account (for Blob storage and deployment)
+- Optional: Clerk account, Neon account, Vercel account
 
 ### Installation
 
@@ -68,14 +75,13 @@ Copy the example file and fill in your values:
 cp .env.local.example .env.local
 ```
 
-| Variable | Description |
-|----------|-------------|
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key |
-| `CLERK_SECRET_KEY` | Clerk secret key |
-| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` | Sign-in route (`/sign-in`) |
-| `DATABASE_URL` | Neon Postgres connection string |
-| `OPENAI_API_KEY` | OpenAI API key with GPT-4o access |
-| `BLOB_READ_WRITE_TOKEN` | Vercel Blob read/write token |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `OPENAI_API_KEY` | Yes | OpenAI API key with GPT-4o access |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | No | Clerk publishable key (enables auth) |
+| `CLERK_SECRET_KEY` | No | Clerk secret key |
+| `DATABASE_URL` | No | Neon Postgres connection string (enables persistence) |
+| `BLOB_READ_WRITE_TOKEN` | No | Vercel Blob token (enables image storage) |
 
 After setting `DATABASE_URL`, push the schema:
 
@@ -89,38 +95,45 @@ Then start the dev server:
 pnpm dev
 ```
 
+## Live Demo
+
+**[biojalisco-species-id.vercel.app](https://biojalisco-species-id.vercel.app)**
+
+Try it with:
+- A photo of any bird, mammal, reptile, or amphibian
+- Grant location permission for better regional accuracy
+- Switch between English and Spanish with the language toggle
+
 ## Project Structure
 
 ```
 biojalisco-species-id/
 ├── app/
 │   ├── layout.tsx                       # Root layout (Clerk + Language providers)
-│   ├── globals.css                      # Dark theme CSS (ported from PoC)
-│   ├── sign-in/[[...sign-in]]/          # Clerk sign-in page
+│   ├── globals.css                      # Design system (glass cards, gold accents)
+│   ├── icon.svg                         # Favicon (golden eye + viewfinder)
 │   ├── (protected)/                     # Auth-required routes
 │   │   ├── page.tsx                     # Dashboard (observation list)
 │   │   ├── identify/page.tsx            # Camera/upload + AI identification
 │   │   └── observations/[id]/page.tsx   # Single observation detail
 │   └── api/
-│       ├── identify/route.ts            # POST: image -> Blob + GPT-4o -> DB
-│       ├── observations/route.ts        # GET: list user observations
-│       └── observations/[id]/route.ts   # GET + DELETE single observation
+│       └── identify/route.ts            # POST: iNat + GPT-4o + GBIF pipeline
 ├── components/
-│   ├── capture-area.tsx                 # Camera/upload with preview
-│   ├── confidence-gauge.tsx             # SVG circular gauge
-│   ├── result-tabs.tsx                  # Tabbed result container
-│   ├── tab-panels/                      # 6 result panels
-│   ├── observation-card.tsx             # Dashboard list item
-│   └── observation-detail.tsx           # Full observation view
+│   ├── hero-section.tsx                 # Landing page with species icons
+│   ├── capture-area.tsx                 # Camera/upload/drag-drop with preview
+│   ├── result-tabs.tsx                  # Grid-stacked tabbed results
+│   └── tab-panels/                      # 6 result panels
 ├── lib/
-│   ├── db/schema.ts                     # Drizzle schema
-│   ├── db/index.ts                      # Neon + Drizzle client
-│   ├── openai.ts                        # GPT-4o integration
-│   ├── blob.ts                          # Vercel Blob upload/delete
-│   └── auth.ts                          # Clerk helpers
+│   ├── openai.ts                        # GPT-4o Vision integration
+│   ├── inaturalist.ts                   # iNaturalist regional species API
+│   ├── gbif.ts                          # GBIF enrichment (taxonomy, IUCN, range)
+│   ├── types.ts                         # All TypeScript interfaces
+│   ├── db/                              # Neon + Drizzle (optional)
+│   └── blob.ts                          # Vercel Blob upload/delete (optional)
 ├── contexts/language-context.tsx         # EN/ES toggle context
 ├── hooks/                               # useLanguage, useGeolocation
-└── middleware.ts                         # Clerk route protection
+├── public/images/                        # Species illustrations
+└── middleware.ts                         # Clerk route protection (optional)
 ```
 
 ## Deployment
@@ -128,31 +141,32 @@ biojalisco-species-id/
 The app deploys to Vercel via GitHub integration:
 
 1. Connect the repo to Vercel
-2. Set all environment variables in Vercel project settings
+2. Set `OPENAI_API_KEY` in Vercel project settings (minimum required)
 3. Push to `main` -- Vercel builds and deploys automatically
 
-Vercel Pro is recommended due to GPT-4o response latency (5-15s per identification). The free tier's 10s function timeout may not be sufficient.
+Vercel Pro is recommended. The full pipeline (iNat context + GPT-4o Vision + GBIF enrichment) can take 8-20 seconds, exceeding the free tier's 10-second function timeout.
 
 ## Security
 
-- [x] Clerk authentication on all routes except `/sign-in`
+- [x] Clerk authentication on all protected routes (when configured)
 - [x] Sign-up disabled -- invite-only access via Clerk dashboard
 - [x] All database queries scoped to authenticated user ID
 - [x] Observation delete verifies user ownership before removal
 - [x] No secrets in client bundle -- all API keys server-side only
 - [x] Image data discarded server-side after Blob upload
+- [x] External API calls (iNat, GBIF) use timeouts and graceful degradation
 
 ## Results
 
-This is a Phase 1 MVP built for a team of 3-5 researchers. Success is measured by whether the team actually uses it in the field.
-
-| Metric | Target |
-|--------|--------|
-| Identification latency | < 15s (GPT-4o dependent) |
-| Image compression | < 1MB per photo (sharp) |
-| Supported organisms | All -- wild, domestic, plant, animal, insect, fungus |
+| Metric | Value |
+|--------|-------|
+| Identification latency | 8-20s (iNat + GPT-4o + GBIF pipeline) |
+| Image compression | ~1MB per photo (sharp) |
+| Supported organisms | Vertebrates: mammals, birds, reptiles, amphibians |
 | Languages | English + Spanish (bilingual toggle) |
-| Mobile support | Responsive web with native camera capture |
+| Data sources | 3 APIs (iNaturalist, GPT-4o, GBIF) |
+| Verified data | Taxonomy, IUCN status, distributions (via GBIF) |
+| Regional context | 50km radius species observations (via iNaturalist) |
 
 ## Contact
 
@@ -169,4 +183,4 @@ info@cushlabs.ai
 
 ---
 
-*Last Updated: 2026-03-06*
+*Last Updated: 2026-03-07*

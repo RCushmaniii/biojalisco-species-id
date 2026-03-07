@@ -5,20 +5,22 @@
 portfolio_enabled: true
 portfolio_priority: 3
 portfolio_featured: true
-portfolio_last_reviewed: "2026-03-06"
+portfolio_last_reviewed: "2026-03-07"
 
 title: "BioJalisco Species Identifier"
-tagline: "AI-powered species identification for Jalisco biodiversity research"
+tagline: "Three-API species identification pipeline with verified biodiversity data for Jalisco field research"
 slug: "biojalisco-species-id"
 
 category: "AI Automation"
-target_audience: "Conservation biologists and field researchers needing rapid species identification"
+target_audience: "Conservation biologists and field researchers needing rapid, verified species identification"
 tags:
   - "ai-vision"
   - "species-identification"
   - "conservation"
   - "biodiversity"
   - "gpt-4o"
+  - "inaturalist"
+  - "gbif"
   - "nextjs"
   - "bilingual"
   - "field-research"
@@ -28,26 +30,30 @@ hero_images: []
 demo_video_url: ""
 
 live_url: "https://biojalisco-species-id.vercel.app"
-demo_url: ""
+demo_url: "https://biojalisco-species-id.vercel.app"
 case_study_url: ""
 
 problem_solved: |
   Conservation biologists in Jalisco encounter thousands of species during fieldwork
-  but lack rapid identification tools. Traditional methods require reference materials,
-  expert consultation, or lab work -- slowing data collection and limiting the scope
-  of biodiversity surveys. This tool puts GPT-4o Vision in their pocket.
+  but lack rapid identification tools with verified data. GPT-4o Vision alone
+  frequently misidentifies species without geographic context -- confusing lookalikes
+  across continents. This tool chains three APIs to deliver accurate, region-aware
+  identification backed by authoritative biodiversity databases.
 
 key_outcomes:
-  - "Identifies any organism in under 15 seconds with structured taxonomy data"
-  - "Bilingual output (EN/ES) for Mexican research teams"
+  - "Three-API pipeline: iNaturalist context + GPT-4o identification + GBIF verification"
+  - "Verified IUCN Red List status and taxonomy from GBIF backbone (not AI-generated)"
+  - "Regional species awareness via iNaturalist observations within 50km of GPS coordinates"
+  - "Bilingual output (EN/ES) with confidence scoring across 6 data categories"
   - "Persistent geotagged observations build a searchable field record"
-  - "Invite-only access keeps the tool secure for authorized researchers"
-  - "Full conservation status and similar species data per identification"
+  - "Graceful degradation: works with just an OpenAI key, enriched with optional services"
 
 tech_stack:
   - "Next.js 15 (App Router)"
   - "TypeScript"
   - "GPT-4o Vision"
+  - "iNaturalist API"
+  - "GBIF API"
   - "Clerk Authentication"
   - "Neon Postgres"
   - "Drizzle ORM"
@@ -60,52 +66,49 @@ complexity: "Production"
 
 ## Overview
 
-BioJalisco Species Identifier is a production web app that lets field researchers photograph any living organism and receive a comprehensive AI-powered identification. Built for Dr. Veronica Rosas and her conservation biology team in Jalisco, Mexico, it transforms a proven proof-of-concept into a reliable research tool.
+BioJalisco Species Identifier is a production web app that lets field researchers photograph any vertebrate animal and receive a comprehensive, verified identification. Built for Dr. Veronica Rosas and her conservation biology team in Jalisco, Mexico, it chains three data sources into a single identification pipeline.
 
-The app captures photos via camera or upload, compresses them through sharp, stores them in Vercel Blob, and sends them to GPT-4o Vision for analysis. Results include common and scientific names, full taxonomy, ecology data, geographic range, IUCN conservation status, and similar species -- all in both English and Spanish.
+iNaturalist's public API provides a regional species list based on GPS coordinates -- a "field guide" of what's actually been documented nearby. GPT-4o Vision performs the visual identification informed by that regional context. GBIF then overlays verified taxonomy, IUCN Red List status, and authoritative distribution data from the Catalogue of Life and ITIS.
 
-Every identification persists as a geotagged observation in Neon Postgres, building a searchable record of the team's fieldwork over time.
+Results are bilingual (English/Spanish), presented in a tabbed interface with "Verified" badges distinguishing authoritative GBIF data from AI-generated content.
 
 ## The Challenge
 
-- **Identification bottleneck:** Field teams encounter diverse species across Jalisco's ecosystems. Traditional identification requires reference books, expert consultation, or specimens sent to labs -- all of which slow data collection during time-limited field surveys.
-- **No persistent record:** The working proof-of-concept (Flask + vanilla HTML) proved AI identification works, but observations were lost on page refresh. No way to review past identifications or build a cumulative dataset.
-- **Language barrier:** Research teams work in Spanish, but most identification resources are English-only. A bilingual tool removes friction for Mexican researchers.
-- **Access control:** A public-facing tool isn't appropriate for a small research team. The tool needs invite-only access without the overhead of building custom auth.
+- **AI misidentification without context:** GPT-4o Vision identifies species based on visual similarity alone, frequently confusing lookalikes across continents. A Mexican Brown Snake gets identified as a European Adder because they share similar markings -- but only one exists in the Americas.
+- **No verification layer:** AI-generated taxonomy and conservation data can be hallucinated. Researchers need to know which data is authoritative and which is AI-generated.
+- **No persistent record:** The working proof-of-concept (Flask + vanilla HTML) proved AI identification works, but observations were lost on page refresh.
+- **Language barrier:** Research teams work in Spanish, but most identification resources are English-only.
 
 ## The Solution
 
-**AI-powered identification:**
-The GPT-4o system prompt was ported character-for-character from the proven PoC. It handles all living organisms -- wild jaguars, domestic dogs, garden plants, aquarium fish -- returning structured JSON with confidence scoring across 8 data categories.
+**Three-API pipeline** eliminates the single-model accuracy problem. iNaturalist grounds the identification in regional reality, GPT-4o does the visual analysis, and GBIF provides the verification layer. Each API has independent timeouts and graceful fallbacks -- if GBIF is slow, the AI data still shows without verified badges.
 
-**Persistent observations:**
-Every identification saves to Neon Postgres with the compressed photo in Vercel Blob. GPS coordinates from the device are captured automatically. Researchers can browse, review, and delete past observations from a dashboard.
+**Verified data badges** on the Taxonomy, Conservation, and Range tabs clearly distinguish GBIF-verified information from AI-generated content. IUCN Red List status comes from the actual Red List via GBIF, not from GPT-4o's training data.
 
-**Bilingual by default:**
-A React context-based language toggle switches all UI text and species descriptions between English and Spanish instantly.
+**GBIF distribution data** shows specific localities from authoritative sources (e.g., "Mexico: Oaxaca, San Luis Potosi, Jalisco, Guerrero...") with establishment means (native/introduced).
 
-**Invite-only access:**
-Clerk authentication with sign-up disabled. New researchers are added manually through the Clerk dashboard -- zero custom auth code, maximum security.
+**Graceful degradation architecture** means the app works with just an OpenAI API key. Auth, persistence, and data enrichment are optional layers that activate when configured.
 
 ## Technical Highlights
 
-- **Faithful PoC port:** System prompt, CSS theme, and UI components ported directly from the 630-line vanilla HTML proof-of-concept -- preserving proven UX
-- **Image pipeline:** Client capture -> base64 -> sharp compression (~1MB JPEG) -> Vercel Blob -> GPT-4o Vision -- handles the full lifecycle server-side
-- **JSONB schema design:** Single observations table with JSONB columns for taxonomy, ecology, geography, and conservation -- avoids premature normalization while keeping queries simple
-- **Lazy initialization pattern:** Database and OpenAI clients initialize on first use via Proxy, enabling builds without environment variables
-- **Dark theme CSS variables:** 200+ lines of hand-tuned CSS ported from the PoC, no Tailwind dependency
-- **Server components for data pages:** Dashboard and observation detail use Next.js server components for zero-JS data fetching; identify page is client-side for camera access
+- Three-API pipeline with independent timeouts and graceful fallbacks at each stage
+- Grid-stacked tab panels (CSS grid-row: 1, grid-column: 1) eliminate layout shift when switching between tabs of different heights
+- Sticky tab navigation pins to viewport during scroll
+- CushLabs design language: glass-morphism cards, scanning border animations, gold accent system
+- Drag-and-drop image upload with camera capture and file picker
+- DM Sans + Playfair Display + Cormorant Garamond typography system
+- Fluid type scale with 8-step clamp() system for responsive text
 
 ## Results
 
 **For the Research Team:**
-- Rapid species identification available on any mobile device with a camera
-- Persistent, geotagged observation history builds over time
-- Bilingual interface removes language friction for the Mexican team
-- Invite-only access means zero onboarding overhead
+- Accurate species identification grounded in regional observation data
+- Verified taxonomy and IUCN status from authoritative sources, not AI guesswork
+- Bilingual interface removes language friction
+- Works on any mobile device with a camera
 
 **Technical Demonstration:**
-- End-to-end AI vision integration with structured output parsing
-- Production deployment pipeline (GitHub -> Vercel) with database migrations
-- Faithful port from prototype to production without losing the UX that made the PoC compelling
-- Clean separation of server and client concerns in Next.js App Router architecture
+- Multi-API orchestration with graceful degradation at each layer
+- Real-world problem solving: geographic context dramatically improves AI vision accuracy
+- Production deployment with zero-config minimum viable setup (just needs OPENAI_API_KEY)
+- Clean separation of AI generation vs. verified data with visual distinction in the UI
