@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/hooks/use-language';
 import { useGeolocation } from '@/hooks/use-geolocation';
@@ -60,6 +61,14 @@ export default function IdentifyPage() {
   return (
     <>
       <div className="header">
+        <Image
+          src="/images/bearded-lizard.png"
+          alt="Beaded lizard — Jalisco's iconic reptile"
+          width={180}
+          height={120}
+          className="header-mascot"
+          priority
+        />
         <h1>
           <span className="accent">{t('Species', 'Identificador')}</span>{' '}
           {t('Identifier', 'de Especies')}
