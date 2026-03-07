@@ -94,9 +94,11 @@ export function formatSpeciesContext(species: LocalSpecies[]): string {
     .map((s) => `- ${s.name} (${s.scientificName}) — ${s.count} observations`);
 
   return [
-    'REGIONAL SPECIES DATA from iNaturalist (research-grade observations within 50km of this location):',
+    'SUPPLEMENTARY REFERENCE — species recently observed near this location (from iNaturalist, not exhaustive):',
     ...lines,
     '',
-    'Use this list to inform your identification. If the animal in the photo closely matches a species on this list, strongly prefer that identification over visually similar species from other continents.',
+    'IMPORTANT: This list is supplementary context only — it is NOT a complete inventory. Many species in this region are not on this list.',
+    'You MUST still identify ANY vertebrate animal in the photo (mammals, birds, reptiles, amphibians) whether or not it appears on this list.',
+    'Use the list as a geographic hint: if a visually similar species from this list fits the photo, prefer it over a lookalike from another continent.',
   ].join('\n');
 }
