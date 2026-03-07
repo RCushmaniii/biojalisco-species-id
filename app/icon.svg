@@ -1,38 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>
     <radialGradient id="iris" cx="50%" cy="45%" r="50%">
-      <stop offset="0%" stop-color="#d4a843"/>
-      <stop offset="60%" stop-color="#c8a45c"/>
-      <stop offset="100%" stop-color="#8a6e2f"/>
+      <stop offset="0%" stop-color="#F4D03F"/>
+      <stop offset="60%" stop-color="#e6c435"/>
+      <stop offset="100%" stop-color="#b89a20"/>
     </radialGradient>
     <radialGradient id="bg" cx="50%" cy="40%" r="65%">
-      <stop offset="0%" stop-color="#232920"/>
-      <stop offset="100%" stop-color="#111610"/>
+      <stop offset="0%" stop-color="#22251f"/>
+      <stop offset="100%" stop-color="#1A1C19"/>
     </radialGradient>
   </defs>
   <!-- Dark rounded background -->
   <rect width="512" height="512" rx="96" fill="url(#bg)"/>
   <!-- Outer eye shape — almond/lenticular -->
   <path d="M256 148c-88 0-160 48-192 108 32 60 104 108 192 108s160-48 192-108c-32-60-104-108-192-108z"
-        fill="none" stroke="#c8a45c" stroke-width="12" stroke-linejoin="round" opacity="0.3"/>
+        fill="none" stroke="#F4D03F" stroke-width="12" stroke-linejoin="round" opacity="0.3"/>
   <!-- Iris circle -->
   <circle cx="256" cy="256" r="82" fill="url(#iris)"/>
   <!-- Pupil -->
-  <circle cx="256" cy="256" r="34" fill="#111610"/>
+  <circle cx="256" cy="256" r="34" fill="#1A1C19"/>
   <!-- Crosshair — the "identification" element -->
-  <line x1="256" y1="210" x2="256" y2="240" stroke="#111610" stroke-width="5" stroke-linecap="round"/>
-  <line x1="256" y1="272" x2="256" y2="302" stroke="#111610" stroke-width="5" stroke-linecap="round"/>
-  <line x1="210" y1="256" x2="240" y2="256" stroke="#111610" stroke-width="5" stroke-linecap="round"/>
-  <line x1="272" y1="256" x2="302" y2="256" stroke="#111610" stroke-width="5" stroke-linecap="round"/>
+  <line x1="256" y1="210" x2="256" y2="240" stroke="#1A1C19" stroke-width="5" stroke-linecap="round"/>
+  <line x1="256" y1="272" x2="256" y2="302" stroke="#1A1C19" stroke-width="5" stroke-linecap="round"/>
+  <line x1="210" y1="256" x2="240" y2="256" stroke="#1A1C19" stroke-width="5" stroke-linecap="round"/>
+  <line x1="272" y1="256" x2="302" y2="256" stroke="#1A1C19" stroke-width="5" stroke-linecap="round"/>
   <!-- Specular highlight on iris -->
-  <circle cx="234" cy="238" r="14" fill="white" opacity="0.45"/>
-  <circle cx="274" cy="268" r="6" fill="white" opacity="0.2"/>
+  <circle cx="234" cy="238" r="14" fill="white" opacity="0.5"/>
+  <circle cx="274" cy="268" r="6" fill="white" opacity="0.25"/>
   <!-- Outer eye shape fill — subtle golden glow -->
   <path d="M256 148c-88 0-160 48-192 108 32 60 104 108 192 108s160-48 192-108c-32-60-104-108-192-108z"
-        fill="#c8a45c" opacity="0.06"/>
+        fill="#F4D03F" opacity="0.06"/>
   <!-- Corner brackets — viewfinder frame -->
-  <path d="M100 160 L100 120 L140 120" fill="none" stroke="#c8a45c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-  <path d="M412 160 L412 120 L372 120" fill="none" stroke="#c8a45c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-  <path d="M100 352 L100 392 L140 392" fill="none" stroke="#c8a45c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-  <path d="M412 352 L412 392 L372 392" fill="none" stroke="#c8a45c" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+  <path d="M100 160 L100 120 L140 120" fill="none" stroke="#F4D03F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+  <path d="M412 160 L412 120 L372 120" fill="none" stroke="#F4D03F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+  <path d="M100 352 L100 392 L140 392" fill="none" stroke="#F4D03F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+  <path d="M412 352 L412 392 L372 392" fill="none" stroke="#F4D03F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
 </svg>
