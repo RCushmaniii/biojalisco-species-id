@@ -1,7 +1,7 @@
 'use client';
 
 import { useLanguage } from '@/hooks/use-language';
-import type { Conservation } from '@/lib/types';
+import type { Conservation, GBIFData } from '@/lib/types';
 
 function iucnClass(status: string): string {
   const s = status.toLowerCase();
@@ -14,7 +14,13 @@ function iucnClass(status: string): string {
   return 'status-default';
 }
 
-export function ConservationPanel({ conservation }: { conservation: Conservation }) {
+export function ConservationPanel({
+  conservation,
+  gbif,
+}: {
+  conservation: Conservation;
+  gbif?: GBIFData | null;
+}) {
   const { t } = useLanguage();
 
   const trendCls =
@@ -31,6 +37,8 @@ export function ConservationPanel({ conservation }: { conservation: Conservation
         ? '\u2193'
         : '\u2192';
 
+  const hasGbifIucn = gbif?.iucnCategory;
+
   return (
     <>
       {conservation.iucn_status && (
@@ -38,6 +46,11 @@ export function ConservationPanel({ conservation }: { conservation: Conservation
           <div className={`conservation-status ${iucnClass(conservation.iucn_status)}`}>
             {conservation.iucn_status}
           </div>
+          {hasGbifIucn && (
+            <span className="verified-badge">
+              {t('IUCN Verified', 'UICN Verificado')}
+            </span>
+          )}
           <br />
         </>
       )}
@@ -55,6 +68,16 @@ export function ConservationPanel({ conservation }: { conservation: Conservation
         <div className="info-row">
           <span className="info-label">{t('Threats', 'Amenazas')}</span>
           <span className="info-value">{conservation.threats}</span>
+        </div>
+      )}
+      {gbif?.gbifUrl && (
+        <div className="info-row">
+          <span className="info-label">{t('Source', 'Fuente')}</span>
+          <span className="info-value">
+            <a href={gbif.gbifUrl} target="_blank" rel="noopener noreferrer" className="gbif-link">
+              GBIF
+            </a>
+          </span>
         </div>
       )}
     </>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { identifySpecies } from '@/lib/openai';
 import { getLocalSpecies, formatSpeciesContext } from '@/lib/inaturalist';
+import { enrichFromGBIF } from '@/lib/gbif';
 import { randomUUID } from 'crypto';
 
 async function getOptionalUserId(): Promise<string | null> {
@@ -44,6 +45,41 @@ export async function POST(request: NextRequest) {
     // Call GPT-4o for identification (with location + regional species context)
     const result = await identifySpecies(imageData, latitude, longitude, speciesContext);
 
+    // Enrich with verified GBIF data (non-blocking, best-effort)
+    const isError = 'error' in result;
+    let gbifData = null;
+    if (!isError) {
+      try {
+        const enrichment = await enrichFromGBIF(result.identification.scientific_name);
+        if (enrichment) {
+          gbifData = {
+            taxonomy: enrichment.taxonomy,
+            iucnStatus: enrichment.iucnStatus,
+            iucnCategory: enrichment.iucnCategory,
+            distributions: enrichment.distributions,
+            establishmentMeans: enrichment.establishmentMeans,
+            vernacularNames: enrichment.vernacularNames,
+            gbifUrl: enrichment.gbifUrl,
+            matchConfidence: enrichment.matchConfidence,
+          };
+          // Override AI-generated taxonomy with verified GBIF taxonomy
+          if (enrichment.taxonomy) {
+            result.taxonomy = enrichment.taxonomy;
+          }
+          // Override AI-generated IUCN status with verified GBIF data
+          if (enrichment.iucnCategory) {
+            result.conservation = {
+              ...result.conservation,
+              iucn_status: enrichment.iucnCategory,
+            };
+          }
+          console.log(`GBIF: enriched ${result.identification.scientific_name} (confidence: ${enrichment.matchConfidence})`);
+        }
+      } catch (gbifError) {
+        console.warn('GBIF enrichment failed (non-fatal):', gbifError);
+      }
+    }
+
     // If we have auth + DB + blob storage, persist the observation
     let id: string | null = null;
     let imageUrl: string | null = null;
@@ -58,7 +94,6 @@ export async function POST(request: NextRequest) {
         const blob = await uploadImage(imageData, filename);
         imageUrl = blob.url;
 
-        const isError = 'error' in result;
         id = randomUUID();
 
         await db.insert(observations).values({
@@ -89,8 +124,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Return the result (+ observation ID if persisted)
-    return NextResponse.json({ ...result, ...(id ? { id, imageUrl } : {}) });
+    // Return the result (+ GBIF data + observation ID if persisted)
+    return NextResponse.json({
+      ...result,
+      ...(gbifData ? { gbif: gbifData } : {}),
+      ...(id ? { id, imageUrl } : {}),
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Internal server error';
     console.error('Identify error:', message, error);

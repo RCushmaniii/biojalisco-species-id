@@ -1,7 +1,7 @@
 'use client';
 
 import { useLanguage } from '@/hooks/use-language';
-import type { Geography } from '@/lib/types';
+import type { Geography, GBIFData } from '@/lib/types';
 
 function GeoBadge({ label, value }: { label: string; value: boolean | undefined }) {
   const { lang } = useLanguage();
@@ -23,7 +23,13 @@ function GeoBadge({ label, value }: { label: string; value: boolean | undefined 
   );
 }
 
-export function GeographyPanel({ geography }: { geography: Geography }) {
+export function GeographyPanel({
+  geography,
+  gbif,
+}: {
+  geography: Geography;
+  gbif?: GBIFData | null;
+}) {
   const { t } = useLanguage();
 
   return (
@@ -37,11 +43,44 @@ export function GeographyPanel({ geography }: { geography: Geography }) {
             {t('Invasive', 'Invasora')}
           </div>
         )}
+        {gbif?.establishmentMeans && (
+          <div className="geo-badge yes">
+            <span className="dot" />
+            {gbif.establishmentMeans === 'native'
+              ? t('Native', 'Nativa')
+              : gbif.establishmentMeans}
+          </div>
+        )}
       </div>
       {geography.native_range && (
         <div className="info-row">
           <span className="info-label">{t('Native range', 'Rango nativo')}</span>
           <span className="info-value">{geography.native_range}</span>
+        </div>
+      )}
+      {gbif && gbif.distributions.length > 0 && (
+        <>
+          <div className="info-row" style={{ flexDirection: 'column', gap: '0.4rem' }}>
+            <span className="info-label">
+              {t('Verified Distribution', 'Distribucion Verificada')}
+              <span className="verified-badge" style={{ marginLeft: '0.5rem' }}>GBIF</span>
+            </span>
+            <span className="info-value" style={{ textAlign: 'left' }}>
+              {gbif.distributions.map((d, i) => (
+                <div key={i} style={{ marginBottom: '0.3rem', lineHeight: 1.5 }}>{d}</div>
+              ))}
+            </span>
+          </div>
+        </>
+      )}
+      {gbif?.gbifUrl && (
+        <div className="info-row">
+          <span className="info-label">{t('Source', 'Fuente')}</span>
+          <span className="info-value">
+            <a href={gbif.gbifUrl} target="_blank" rel="noopener noreferrer" className="gbif-link">
+              GBIF
+            </a>
+          </span>
         </div>
       )}
     </>

@@ -42,6 +42,17 @@ export interface SimilarSpecies {
   distinction: string;
 }
 
+export interface GBIFData {
+  taxonomy: Taxonomy | null;
+  iucnStatus: string | null;
+  iucnCategory: string | null;
+  distributions: string[];
+  establishmentMeans: string | null;
+  vernacularNames: { en: string | null; es: string | null };
+  gbifUrl: string | null;
+  matchConfidence: number;
+}
+
 export interface IdentifySuccessResponse {
   identification: Identification;
   confidence: number;
@@ -53,6 +64,7 @@ export interface IdentifySuccessResponse {
   description: string;
   descripcion: string;
   fun_fact: string;
+  gbif?: GBIFData | null;
 }
 
 export interface IdentifyErrorResponse {

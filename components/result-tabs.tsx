@@ -97,16 +97,16 @@ export function ResultTabs({ data }: ResultTabsProps) {
           <OverviewPanel data={data} />
         </div>
         <div className={`tab-panel ${activeTab === 'taxonomy' ? 'active' : ''}`}>
-          <TaxonomyPanel taxonomy={data.taxonomy} />
+          <TaxonomyPanel taxonomy={data.taxonomy} gbif={data.gbif} />
         </div>
         <div className={`tab-panel ${activeTab === 'ecology' ? 'active' : ''}`}>
           <EcologyPanel ecology={data.ecology} />
         </div>
         <div className={`tab-panel ${activeTab === 'geography' ? 'active' : ''}`}>
-          <GeographyPanel geography={data.geography} />
+          <GeographyPanel geography={data.geography} gbif={data.gbif} />
         </div>
         <div className={`tab-panel ${activeTab === 'conservation' ? 'active' : ''}`}>
-          <ConservationPanel conservation={data.conservation} />
+          <ConservationPanel conservation={data.conservation} gbif={data.gbif} />
         </div>
         {data.similar_species && data.similar_species.length > 0 && (
           <div className={`tab-panel ${activeTab === 'similar' ? 'active' : ''}`}>

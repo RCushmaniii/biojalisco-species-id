@@ -1,4 +1,5 @@
-import type { Taxonomy } from '@/lib/types';
+import { useLanguage } from '@/hooks/use-language';
+import type { Taxonomy, GBIFData } from '@/lib/types';
 
 const RANKS: { key: keyof Taxonomy; label: string }[] = [
   { key: 'kingdom', label: 'Kingdom' },
@@ -10,24 +11,39 @@ const RANKS: { key: keyof Taxonomy; label: string }[] = [
   { key: 'species', label: 'Species' },
 ];
 
-export function TaxonomyPanel({ taxonomy }: { taxonomy: Taxonomy }) {
+export function TaxonomyPanel({
+  taxonomy,
+  gbif,
+}: {
+  taxonomy: Taxonomy;
+  gbif?: GBIFData | null;
+}) {
+  const { t } = useLanguage();
+
   return (
-    <ul className="taxonomy-tree">
-      {RANKS.map(
-        ({ key, label }) =>
-          taxonomy[key] && (
-            <li key={key}>
-              <span className="tax-rank">{label}</span>
-              <span
-                className={`tax-name ${
-                  key === 'species' || key === 'genus' ? 'species-name' : ''
-                }`}
-              >
-                {taxonomy[key]}
-              </span>
-            </li>
-          )
+    <>
+      {gbif?.taxonomy && (
+        <div className="verified-banner">
+          {t('Taxonomy verified by GBIF', 'Taxonomia verificada por GBIF')}
+        </div>
       )}
-    </ul>
+      <ul className="taxonomy-tree">
+        {RANKS.map(
+          ({ key, label }) =>
+            taxonomy[key] && (
+              <li key={key}>
+                <span className="tax-rank">{label}</span>
+                <span
+                  className={`tax-name ${
+                    key === 'species' || key === 'genus' ? 'species-name' : ''
+                  }`}
+                >
+                  {taxonomy[key]}
+                </span>
+              </li>
+            )
+        )}
+      </ul>
+    </>
   );
 }
