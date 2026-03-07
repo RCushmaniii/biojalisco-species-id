@@ -144,11 +144,11 @@ a { color: inherit; text-decoration: none; }
     0 0 0 1px rgba(240,192,64,0.05),
     0 20px 60px rgba(0,0,0,0.6),
     inset 0 1px 0 rgba(240,192,64,0.08);
-  overflow: hidden;
   opacity: 0; transform: translateY(24px);
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
 .result-card.visible { opacity: 1; transform: translateY(0); }
+.result-hero { border-radius: var(--radius) var(--radius) 0 0; }
 
 /* Scanning border on result card entrance */
 .result-card::before {
@@ -184,7 +184,8 @@ a { color: inherit; text-decoration: none; }
 .result-breed { font-size: var(--text-sm); color: var(--cream-50); font-weight: 500; margin-top: 0.3rem; letter-spacing: 0.05em; text-transform: uppercase; }
 
 /* ── Tabs ── */
-.tabs-wrapper { position: relative; }
+.tabs-anchor { height: 0; scroll-margin-top: 0.5rem; }
+.tabs-wrapper { position: sticky; top: 0; z-index: 5; background: var(--dark-surface); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border-left: 1px solid var(--gold-border); border-right: 1px solid var(--gold-border); margin: 0 -1px; }
 .tabs-wrapper::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 32px; background: linear-gradient(90deg, transparent, var(--dark-surface)); pointer-events: none; opacity: 0; transition: opacity 0.2s; }
 .tabs-wrapper.has-overflow::after { opacity: 1; }
 .tabs { display: flex; border-bottom: 1px solid rgba(240,192,64,0.08); overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }

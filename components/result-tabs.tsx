@@ -25,6 +25,7 @@ export function ResultTabs({ data }: ResultTabsProps) {
 
   const tabsRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
 
   const checkOverflow = useCallback(() => {
     const el = tabsRef.current;
@@ -44,6 +45,14 @@ export function ResultTabs({ data }: ResultTabsProps) {
       window.removeEventListener('resize', checkOverflow);
     };
   }, [checkOverflow]);
+
+  const handleTabChange = useCallback((key: string) => {
+    setActiveTab(key);
+    // Scroll the tab bar into view so the user always sees navigation + content start
+    requestAnimationFrame(() => {
+      stickyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  }, []);
 
   const tabs = [
     { key: 'overview', label: t('Overview', 'General') },
@@ -68,13 +77,14 @@ export function ResultTabs({ data }: ResultTabsProps) {
         </div>
       </div>
 
+      <div className="tabs-anchor" ref={stickyRef} />
       <div className="tabs-wrapper" ref={wrapperRef}>
         <div className="tabs" ref={tabsRef}>
           {tabs.map((tab) => (
             <button
               key={tab.key}
               className={`tab-btn ${activeTab === tab.key ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab.key)}
+              onClick={() => handleTabChange(tab.key)}
             >
               {tab.label}
             </button>
