@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { identifySpecies } from '@/lib/openai';
 import { getLocalSpecies, formatSpeciesContext } from '@/lib/inaturalist';
 import { enrichFromGBIF } from '@/lib/gbif';
+import { enrichFromEncicloVida } from '@/lib/enciclovida';
 import { randomUUID } from 'crypto';
 
 async function getOptionalUserId(): Promise<string | null> {
@@ -45,38 +46,63 @@ export async function POST(request: NextRequest) {
     // Call GPT-4o for identification (with location + regional species context)
     const result = await identifySpecies(imageData, latitude, longitude, speciesContext);
 
-    // Enrich with verified GBIF data (non-blocking, best-effort)
+    // Enrich with verified data from GBIF + EncicloVida (in parallel, best-effort)
     const isError = 'error' in result;
     let gbifData = null;
+    let evData = null;
     if (!isError) {
-      try {
-        const enrichment = await enrichFromGBIF(result.identification.scientific_name);
-        if (enrichment) {
-          gbifData = {
-            taxonomy: enrichment.taxonomy,
-            iucnStatus: enrichment.iucnStatus,
-            iucnCategory: enrichment.iucnCategory,
-            distributions: enrichment.distributions,
-            establishmentMeans: enrichment.establishmentMeans,
-            vernacularNames: enrichment.vernacularNames,
-            gbifUrl: enrichment.gbifUrl,
-            matchConfidence: enrichment.matchConfidence,
-          };
-          // Override AI-generated taxonomy with verified GBIF taxonomy
-          if (enrichment.taxonomy) {
-            result.taxonomy = enrichment.taxonomy;
-          }
-          // Override AI-generated IUCN status with verified GBIF data
-          if (enrichment.iucnCategory) {
-            result.conservation = {
-              ...result.conservation,
-              iucn_status: enrichment.iucnCategory,
-            };
-          }
-          console.log(`GBIF: enriched ${result.identification.scientific_name} (confidence: ${enrichment.matchConfidence})`);
+      const sciName = result.identification.scientific_name;
+      const [gbifResult, evResult] = await Promise.allSettled([
+        enrichFromGBIF(sciName),
+        enrichFromEncicloVida(sciName),
+      ]);
+
+      // Process GBIF
+      if (gbifResult.status === 'fulfilled' && gbifResult.value) {
+        const enrichment = gbifResult.value;
+        gbifData = {
+          taxonomy: enrichment.taxonomy,
+          iucnStatus: enrichment.iucnStatus,
+          iucnCategory: enrichment.iucnCategory,
+          distributions: enrichment.distributions,
+          establishmentMeans: enrichment.establishmentMeans,
+          vernacularNames: enrichment.vernacularNames,
+          gbifUrl: enrichment.gbifUrl,
+          matchConfidence: enrichment.matchConfidence,
+        };
+        if (enrichment.taxonomy) {
+          result.taxonomy = enrichment.taxonomy;
         }
-      } catch (gbifError) {
-        console.warn('GBIF enrichment failed (non-fatal):', gbifError);
+        if (enrichment.iucnCategory) {
+          result.conservation = { ...result.conservation, iucn_status: enrichment.iucnCategory };
+        }
+        console.log(`GBIF: enriched ${sciName} (confidence: ${enrichment.matchConfidence})`);
+      } else if (gbifResult.status === 'rejected') {
+        console.warn('GBIF enrichment failed (non-fatal):', gbifResult.reason);
+      }
+
+      // Process EncicloVida
+      if (evResult.status === 'fulfilled' && evResult.value) {
+        const ev = evResult.value;
+        evData = {
+          speciesId: ev.speciesId,
+          commonNameEs: ev.commonNameEs,
+          allCommonNames: ev.allCommonNames,
+          distributionTypes: ev.distributionTypes,
+          characteristics: ev.characteristics,
+          nom059Status: ev.nom059Status,
+          photoUrl: ev.photoUrl,
+          wikipediaSummary: ev.wikipediaSummary,
+          geodataSources: ev.geodataSources,
+          enciclovidaUrl: ev.enciclovidaUrl,
+        };
+        // Use CONABIO's authoritative Spanish common name if available
+        if (ev.commonNameEs) {
+          result.identification.nombre_comun = ev.commonNameEs;
+        }
+        console.log(`EncicloVida: enriched ${sciName} (${ev.distributionTypes.join(', ')})`);
+      } else if (evResult.status === 'rejected') {
+        console.warn('EncicloVida enrichment failed (non-fatal):', evResult.reason);
       }
     }
 
@@ -124,10 +150,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Return the result (+ GBIF data + observation ID if persisted)
+    // Return the result (+ enrichment data + observation ID if persisted)
     return NextResponse.json({
       ...result,
       ...(gbifData ? { gbif: gbifData } : {}),
+      ...(evData ? { enciclovida: evData } : {}),
       ...(id ? { id, imageUrl } : {}),
     });
   } catch (error) {

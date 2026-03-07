@@ -106,7 +106,7 @@ export function ResultTabs({ data }: ResultTabsProps) {
           <GeographyPanel geography={data.geography} gbif={data.gbif} />
         </div>
         <div className={`tab-panel ${activeTab === 'conservation' ? 'active' : ''}`}>
-          <ConservationPanel conservation={data.conservation} gbif={data.gbif} />
+          <ConservationPanel conservation={data.conservation} gbif={data.gbif} enciclovida={data.enciclovida} />
         </div>
         {data.similar_species && data.similar_species.length > 0 && (
           <div className={`tab-panel ${activeTab === 'similar' ? 'active' : ''}`}>

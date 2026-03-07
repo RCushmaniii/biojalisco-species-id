@@ -1,15 +1,15 @@
 'use client';
 
 import { useLanguage } from '@/hooks/use-language';
-import type { Conservation, GBIFData } from '@/lib/types';
+import type { Conservation, GBIFData, EncicloVidaData } from '@/lib/types';
 
 function iucnClass(status: string): string {
   const s = status.toLowerCase();
-  if (s.includes('least concern')) return 'status-lc';
-  if (s.includes('near threatened')) return 'status-nt';
+  if (s.includes('least concern') || s.includes('preocupación menor')) return 'status-lc';
+  if (s.includes('near threatened') || s.includes('casi amenazad')) return 'status-nt';
   if (s.includes('vulnerable')) return 'status-vu';
-  if (s.includes('endangered')) return 'status-en';
-  if (s.includes('critically')) return 'status-cr';
+  if (s.includes('endangered') || s.includes('peligro')) return 'status-en';
+  if (s.includes('critically') || s.includes('crítico')) return 'status-cr';
   if (s.includes('domestic')) return 'status-dom';
   return 'status-default';
 }
@@ -17,9 +17,11 @@ function iucnClass(status: string): string {
 export function ConservationPanel({
   conservation,
   gbif,
+  enciclovida,
 }: {
   conservation: Conservation;
   gbif?: GBIFData | null;
+  enciclovida?: EncicloVidaData | null;
 }) {
   const { t } = useLanguage();
 
@@ -54,6 +56,23 @@ export function ConservationPanel({
           <br />
         </>
       )}
+
+      {enciclovida?.nom059Status && (
+        <div className="nom059-badge">
+          <strong>NOM-059-SEMARNAT</strong>
+          <span>{enciclovida.nom059Status}</span>
+        </div>
+      )}
+
+      {enciclovida && enciclovida.characteristics.length > 0 && (
+        <div className="info-row">
+          <span className="info-label">CONABIO</span>
+          <span className="info-value">
+            {enciclovida.characteristics.join(' · ')}
+          </span>
+        </div>
+      )}
+
       {conservation.population_trend && (
         <div className="info-row">
           <span className="info-label">{t('Trend', 'Tendencia')}</span>
@@ -70,16 +89,18 @@ export function ConservationPanel({
           <span className="info-value">{conservation.threats}</span>
         </div>
       )}
-      {gbif?.gbifUrl && (
-        <div className="info-row">
-          <span className="info-label">{t('Source', 'Fuente')}</span>
-          <span className="info-value">
-            <a href={gbif.gbifUrl} target="_blank" rel="noopener noreferrer" className="gbif-link">
-              GBIF
-            </a>
-          </span>
-        </div>
-      )}
+
+      <div className="info-row">
+        <span className="info-label">{t('Sources', 'Fuentes')}</span>
+        <span className="info-value" style={{ display: 'flex', gap: '0.75rem' }}>
+          {gbif?.gbifUrl && (
+            <a href={gbif.gbifUrl} target="_blank" rel="noopener noreferrer" className="gbif-link">GBIF</a>
+          )}
+          {enciclovida?.enciclovidaUrl && (
+            <a href={enciclovida.enciclovidaUrl} target="_blank" rel="noopener noreferrer" className="gbif-link">EncicloVida</a>
+          )}
+        </span>
+      </div>
     </>
   );
 }

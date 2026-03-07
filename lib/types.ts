@@ -53,6 +53,19 @@ export interface GBIFData {
   matchConfidence: number;
 }
 
+export interface EncicloVidaData {
+  speciesId: number;
+  commonNameEs: string | null;
+  allCommonNames: string[];
+  distributionTypes: string[];
+  characteristics: string[];
+  nom059Status: string | null;
+  photoUrl: string | null;
+  wikipediaSummary: string | null;
+  geodataSources: string[];
+  enciclovidaUrl: string;
+}
+
 export interface IdentifySuccessResponse {
   identification: Identification;
   confidence: number;
@@ -65,6 +78,7 @@ export interface IdentifySuccessResponse {
   descripcion: string;
   fun_fact: string;
   gbif?: GBIFData | null;
+  enciclovida?: EncicloVidaData | null;
 }
 
 export interface IdentifyErrorResponse {
