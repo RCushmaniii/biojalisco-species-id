@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/hooks/use-language';
 import { CameraIcon } from './icons';
@@ -17,6 +18,14 @@ export function HeroSection({ count }: { count: number }) {
   return (
     <div className="hero">
       <div className="hero-header">
+        <Image
+          src="/images/tropical-bird.png"
+          alt="Motmot — Jalisco's iconic tropical bird"
+          width={140}
+          height={180}
+          className="hero-bird"
+          priority
+        />
         <h1>
           <span className="accent">{t('Species', 'Identificador')}</span>{' '}
           {t('Identifier', 'de Especies')}
