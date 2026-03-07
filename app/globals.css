@@ -55,6 +55,36 @@ body {
 
 a { color: inherit; text-decoration: none; }
 
+/* ── Sign-In Page ── */
+.sign-in-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  gap: 0.25rem;
+}
+.sign-in-page h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--cream);
+  letter-spacing: 0.01em;
+}
+.sign-in-page .accent {
+  font-style: italic;
+  color: var(--gold);
+}
+.sign-in-page .subtitle {
+  color: var(--cream-50);
+  font-size: var(--text-sm);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
 /* ── Shared Animations ── */
 @keyframes rise { to { opacity: 1; transform: translateY(0); } }
 @keyframes spin { to { transform: rotate(360deg); } }
