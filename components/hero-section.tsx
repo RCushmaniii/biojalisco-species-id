@@ -38,6 +38,8 @@ export function HeroSection({ count }: { count: number }) {
         </p>
       </div>
 
+      <div className="hero-divider" />
+
       <div className="hero-groups">
         {ANIMAL_GROUPS.map((group) => (
           <div key={group.en} className="hero-group-card">
