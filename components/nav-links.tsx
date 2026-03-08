@@ -11,12 +11,6 @@ export function NavLinks() {
   return (
     <>
       <Link
-        href="/"
-        className={`nav-link ${pathname === '/' ? 'active' : ''}`}
-      >
-        {t('Home', 'Inicio')}
-      </Link>
-      <Link
         href="/dashboard"
         className={`nav-link ${pathname === '/dashboard' ? 'active' : ''}`}
       >

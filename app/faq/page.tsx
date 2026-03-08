@@ -129,7 +129,6 @@ export default function FAQPage() {
       <nav className="nav-bar nav-bar-wide">
         <NavBrand />
         <div className="nav-links">
-          <Link href="/" className="nav-link">Home</Link>
           <Link href="/observations" className="nav-link">Observations</Link>
           <Link href="/faq" className="nav-link active">FAQ</Link>
           <Link href="/sign-in" className="nav-link">Sign In</Link>

@@ -13,7 +13,6 @@ export default function PrivacyPage() {
       <nav className="nav-bar nav-bar-wide">
         <NavBrand />
         <div className="nav-links">
-          <Link href="/" className="nav-link">Home</Link>
           <Link href="/faq" className="nav-link">FAQ</Link>
         </div>
       </nav>
