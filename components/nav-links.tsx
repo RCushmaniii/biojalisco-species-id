@@ -29,6 +29,12 @@ export function NavLinks() {
         {t('Identify', 'Identificar')}
       </Link>
       <Link
+        href="/observations"
+        className={`nav-link ${pathname === '/observations' ? 'active' : ''}`}
+      >
+        {t('Observations', 'Observaciones')}
+      </Link>
+      <Link
         href="/faq"
         className={`nav-link ${pathname === '/faq' ? 'active' : ''}`}
       >
