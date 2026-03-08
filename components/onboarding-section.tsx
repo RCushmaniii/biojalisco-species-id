@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguage } from '@/hooks/use-language';
 import { CameraIcon } from './icons';
@@ -77,14 +76,6 @@ export function OnboardingSection() {
   return (
     <div className="onboarding">
       <div className="onboarding-header">
-        <Image
-          src="/images/tropical-bird.png"
-          alt="Motmot — Jalisco's iconic tropical bird"
-          width={140}
-          height={180}
-          className="hero-bird"
-          priority
-        />
         <h1>
           <span className="accent">Bio</span>Jalisco
         </h1>
