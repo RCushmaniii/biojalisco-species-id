@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useLanguage } from '@/hooks/use-language';
 import { CameraIcon } from './icons';
+import { TestimonialCarousel } from './testimonial-carousel';
 
 const PIPELINE_STEPS = [
   {
@@ -135,6 +136,10 @@ export function OnboardingSection() {
             'BioJalisco cuenta con el respaldo de la Dra. Veronica Rosas, profesora titular de ecologia y lider del campus CUCBA de la Universidad de Guadalajara. Su investigacion en biodiversidad de vertebrados en el occidente de Mexico proporciona la base cientifica de esta plataforma. Estudiantes investigadores de su programa de biologia de la conservacion contribuyen directamente a las observaciones de campo y la validacion de datos.'
           )}
         </p>
+      </div>
+
+      <div className="onboarding-section">
+        <TestimonialCarousel />
       </div>
 
       <div className="onboarding-cta">
