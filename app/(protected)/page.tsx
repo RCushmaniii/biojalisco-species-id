@@ -2,9 +2,12 @@ import { db } from '@/lib/db';
 import { observations } from '@/lib/db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { ObservationList } from '@/components/observation-list';
-import { HeroSection } from '@/components/hero-section';
+import { OnboardingSection } from '@/components/onboarding-section';
+import { DashboardStats } from '@/components/dashboard-stats';
+import { ContributionBanner } from '@/components/contribution-banner';
 import { getImageUrl } from '@/lib/blob';
 import Link from 'next/link';
+import { CameraIcon } from '@/components/icons';
 import type { Observation } from '@/lib/types';
 
 async function getAuthUserId(): Promise<string | null> {
@@ -17,12 +20,19 @@ async function getAuthUserId(): Promise<string | null> {
   }
 }
 
+const NOTABLE_STATUSES = new Set([
+  'near threatened', 'nt',
+  'vulnerable', 'vu',
+  'endangered', 'en',
+  'critically endangered', 'cr',
+  'extinct in the wild', 'ew',
+]);
+
 export default async function DashboardPage() {
   const userId = await getAuthUserId();
 
-  // Without auth or DB, show welcome page
   if (!userId || !process.env.DATABASE_URL) {
-    return <HeroSection count={0} />;
+    return <OnboardingSection />;
   }
 
   const rows = await db
@@ -58,8 +68,19 @@ export default async function DashboardPage() {
   );
 
   if (obs.length === 0) {
-    return <HeroSection count={0} />;
+    return <OnboardingSection />;
   }
+
+  // Compute stats
+  const uniqueSpeciesSet = new Set(
+    obs.filter((o) => o.scientificName).map((o) => o.scientificName)
+  );
+  const conservationNotable = obs.filter((o) => {
+    const status = o.conservation?.iucn_status?.toLowerCase() ?? '';
+    return NOTABLE_STATUSES.has(status);
+  }).length;
+
+  const latestSpecies = obs[0]?.commonName ?? obs[0]?.scientificName ?? null;
 
   return (
     <>
@@ -67,13 +88,28 @@ export default async function DashboardPage() {
         <h1>
           <span className="accent">Your</span> Observations
         </h1>
-        <p>{obs.length} species identified</p>
       </div>
-      <ObservationList observations={obs} />
-      <div style={{ textAlign: 'center', padding: '1.5rem' }}>
-        <Link href="/identify" className="btn btn-primary" style={{ display: 'inline-flex', padding: '0.7rem 1.5rem' }}>
-          Identify Another
-        </Link>
+
+      <div className="dashboard-content">
+        <DashboardStats
+          totalObservations={obs.length}
+          uniqueSpecies={uniqueSpeciesSet.size}
+          conservationNotable={conservationNotable}
+        />
+
+        <ContributionBanner
+          totalObservations={obs.length}
+          latestSpecies={latestSpecies}
+        />
+
+        <ObservationList observations={obs} />
+
+        <div className="dashboard-cta">
+          <Link href="/identify" className="btn btn-primary hero-btn">
+            <CameraIcon />
+            Identify Another
+          </Link>
+        </div>
       </div>
     </>
   );

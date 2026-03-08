@@ -410,3 +410,52 @@ a { color: inherit; text-decoration: none; }
 .hero-feature-number { font-family: 'Playfair Display', serif; font-size: var(--text-3xl); color: var(--gold); line-height: 1; margin-bottom: 0.3rem; }
 .hero-feature-label { font-size: var(--text-sm); font-weight: 600; color: var(--cream); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
 .hero-feature-detail { font-size: var(--text-xs); color: var(--muted); font-weight: 300; line-height: 1.4; }
+
+/* ── Onboarding Section ── */
+.onboarding { width: 100%; max-width: var(--content-width); padding: 1.5rem 1.25rem 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 2rem; }
+.onboarding-header { text-align: center; }
+.onboarding-header h1 { font-family: 'Playfair Display', serif; font-size: var(--text-hero); color: var(--cream); margin-bottom: 0.3rem; letter-spacing: -0.02em; line-height: 1.1; }
+.onboarding-header h1 .accent { color: var(--gold); font-style: italic; }
+.onboarding-tagline { font-size: var(--text-base); color: var(--cream-50); font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; }
+
+.onboarding-section { width: 100%; }
+.onboarding-section h2 { font-family: 'Playfair Display', serif; font-size: var(--text-xl); color: var(--cream); margin-bottom: 0.75rem; }
+.onboarding-section p { font-size: var(--text-base); color: var(--cream-75); font-weight: 300; line-height: 1.7; }
+
+.onboarding-pipeline { display: flex; flex-direction: column; gap: 0.75rem; }
+.onboarding-step { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 1.25rem; background: var(--dark-surface); border-radius: var(--radius-sm); border: 1px solid var(--gold-border); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.onboarding-step-number { width: 32px; height: 32px; border-radius: 50%; background: var(--gold); color: #160F00; font-family: 'Playfair Display', serif; font-size: var(--text-lg); font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.onboarding-step-content { flex: 1; min-width: 0; }
+.onboarding-step-title { font-size: var(--text-base); font-weight: 600; color: var(--cream); margin-bottom: 0.2rem; }
+.onboarding-step-desc { font-size: var(--text-sm); color: var(--cream-50); font-weight: 300; line-height: 1.5; }
+
+.onboarding-goals { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.onboarding-goals li { position: relative; padding: 0.6rem 0.85rem 0.6rem 1.5rem; font-size: var(--text-base); color: var(--cream-75); font-weight: 300; line-height: 1.5; background: rgba(255,255,255,0.02); border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.04); }
+.onboarding-goals li::before { content: ''; position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+
+.onboarding-cta { text-align: center; width: 100%; max-width: 400px; }
+.onboarding-cta .hero-btn { width: 100%; padding: 1rem 1rem; font-size: var(--text-lg); border-radius: 50px; }
+
+/* ── Dashboard Content ── */
+.dashboard-content { width: 100%; max-width: var(--content-width); padding: 0 1.25rem 2rem; display: flex; flex-direction: column; gap: 1.25rem; }
+
+/* ── Dashboard Stats ── */
+.dashboard-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+.stat-card { text-align: center; padding: 1.25rem 0.75rem; background: var(--dark-surface); border-radius: var(--radius-sm); border: 1px solid var(--gold-border); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.stat-number { font-family: 'Playfair Display', serif; font-size: var(--text-3xl); color: var(--gold); line-height: 1; margin-bottom: 0.3rem; }
+.stat-label { font-size: var(--text-sm); font-weight: 600; color: var(--cream); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.stat-detail { font-size: var(--text-xs); color: var(--muted); font-weight: 300; line-height: 1.4; }
+
+/* ── Contribution Banner ── */
+.contribution-banner { padding: 1rem 1.25rem; background: var(--green-dim); border-left: 2px solid var(--green-bright); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.contribution-message { font-size: var(--text-base); color: var(--cream); font-weight: 300; line-height: 1.6; }
+.contribution-latest { font-size: var(--text-sm); color: var(--cream-50); margin-top: 0.5rem; }
+.contribution-species { color: var(--gold); font-weight: 500; font-style: italic; }
+
+/* ── Dashboard CTA ── */
+.dashboard-cta { text-align: center; padding: 0.5rem 0; }
+.dashboard-cta .hero-btn { display: inline-flex; padding: 0.85rem 2rem; font-size: var(--text-base); }
+
+@media (max-width: 480px) {
+  .dashboard-stats { grid-template-columns: 1fr; }
+}
