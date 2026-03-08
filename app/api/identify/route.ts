@@ -5,6 +5,9 @@ import { enrichFromGBIF } from '@/lib/gbif';
 import { enrichFromEncicloVida } from '@/lib/enciclovida';
 import { randomUUID } from 'crypto';
 
+// Extend function timeout (Hobby: max 60s, Pro: max 300s)
+export const maxDuration = 60;
+
 async function getOptionalUserId(): Promise<string | null> {
   try {
     const { auth } = await import('@clerk/nextjs/server');
