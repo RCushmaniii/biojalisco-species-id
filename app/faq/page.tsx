@@ -1,12 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useLanguage } from '@/hooks/use-language';
-import { NavBrand } from '@/components/nav-brand';
+import { PublicNav } from '@/components/public-nav';
 import { SiteFooter } from '@/components/site-footer';
-import { LanguageToggle } from '@/components/language-toggle';
-import { ThemeToggle } from '@/components/theme-toggle';
 
 interface FAQItem {
   en: { q: string; a: string };
@@ -122,18 +119,7 @@ export default function FAQPage() {
 
   return (
     <>
-      <div className="toolbar-toggles">
-        <ThemeToggle />
-        <LanguageToggle />
-      </div>
-      <nav className="nav-bar nav-bar-wide">
-        <NavBrand />
-        <div className="nav-links">
-          <Link href="/observations" className="nav-link">Observations</Link>
-          <Link href="/faq" className="nav-link active">FAQ</Link>
-          <Link href="/sign-in" className="nav-link">Sign In</Link>
-        </div>
-      </nav>
+      <PublicNav />
 
       <div className="faq-page">
         <div className="faq-header">

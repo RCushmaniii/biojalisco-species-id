@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { NavBrand } from '@/components/nav-brand';
+import { PublicNav } from '@/components/public-nav';
 import { SiteFooter } from '@/components/site-footer';
 
 export const metadata = {
@@ -10,12 +9,7 @@ export const metadata = {
 export default function PrivacyPage() {
   return (
     <>
-      <nav className="nav-bar nav-bar-wide">
-        <NavBrand />
-        <div className="nav-links">
-          <Link href="/faq" className="nav-link">FAQ</Link>
-        </div>
-      </nav>
+      <PublicNav />
 
       <div className="legal-page">
         <div className="legal-content">

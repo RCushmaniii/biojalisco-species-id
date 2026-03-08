@@ -3,10 +3,8 @@ import { observations } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { NavBrand } from '@/components/nav-brand';
+import { PublicNav } from '@/components/public-nav';
 import { SiteFooter } from '@/components/site-footer';
-import { LanguageToggle } from '@/components/language-toggle';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { ArrowLeftIcon } from '@/components/icons';
 import { ObservationDetail } from '@/components/observation-detail';
 import { getImageUrl } from '@/lib/blob';
@@ -50,18 +48,7 @@ export default async function PublicObservationPage({
 
   return (
     <>
-      <div className="toolbar-toggles">
-        <ThemeToggle />
-        <LanguageToggle />
-      </div>
-      <nav className="nav-bar nav-bar-wide">
-        <NavBrand />
-        <div className="nav-links">
-          <Link href="/observations" className="nav-link">Observations</Link>
-          <Link href="/faq" className="nav-link">FAQ</Link>
-          <Link href="/sign-in" className="nav-link">Sign In</Link>
-        </div>
-      </nav>
+      <PublicNav />
 
       <div style={{ width: '100%', maxWidth: '520px', padding: '0 1.25rem' }}>
         <Link href="/observations" className="back-link">

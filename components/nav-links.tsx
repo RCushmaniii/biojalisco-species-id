@@ -37,3 +37,30 @@ export function NavLinks() {
     </>
   );
 }
+
+const PROTECTED_LINKS = [
+  { href: '/dashboard', en: 'Dashboard', es: 'Panel' },
+  { href: '/identify', en: 'Identify', es: 'Identificar' },
+  { href: '/observations', en: 'Observations', es: 'Observaciones' },
+  { href: '/faq', en: 'FAQ', es: 'FAQ' },
+] as const;
+
+export function NavLinksDrawer({ onClose }: { onClose: () => void }) {
+  const pathname = usePathname();
+  const { t } = useLanguage();
+
+  return (
+    <div className="nav-drawer-links">
+      {PROTECTED_LINKS.map(link => (
+        <Link
+          key={link.href}
+          href={link.href}
+          className={`nav-drawer-link ${pathname === link.href ? 'active' : ''}`}
+          onClick={onClose}
+        >
+          {t(link.en, link.es)}
+        </Link>
+      ))}
+    </div>
+  );
+}

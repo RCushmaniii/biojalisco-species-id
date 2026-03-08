@@ -3,10 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/hooks/use-language';
-import { NavBrand } from '@/components/nav-brand';
+import { PublicNav } from '@/components/public-nav';
 import { SiteFooter } from '@/components/site-footer';
-import { LanguageToggle } from '@/components/language-toggle';
-import { ThemeToggle } from '@/components/theme-toggle';
 import {
   protectedSpeciesJalisco,
   GROUP_LABELS,
@@ -115,17 +113,7 @@ export default function SpeciesGuidePage() {
 
   return (
     <>
-      <div className="toolbar-toggles">
-        <ThemeToggle />
-        <LanguageToggle />
-      </div>
-      <nav className="nav-bar nav-bar-wide">
-        <NavBrand />
-        <div className="nav-links">
-          <Link href="/faq" className="nav-link">FAQ</Link>
-          <Link href="/sign-in" className="nav-link">{t('Sign In', 'Iniciar Sesion')}</Link>
-        </div>
-      </nav>
+      <PublicNav />
 
       <div className="species-guide">
         <div className="species-guide-header">

@@ -1,11 +1,8 @@
 import { db } from '@/lib/db';
 import { observations } from '@/lib/db/schema';
 import { desc } from 'drizzle-orm';
-import Link from 'next/link';
-import { NavBrand } from '@/components/nav-brand';
+import { PublicNav } from '@/components/public-nav';
 import { SiteFooter } from '@/components/site-footer';
-import { LanguageToggle } from '@/components/language-toggle';
-import { ThemeToggle } from '@/components/theme-toggle';
 import { GalleryGrid } from '@/components/gallery-lightbox';
 import type { GalleryItem } from '@/components/gallery-lightbox';
 import { getImageUrl } from '@/lib/blob';
@@ -35,7 +32,6 @@ export default async function ObservationsPage() {
         geography: r.geography as Observation['geography'],
         conservation: r.conservation as Observation['conservation'],
         similarSpecies: r.similarSpecies as Observation['similarSpecies'],
-        // Convert Date objects to ISO strings for client component serialization
         identifiedAt: r.identifiedAt ? new Date(r.identifiedAt) : null,
         createdAt: new Date(r.createdAt),
       }));
@@ -46,18 +42,7 @@ export default async function ObservationsPage() {
 
   return (
     <>
-      <div className="toolbar-toggles">
-        <ThemeToggle />
-        <LanguageToggle />
-      </div>
-      <nav className="nav-bar nav-bar-wide">
-        <NavBrand />
-        <div className="nav-links">
-          <Link href="/observations" className="nav-link active">Observations</Link>
-          <Link href="/faq" className="nav-link">FAQ</Link>
-          <Link href="/sign-in" className="nav-link">Sign In</Link>
-        </div>
-      </nav>
+      <PublicNav />
 
       <div className="observations-page">
         <div className="header">
