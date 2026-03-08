@@ -23,12 +23,18 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://biojalisco-species-id.vercel.app'),
   alternates: {
     canonical: '/',
+    languages: {
+      'en': '/',
+      'es': '/',
+      'x-default': '/',
+    },
   },
   openGraph: {
     title: 'BioJalisco Species Identifier',
     description: 'AI-powered species identification verified against GBIF, iNaturalist, and CONABIO. Built for conservation biologists in Jalisco, Mexico.',
     siteName: 'BioJalisco',
     locale: 'en_US',
+    alternateLocale: 'es_MX',
     type: 'website',
     url: '/',
   },

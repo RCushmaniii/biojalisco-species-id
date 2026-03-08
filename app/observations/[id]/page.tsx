@@ -50,7 +50,10 @@ export async function generateMetadata({
     return {
       title,
       description,
-      alternates: { canonical: `/observations/${id}` },
+      alternates: {
+        canonical: `/observations/${id}`,
+        languages: { 'en': `/observations/${id}`, 'es': `/observations/${id}`, 'x-default': `/observations/${id}` },
+      },
       openGraph: {
         title: `${title} — BioJalisco`,
         description,

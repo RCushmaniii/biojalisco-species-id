@@ -15,7 +15,7 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Community Observations',
   description: 'Browse species observations submitted by conservation biologists and citizen scientists across Jalisco, Mexico. Verified with AI and scientific databases.',
-  alternates: { canonical: '/observations' },
+  alternates: { canonical: '/observations', languages: { 'en': '/observations', 'es': '/observations', 'x-default': '/observations' } },
   openGraph: {
     title: 'Community Observations — BioJalisco',
     description: 'Explore biodiversity observations from field researchers in Jalisco, Mexico. Each identification verified against GBIF, iNaturalist, and CONABIO.',
