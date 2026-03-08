@@ -5,7 +5,6 @@ import { ObservationList } from '@/components/observation-list';
 import { OnboardingSection } from '@/components/onboarding-section';
 import { DashboardStats } from '@/components/dashboard-stats';
 import { ContributionBanner } from '@/components/contribution-banner';
-import { getImageUrl } from '@/lib/blob';
 import Link from 'next/link';
 import { CameraIcon } from '@/components/icons';
 import type { Observation } from '@/lib/types';
@@ -43,30 +42,16 @@ export default async function DashboardPage() {
     .orderBy(desc(observations.createdAt))
     .limit(50);
 
-  // Resolve signed URLs for private blob images
-  const obs: Observation[] = await Promise.all(
-    rows.map(async (r) => {
-      let resolvedImageUrl = r.imageUrl;
-      try {
-        if (r.imageUrl.includes('vercel-storage.com')) {
-          resolvedImageUrl = await getImageUrl(r.imageUrl);
-        }
-      } catch {
-        // Fall back to stored URL
-      }
-      return {
-        ...r,
-        imageUrl: resolvedImageUrl,
-        taxonomy: r.taxonomy as Observation['taxonomy'],
-        ecology: r.ecology as Observation['ecology'],
-        geography: r.geography as Observation['geography'],
-        conservation: r.conservation as Observation['conservation'],
-        similarSpecies: r.similarSpecies as Observation['similarSpecies'],
-        identifiedAt: r.identifiedAt,
-        createdAt: r.createdAt,
-      };
-    })
-  );
+  const obs: Observation[] = rows.map((r) => ({
+    ...r,
+    taxonomy: r.taxonomy as Observation['taxonomy'],
+    ecology: r.ecology as Observation['ecology'],
+    geography: r.geography as Observation['geography'],
+    conservation: r.conservation as Observation['conservation'],
+    similarSpecies: r.similarSpecies as Observation['similarSpecies'],
+    identifiedAt: r.identifiedAt,
+    createdAt: r.createdAt,
+  }));
 
   // Compute stats
   const uniqueSpeciesSet = new Set(

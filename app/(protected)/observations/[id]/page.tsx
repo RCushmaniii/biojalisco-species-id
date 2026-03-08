@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeftIcon } from '@/components/icons';
 import { ObservationDetail } from '@/components/observation-detail';
-import { getImageUrl } from '@/lib/blob';
 import type { Observation } from '@/lib/types';
 
 async function getAuthUserId(): Promise<string | null> {
@@ -38,19 +37,8 @@ export default async function ObservationPage({
   }
 
   const row = rows[0];
-  // Resolve signed URL for private blob images
-  let resolvedImageUrl = row.imageUrl;
-  try {
-    if (row.imageUrl.includes('vercel-storage.com')) {
-      resolvedImageUrl = await getImageUrl(row.imageUrl);
-    }
-  } catch {
-    // Fall back to stored URL if signing fails
-  }
-
   const observation: Observation = {
     ...row,
-    imageUrl: resolvedImageUrl,
     taxonomy: row.taxonomy as Observation['taxonomy'],
     ecology: row.ecology as Observation['ecology'],
     geography: row.geography as Observation['geography'],
