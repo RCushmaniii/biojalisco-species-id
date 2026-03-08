@@ -85,6 +85,23 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 1.5rem;
 }
 
+/* Clerk light card overrides */
+.sign-in-page .cl-headerTitle,
+.sign-in-page .cl-headerSubtitle,
+.sign-in-page .cl-formFieldLabel,
+.sign-in-page .cl-dividerText {
+  color: #1a1a1a !important;
+}
+.sign-in-page .cl-headerSubtitle {
+  color: #666666 !important;
+}
+.sign-in-page .cl-footer,
+.sign-in-page .cl-footerAction,
+.sign-in-page .cl-card,
+.sign-in-page .cl-cardBox {
+  background-color: #ffffff !important;
+}
+
 /* ── Shared Animations ── */
 @keyframes rise { to { opacity: 1; transform: translateY(0); } }
 @keyframes spin { to { transform: rotate(360deg); } }

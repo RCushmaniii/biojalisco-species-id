@@ -35,11 +35,7 @@ export default function SignInPage() {
               color: '#1a1a1a',
             },
             headerTitle: {
-              color: '#1a1a1a',
               fontFamily: "'Playfair Display', serif",
-            },
-            headerSubtitle: {
-              color: '#666666',
             },
             socialButtonsBlockButton: {
               backgroundColor: '#f5f5f5',
