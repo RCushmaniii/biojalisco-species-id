@@ -1,111 +1,340 @@
-# BioJalisco Species Identifier — Features & Differentiation
+Below is a **fully revised, copy-paste ready version** that incorporates all the improvements:
 
-## What Makes This Different
+- clearer **value proposition**
+- more **research-grade tone**
+- improved **pipeline explanation**
+- **accuracy strategy**
+- **limitations**
+- **future roadmap**
+- tightened wording
+- improved comparison table
+- clearer architecture
 
-Most species identification apps rely on a single AI model or a single database. BioJalisco chains **four independent data sources** into one pipeline, producing results that are both faster than community-based platforms and more accurate than standalone AI.
-
-No other tool we've found combines all four of these in a single identification flow.
-
-## The Four-API Pipeline
-
-### 1. iNaturalist — Regional Species Intelligence
-Before the AI even sees the photo, we query iNaturalist's public API for vertebrate species documented within 50km of the user's GPS coordinates. This gives GPT-4o a "regional field guide" — dramatically reducing misidentifications where visually similar species exist on different continents.
-
-**Why it matters:** A gray snake with zigzag markings photographed in Jalisco is a Mexican Brown Snake, not a European Adder. Without geographic context, AI vision models default to the most globally common lookalike.
-
-### 2. GPT-4o Vision — Visual Identification + Rich Narratives
-OpenAI's most capable vision model identifies the species from the photo, informed by the regional species context. Returns structured data across 8 categories plus bilingual descriptions, ecology, and fun facts.
-
-**Why it matters:** No other API produces this depth of narrative content per identification — habitat, diet, behavior, similar species, fun facts — all in both English and Spanish, in seconds.
-
-### 3. GBIF — Global Verification Layer
-The Global Biodiversity Information Facility validates the identification with authoritative data from the Catalogue of Life, IUCN Red List, and ITIS. Verified taxonomy, IUCN conservation status, and distribution localities replace AI-generated guesses.
-
-**Why it matters:** AI can hallucinate taxonomy and conservation status. GBIF data comes from the actual scientific record. The app shows "Verified" badges so researchers know which data is authoritative.
-
-### 4. EncicloVida (CONABIO) — Mexico's National Species Encyclopedia
-CONABIO's API provides Mexico-specific data that no global database offers:
-- **Endemic/Native/Exotic classification** — Is this species endemic to Mexico?
-- **NOM-059-SEMARNAT status** — Mexico's own endangered species law, separate from IUCN
-- **Spanish common names** from CONABIO's authoritative catalog
-- **Common names in indigenous languages** (Nahuatl, Maya, etc. when available)
-- **Wikipedia summaries in Spanish** — ready-made descriptions
-- **CONABIO-verified photos** from NaturaLista observations
-- **SNIB specimen records** and geodata links
-
-**Why it matters:** For Mexican conservation research, CONABIO's data is often more relevant than global databases. A species can be "Least Concern" globally but protected under NOM-059 in Mexico.
-
-## Feature Comparison
-
-| Capability | BioJalisco | iNaturalist | EncicloVida | Google Lens |
-|---|---|---|---|---|
-| Instant AI identification | 10-20s | Hours-days (community) | No ID feature | ~2s |
-| Regional species awareness | Yes (iNat data) | Built-in | No | No |
-| Verified taxonomy (GBIF) | Yes | No | Partial | No |
-| IUCN conservation status | Yes (verified) | Community-added | Yes | No |
-| NOM-059 Mexican protection | Yes (CONABIO) | No | Yes | No |
-| Endemic/native/exotic status | Yes (CONABIO) | No | Yes | No |
-| Bilingual EN/ES | Yes (native) | Partial | Spanish only | Auto-translate |
-| Ecology + behavior data | Yes (AI-generated) | Community notes | Reference only | No |
-| Fun facts + narratives | Yes | No | No | No |
-| Persistent observations | Yes (with DB) | Yes | No | No |
-| GPS geotagging | Yes | Yes | No | No |
-| Offline support | No | Partial (Seek) | App only | No |
-| Open data contribution | Planned | Yes | Yes | No |
-
-## Key Features
-
-### Bilingual by Default
-Every piece of text — UI, descriptions, species names, fun facts — works in both English and Spanish. A single toggle switches instantly. Built for Mexican research teams who work across both languages.
-
-### Graceful Degradation
-The app works with just an OpenAI API key. Each layer is optional:
-- **Minimum:** OPENAI_API_KEY → AI identification works
-- **+ GPS permission:** iNaturalist regional context activates → better accuracy
-- **+ Internet:** GBIF and EncicloVida enrichment → verified data with badges
-- **+ Clerk:** Authentication → invite-only access
-- **+ Neon + Blob:** Persistence → observations saved with photos
-
-If any external API is slow or down, the pipeline continues without it. No single point of failure.
-
-### Verified Data Badges
-The UI clearly distinguishes:
-- **"Taxonomy verified by GBIF"** — green banner on taxonomy tab
-- **"IUCN Verified"** — badge on conservation status
-- **"CONABIO"** — badge on endemic/native classification
-- **"NOM-059-SEMARNAT"** — Mexico's endangered species law status
-- Source links to GBIF and EncicloVida for deeper research
-
-### Design for Field Use
-- Dark theme reduces eye strain in outdoor conditions
-- Large touch targets for mobile use with gloves
-- Camera capture, file upload, and drag-and-drop
-- Sticky tab navigation during scroll
-- Grid-stacked panels eliminate layout jumping
-
-## Who It's For
-
-**Primary:** Dr. Veronica Rosas and her conservation biology team at the University of Guadalajara. 3-5 researchers conducting biodiversity surveys across Jalisco's diverse ecosystems.
-
-**Secondary:** Any field biologist, naturalist, or conservation researcher working in Mexico who needs rapid, verified species identification with Mexico-specific regulatory data.
-
-## Technology
-
-| Component | Technology | Purpose |
-|---|---|---|
-| Framework | Next.js 15 (App Router) | Server/client hybrid |
-| Language | TypeScript | Type safety across the stack |
-| AI | GPT-4o Vision | Visual identification + narratives |
-| Regional data | iNaturalist API | Species observed nearby |
-| Global verification | GBIF API | Taxonomy, IUCN, distributions |
-| Mexico data | EncicloVida API | Endemic status, NOM-059, CONABIO |
-| Auth | Clerk | Invite-only access |
-| Database | Neon Postgres + Drizzle | Persistent observations |
-| Storage | Vercel Blob + sharp | Compressed image storage |
-| Hosting | Vercel | Edge deployment |
-| Design | CSS variables | Glass-morphism, gold accents |
-| Fonts | DM Sans + Playfair Display | CushLabs design language |
+I kept your original structure but made it **more credible, clearer, and stronger for academic/research audiences**.
 
 ---
 
-*Built by CushLabs AI Services — info@cushlabs.ai*
+# BioJalisco Species Identifier — Features & Differentiation
+
+## Overview
+
+**BioJalisco** is a field-ready species identification tool that combines AI vision with regional biodiversity databases to deliver **fast, geographically accurate, and scientifically verified species identifications for Mexico.**
+
+Unlike most species identification tools that rely on either AI vision or community verification, BioJalisco integrates **four independent data systems** into a single automated identification pipeline.
+
+This approach combines the **speed of AI** with the **authority of scientific biodiversity databases**, producing results that are faster than community-based platforms and more reliable than standalone AI models.
+
+To our knowledge, no current species identification platform integrates all four of these data sources within a single identification workflow.
+
+---
+
+# Who It's For
+
+**Primary Users**
+
+Dr. Veronica Rosas and her conservation biology research team at the **University of Guadalajara**, conducting biodiversity surveys across Jalisco's ecosystems.
+
+Typical use cases include:
+
+- Rapid field identification during biodiversity surveys
+- Verification of visually similar species
+- Access to conservation status during fieldwork
+- Recording geotagged observations for later analysis
+
+**Secondary Users**
+
+- Field biologists
+- Naturalists
+- Conservation researchers
+- Environmental consultants
+- Graduate students conducting ecological surveys in Mexico
+
+The system is designed specifically for researchers who need **fast identification combined with authoritative biodiversity data**.
+
+---
+
+# The Four-API Identification Pipeline
+
+BioJalisco chains four independent data sources into a single identification workflow.
+
+```
+User Photo
+   ↓
+iNaturalist API
+(regional species filtering)
+   ↓
+GPT-4o Vision
+(visual classification + description generation)
+   ↓
+GBIF API
+(taxonomy + conservation verification)
+   ↓
+EncicloVida / CONABIO
+(Mexico-specific biodiversity data)
+   ↓
+Final enriched species profile
+```
+
+Each stage improves reliability by adding **context, verification, or regional data**.
+
+---
+
+# Accuracy Strategy
+
+BioJalisco improves identification reliability using three complementary mechanisms:
+
+### 1. Regional Species Filtering
+
+The system first queries species recorded near the observation location.
+
+This reduces the candidate species pool before visual classification.
+
+### 2. AI Visual Classification
+
+GPT-4o analyzes the image and identifies likely species from visual features.
+
+### 3. Authoritative Data Replacement
+
+Taxonomy and conservation metadata are replaced with verified records from biodiversity databases rather than relying on AI-generated information.
+
+This layered approach reduces common failure modes found in standalone AI vision tools.
+
+---
+
+# The Four Data Sources
+
+## 1. iNaturalist — Regional Species Intelligence
+
+Before the AI model analyzes the image, BioJalisco queries the **iNaturalist public API** for vertebrate species documented within **50 km of the user's GPS coordinates**.
+
+The resulting species list acts as a **regional field guide** that informs the AI classification step.
+
+### Why this matters
+
+Without geographic context, visual AI models often confuse species that look similar but occur on different continents.
+
+Example:
+
+A gray snake with zigzag markings photographed in Jalisco could be incorrectly classified as a European Adder by a global AI model.
+
+Regional filtering ensures the AI prioritizes **species documented in the local ecosystem**, dramatically reducing misidentifications.
+
+---
+
+## 2. GPT-4o Vision — Visual Identification and Descriptions
+
+OpenAI's GPT-4o vision model performs the **initial visual classification** of the species.
+
+The model receives:
+
+- The user’s image
+- The list of locally documented species from iNaturalist
+- Structured prompting instructions
+
+It returns structured data including:
+
+- Scientific name
+- Common names
+- Description
+- Habitat
+- Diet
+- Behavior
+- Similar species
+- Interesting ecological facts
+
+All narrative content is generated in **both English and Spanish**.
+
+### Why it matters
+
+The AI model performs the **first-pass classification**, enabling species identification within seconds rather than waiting for community verification.
+
+However, taxonomy and conservation data are **not trusted from AI alone** and are verified in later pipeline stages.
+
+---
+
+## 3. GBIF — Global Verification Layer
+
+The **Global Biodiversity Information Facility (GBIF)** provides authoritative biodiversity records aggregated from sources including:
+
+- Catalogue of Life
+- IUCN Red List
+- ITIS
+- Museum collections
+- National biodiversity databases
+
+BioJalisco queries GBIF to retrieve:
+
+- Verified taxonomy
+- IUCN conservation status
+- Known distribution records
+- Occurrence data
+
+### Why this matters
+
+AI models can generate incorrect taxonomy or conservation status.
+
+GBIF replaces these values with **authoritative scientific records**, ensuring the displayed information reflects the global biodiversity database.
+
+The app visually marks this information with **verification badges** so users know which fields come from authoritative sources.
+
+---
+
+## 4. EncicloVida (CONABIO) — Mexico's National Biodiversity Database
+
+EncicloVida is the public biodiversity platform maintained by **CONABIO (Comisión Nacional para el Conocimiento y Uso de la Biodiversidad)**.
+
+It provides Mexico-specific data unavailable in global biodiversity systems.
+
+BioJalisco retrieves:
+
+- **Endemic / native / exotic classification**
+- **NOM-059-SEMARNAT conservation status**
+- **Authoritative Spanish common names**
+- **Indigenous-language names when available**
+- **Spanish Wikipedia summaries**
+- **CONABIO-verified photos from NaturaLista**
+- **SNIB specimen records and geodata**
+
+### Why this matters
+
+For biodiversity research in Mexico, CONABIO data can be more relevant than global databases.
+
+A species may be listed as **Least Concern globally**, yet still be protected under **Mexico’s NOM-059 conservation law**.
+
+Integrating this dataset ensures BioJalisco provides **policy-relevant conservation information for Mexico**.
+
+---
+
+# Feature Comparison
+
+| Feature                                  | BioJalisco     | iNaturalist                         | EncicloVida    | Google Lens    |
+| ---------------------------------------- | -------------- | ----------------------------------- | -------------- | -------------- |
+| Instant AI identification                | 10–20s         | Community verification (hours–days) | No ID feature  | ~2s            |
+| Regional species filtering before AI     | Yes            | Built-in observation context        | No             | No             |
+| Verified taxonomy                        | Yes (GBIF)     | Community supplied                  | Partial        | No             |
+| IUCN conservation status                 | Yes (verified) | Community supplied                  | Yes            | No             |
+| NOM-059 Mexican protection status        | Yes            | No                                  | Yes            | No             |
+| Endemic / native / exotic classification | Yes            | No                                  | Yes            | No             |
+| Bilingual English / Spanish              | Yes            | Partial                             | Spanish only   | Auto-translate |
+| Ecology and behavior descriptions        | Yes            | Community notes                     | Reference text | No             |
+| Narrative explanations                   | Yes            | No                                  | No             | No             |
+| Persistent observations                  | Yes            | Yes                                 | No             | No             |
+| GPS geotagging                           | Yes            | Yes                                 | No             | No             |
+| Offline support                          | No             | Partial (Seek app)                  | App only       | No             |
+| Open biodiversity contributions          | Planned        | Yes                                 | Yes            | No             |
+
+---
+
+# Key Features
+
+## Bilingual by Default
+
+Every piece of text in the system is available in **both English and Spanish**, including:
+
+- User interface
+- Species descriptions
+- Ecologic information
+- Narrative explanations
+- Fun facts
+
+A single toggle switches languages instantly.
+
+This design supports research teams working across **both English and Spanish scientific workflows**.
+
+---
+
+## Verified Data Badges
+
+The interface clearly distinguishes between **AI-generated content** and **verified scientific data**.
+
+Examples include:
+
+- **"Taxonomy Verified by GBIF"**
+- **"IUCN Status Verified"**
+- **"CONABIO Source"**
+- **"NOM-059-SEMARNAT Protection Status"**
+
+Each badge links directly to the source database for further research.
+
+---
+
+## Graceful Degradation
+
+Each external data source is optional.
+
+If a service is unavailable, the identification process continues using the remaining data sources.
+
+Minimum configuration:
+
+**OpenAI API key**
+
+Additional layers activate automatically when available:
+
+| Dependency            | Function                           |
+| --------------------- | ---------------------------------- |
+| GPS permission        | Enables regional species filtering |
+| Internet connectivity | Allows GBIF and CONABIO enrichment |
+| Clerk authentication  | Invite-only user access            |
+| Neon database         | Persistent observation storage     |
+| Blob storage          | Image storage                      |
+
+This architecture prevents a single API failure from blocking the identification workflow.
+
+---
+
+## Designed for Field Use
+
+The interface prioritizes usability during field research.
+
+Design features include:
+
+- Dark mode to reduce glare outdoors
+- Large touch targets for mobile devices
+- Camera capture, file upload, and drag-and-drop
+- Sticky tab navigation during scrolling
+- Grid-based layout to prevent layout shifting
+
+---
+
+# Technology Stack
+
+| Component                  | Technology                  | Role                                           |
+| -------------------------- | --------------------------- | ---------------------------------------------- |
+| Framework                  | Next.js 15 (App Router)     | Server/client hybrid architecture              |
+| Language                   | TypeScript                  | Type-safe application code                     |
+| AI Vision                  | GPT-4o                      | Visual classification and narrative generation |
+| Regional biodiversity data | iNaturalist API             | Species documented near observation location   |
+| Taxonomy verification      | GBIF API                    | Authoritative biodiversity records             |
+| Mexico biodiversity data   | EncicloVida API             | National conservation and taxonomy context     |
+| Authentication             | Clerk                       | Invite-only access control                     |
+| Database                   | Neon Postgres + Drizzle ORM | Persistent observations                        |
+| Image storage              | Vercel Blob + sharp         | Compressed image storage                       |
+| Hosting                    | Vercel                      | Edge deployment                                |
+| Design                     | CSS variables               | Glass-morphism interface                       |
+| Typography                 | DM Sans + Playfair Display  | CushLabs design system                         |
+
+---
+
+# Current Limitations
+
+- Identification accuracy depends on photo quality and subject visibility.
+- Species outside the regional iNaturalist dataset may be underrepresented.
+- AI classification remains probabilistic and should be confirmed during formal research workflows.
+- Offline identification is not currently supported.
+
+BioJalisco is designed to **assist field identification**, not replace expert taxonomic verification.
+
+---
+
+# Planned Enhancements
+
+- Open biodiversity data export compatible with GBIF and iNaturalist
+- Offline identification mode for remote fieldwork
+- Confidence scoring across pipeline stages
+- Expanded taxonomic coverage beyond vertebrates
+- Optional integration with institutional biodiversity databases
+
+---
+
+**Built by CushLabs AI Services**
+[info@cushlabs.ai](mailto:info@cushlabs.ai)
