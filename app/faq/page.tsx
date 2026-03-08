@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/hooks/use-language';
+import { NavBrand } from '@/components/nav-brand';
 import { SiteFooter } from '@/components/site-footer';
 import { LanguageToggle } from '@/components/language-toggle';
 
@@ -122,9 +123,7 @@ export default function FAQPage() {
     <>
       <LanguageToggle />
       <nav className="nav-bar nav-bar-wide">
-        <Link href="/" className="nav-brand">
-          <span className="accent">Bio</span>Jalisco
-        </Link>
+        <NavBrand />
         <div className="nav-links">
           <Link href="/" className="nav-link">Home</Link>
           <Link href="/faq" className="nav-link active">FAQ</Link>

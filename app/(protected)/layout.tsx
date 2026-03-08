@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { NavBrand } from '@/components/nav-brand';
 import { NavLinks } from '@/components/nav-links';
 import { LanguageToggle } from '@/components/language-toggle';
 import { ClerkUserButton } from '@/components/clerk-user-button';
@@ -15,9 +15,7 @@ export default function ProtectedLayout({
     <>
       <LanguageToggle />
       <nav className="nav-bar nav-bar-wide">
-        <Link href="/dashboard" className="nav-brand">
-          <span className="accent">Bio</span>Jalisco
-        </Link>
+        <NavBrand href="/dashboard" />
         <div className="nav-links">
           <NavLinks />
           <ClerkUserButton />
