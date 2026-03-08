@@ -1,19 +1,3 @@
-Below is a **fully revised, copy-paste ready version** that incorporates all the improvements:
-
-- clearer **value proposition**
-- more **research-grade tone**
-- improved **pipeline explanation**
-- **accuracy strategy**
-- **limitations**
-- **future roadmap**
-- tightened wording
-- improved comparison table
-- clearer architecture
-
-I kept your original structure but made it **more credible, clearer, and stronger for academic/research audiences**.
-
----
-
 # BioJalisco Species Identifier — Features & Differentiation
 
 ## Overview
