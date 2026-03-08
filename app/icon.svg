@@ -1,108 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <defs>
-    <radialGradient id="bg" cx="50%" cy="40%" r="65%">
-      <stop offset="0%" stop-color="#2D4A27"/>
-      <stop offset="100%" stop-color="#1A3318"/>
-    </radialGradient>
-    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#F4D03F"/>
-      <stop offset="100%" stop-color="#C8A82A"/>
-    </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
+  <!-- Transparent background -->
 
-  <!-- Dark green rounded background -->
-  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <!-- === MAIN PAW PAD — large, fills most of the canvas === -->
+  <path d="M256 460
+           C200 460 145 425 118 375
+           C90 325 98 270 125 230
+           C152 190 200 178 256 178
+           C312 178 360 190 387 230
+           C414 270 422 325 394 375
+           C367 425 312 460 256 460Z"
+        fill="#e7b633"/>
 
-  <!-- Subtle radial glow behind paw -->
-  <circle cx="256" cy="270" r="180" fill="#F4D03F" opacity="0.04"/>
+  <!-- === TOE PADS (4 large oval toes with pointed claws) === -->
 
-  <!-- === PAW PAD (main pad) === -->
-  <path d="M256 350
-           C220 350 185 330 170 300
-           C155 270 160 240 175 220
-           C190 200 220 195 256 195
-           C292 195 322 200 337 220
-           C352 240 357 270 342 300
-           C327 330 292 350 256 350Z"
-        fill="url(#gold)" filter="url(#glow)"/>
-
-  <!-- === TOE PADS (4 oval toes with claws) === -->
   <!-- Left outer toe -->
-  <ellipse cx="152" cy="175" rx="30" ry="38" transform="rotate(-20 152 175)" fill="url(#gold)"/>
-  <!-- Left claw -->
-  <path d="M130 138 L126 118 L140 132" fill="url(#gold)"/>
+  <ellipse cx="108" cy="155" rx="42" ry="56" transform="rotate(-22 108 155)" fill="#e7b633"/>
+  <!-- Left outer claw -->
+  <path d="M78 98 L70 62 L94 90" fill="#e7b633"/>
 
   <!-- Left inner toe -->
-  <ellipse cx="205" cy="140" rx="28" ry="36" transform="rotate(-8 205 140)" fill="url(#gold)"/>
+  <ellipse cx="195" cy="105" rx="38" ry="52" transform="rotate(-8 195 105)" fill="#e7b633"/>
   <!-- Left inner claw -->
-  <path d="M196 104 L194 84 L208 100" fill="url(#gold)"/>
+  <path d="M182 54 L178 16 L200 48" fill="#e7b633"/>
 
   <!-- Right inner toe -->
-  <ellipse cx="307" cy="140" rx="28" ry="36" transform="rotate(8 307 140)" fill="url(#gold)"/>
+  <ellipse cx="317" cy="105" rx="38" ry="52" transform="rotate(8 317 105)" fill="#e7b633"/>
   <!-- Right inner claw -->
-  <path d="M316 104 L318 84 L304 100" fill="url(#gold)"/>
+  <path d="M330 54 L334 16 L312 48" fill="#e7b633"/>
 
   <!-- Right outer toe -->
-  <ellipse cx="360" cy="175" rx="30" ry="38" transform="rotate(20 360 175)" fill="url(#gold)"/>
-  <!-- Right claw -->
-  <path d="M382 138 L386 118 L372 132" fill="url(#gold)"/>
-
-  <!-- === WILDLIFE SILHOUETTES inside main pad === -->
-
-  <!-- Bird silhouette (left side, small) -->
-  <g transform="translate(210, 255) scale(0.7)" fill="#1A3318" opacity="0.7">
-    <!-- Bird body -->
-    <ellipse cx="0" cy="0" rx="16" ry="10"/>
-    <!-- Wing up -->
-    <path d="M-4,-8 L-18,-22 L-6,-12 L-14,-28 L-2,-14 L2,-8Z"/>
-    <!-- Tail -->
-    <path d="M14,-2 L26,-8 L26,2Z"/>
-    <!-- Head -->
-    <circle cx="-14" cy="-2" r="6"/>
-    <!-- Beak -->
-    <path d="M-20,-2 L-26,-1 L-20,0Z"/>
-  </g>
-
-  <!-- Snake silhouette (right side, small) -->
-  <g transform="translate(300, 258)" fill="#1A3318" opacity="0.7">
-    <path d="M-8,-16 C-2,-18 4,-14 6,-8 C8,-2 4,4 -2,8 C-8,12 -4,18 2,18 C8,18 14,14 16,8 C18,2 14,-4 10,-6"
-          stroke="#1A3318" stroke-width="5" fill="none" stroke-linecap="round"/>
-    <!-- Snake head -->
-    <ellipse cx="-10" cy="-16" rx="5" ry="4" transform="rotate(-20 -10 -16)"/>
-  </g>
-
-  <!-- Puma/cat face silhouette (center top of pad, small) -->
-  <g transform="translate(256, 230)" fill="#1A3318" opacity="0.6">
-    <!-- Head -->
-    <circle cx="0" cy="0" r="14"/>
-    <!-- Left ear -->
-    <path d="M-12,-10 L-18,-24 L-6,-14Z"/>
-    <!-- Right ear -->
-    <path d="M12,-10 L18,-24 L6,-14Z"/>
-    <!-- Eyes (negative space hints) -->
-    <ellipse cx="-5" cy="-2" rx="2.5" ry="1.5" fill="#C8A82A" opacity="0.5"/>
-    <ellipse cx="5" cy="-2" rx="2.5" ry="1.5" fill="#C8A82A" opacity="0.5"/>
-  </g>
-
-  <!-- === Small silhouettes along bottom of pad === -->
-  <!-- Tiny frog -->
-  <g transform="translate(230, 320)" fill="#1A3318" opacity="0.5">
-    <ellipse cx="0" cy="0" rx="7" ry="5"/>
-    <circle cx="-5" cy="-4" r="2.5"/>
-    <circle cx="5" cy="-4" r="2.5"/>
-  </g>
-
-  <!-- Tiny lizard -->
-  <g transform="translate(280, 322)" fill="#1A3318" opacity="0.5">
-    <ellipse cx="0" cy="0" rx="9" ry="4"/>
-    <path d="M9,0 L18,2 L22,0" stroke="#1A3318" stroke-width="2" fill="none"/>
-    <circle cx="-8" cy="-1" r="3"/>
-  </g>
+  <ellipse cx="404" cy="155" rx="42" ry="56" transform="rotate(22 404 155)" fill="#e7b633"/>
+  <!-- Right outer claw -->
+  <path d="M434 98 L442 62 L418 90" fill="#e7b633"/>
 </svg>
