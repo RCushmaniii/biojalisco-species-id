@@ -1,38 +1,108 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
   <defs>
-    <radialGradient id="iris" cx="50%" cy="45%" r="50%">
-      <stop offset="0%" stop-color="#F4D03F"/>
-      <stop offset="60%" stop-color="#e6c435"/>
-      <stop offset="100%" stop-color="#b89a20"/>
-    </radialGradient>
     <radialGradient id="bg" cx="50%" cy="40%" r="65%">
-      <stop offset="0%" stop-color="#22251f"/>
-      <stop offset="100%" stop-color="#1A1C19"/>
+      <stop offset="0%" stop-color="#2D4A27"/>
+      <stop offset="100%" stop-color="#1A3318"/>
     </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F4D03F"/>
+      <stop offset="100%" stop-color="#C8A82A"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
-  <!-- Dark rounded background -->
+
+  <!-- Dark green rounded background -->
   <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  <!-- Outer eye shape — almond/lenticular -->
-  <path d="M256 148c-88 0-160 48-192 108 32 60 104 108 192 108s160-48 192-108c-32-60-104-108-192-108z"
-        fill="none" stroke="#F4D03F" stroke-width="12" stroke-linejoin="round" opacity="0.3"/>
-  <!-- Iris circle -->
-  <circle cx="256" cy="256" r="82" fill="url(#iris)"/>
-  <!-- Pupil -->
-  <circle cx="256" cy="256" r="34" fill="#1A1C19"/>
-  <!-- Crosshair — the "identification" element -->
-  <line x1="256" y1="210" x2="256" y2="240" stroke="#1A1C19" stroke-width="5" stroke-linecap="round"/>
-  <line x1="256" y1="272" x2="256" y2="302" stroke="#1A1C19" stroke-width="5" stroke-linecap="round"/>
-  <line x1="210" y1="256" x2="240" y2="256" stroke="#1A1C19" stroke-width="5" stroke-linecap="round"/>
-  <line x1="272" y1="256" x2="302" y2="256" stroke="#1A1C19" stroke-width="5" stroke-linecap="round"/>
-  <!-- Specular highlight on iris -->
-  <circle cx="234" cy="238" r="14" fill="white" opacity="0.5"/>
-  <circle cx="274" cy="268" r="6" fill="white" opacity="0.25"/>
-  <!-- Outer eye shape fill — subtle golden glow -->
-  <path d="M256 148c-88 0-160 48-192 108 32 60 104 108 192 108s160-48 192-108c-32-60-104-108-192-108z"
-        fill="#F4D03F" opacity="0.06"/>
-  <!-- Corner brackets — viewfinder frame -->
-  <path d="M100 160 L100 120 L140 120" fill="none" stroke="#F4D03F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-  <path d="M412 160 L412 120 L372 120" fill="none" stroke="#F4D03F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-  <path d="M100 352 L100 392 L140 392" fill="none" stroke="#F4D03F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
-  <path d="M412 352 L412 392 L372 392" fill="none" stroke="#F4D03F" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+
+  <!-- Subtle radial glow behind paw -->
+  <circle cx="256" cy="270" r="180" fill="#F4D03F" opacity="0.04"/>
+
+  <!-- === PAW PAD (main pad) === -->
+  <path d="M256 350
+           C220 350 185 330 170 300
+           C155 270 160 240 175 220
+           C190 200 220 195 256 195
+           C292 195 322 200 337 220
+           C352 240 357 270 342 300
+           C327 330 292 350 256 350Z"
+        fill="url(#gold)" filter="url(#glow)"/>
+
+  <!-- === TOE PADS (4 oval toes with claws) === -->
+  <!-- Left outer toe -->
+  <ellipse cx="152" cy="175" rx="30" ry="38" transform="rotate(-20 152 175)" fill="url(#gold)"/>
+  <!-- Left claw -->
+  <path d="M130 138 L126 118 L140 132" fill="url(#gold)"/>
+
+  <!-- Left inner toe -->
+  <ellipse cx="205" cy="140" rx="28" ry="36" transform="rotate(-8 205 140)" fill="url(#gold)"/>
+  <!-- Left inner claw -->
+  <path d="M196 104 L194 84 L208 100" fill="url(#gold)"/>
+
+  <!-- Right inner toe -->
+  <ellipse cx="307" cy="140" rx="28" ry="36" transform="rotate(8 307 140)" fill="url(#gold)"/>
+  <!-- Right inner claw -->
+  <path d="M316 104 L318 84 L304 100" fill="url(#gold)"/>
+
+  <!-- Right outer toe -->
+  <ellipse cx="360" cy="175" rx="30" ry="38" transform="rotate(20 360 175)" fill="url(#gold)"/>
+  <!-- Right claw -->
+  <path d="M382 138 L386 118 L372 132" fill="url(#gold)"/>
+
+  <!-- === WILDLIFE SILHOUETTES inside main pad === -->
+
+  <!-- Bird silhouette (left side, small) -->
+  <g transform="translate(210, 255) scale(0.7)" fill="#1A3318" opacity="0.7">
+    <!-- Bird body -->
+    <ellipse cx="0" cy="0" rx="16" ry="10"/>
+    <!-- Wing up -->
+    <path d="M-4,-8 L-18,-22 L-6,-12 L-14,-28 L-2,-14 L2,-8Z"/>
+    <!-- Tail -->
+    <path d="M14,-2 L26,-8 L26,2Z"/>
+    <!-- Head -->
+    <circle cx="-14" cy="-2" r="6"/>
+    <!-- Beak -->
+    <path d="M-20,-2 L-26,-1 L-20,0Z"/>
+  </g>
+
+  <!-- Snake silhouette (right side, small) -->
+  <g transform="translate(300, 258)" fill="#1A3318" opacity="0.7">
+    <path d="M-8,-16 C-2,-18 4,-14 6,-8 C8,-2 4,4 -2,8 C-8,12 -4,18 2,18 C8,18 14,14 16,8 C18,2 14,-4 10,-6"
+          stroke="#1A3318" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- Snake head -->
+    <ellipse cx="-10" cy="-16" rx="5" ry="4" transform="rotate(-20 -10 -16)"/>
+  </g>
+
+  <!-- Puma/cat face silhouette (center top of pad, small) -->
+  <g transform="translate(256, 230)" fill="#1A3318" opacity="0.6">
+    <!-- Head -->
+    <circle cx="0" cy="0" r="14"/>
+    <!-- Left ear -->
+    <path d="M-12,-10 L-18,-24 L-6,-14Z"/>
+    <!-- Right ear -->
+    <path d="M12,-10 L18,-24 L6,-14Z"/>
+    <!-- Eyes (negative space hints) -->
+    <ellipse cx="-5" cy="-2" rx="2.5" ry="1.5" fill="#C8A82A" opacity="0.5"/>
+    <ellipse cx="5" cy="-2" rx="2.5" ry="1.5" fill="#C8A82A" opacity="0.5"/>
+  </g>
+
+  <!-- === Small silhouettes along bottom of pad === -->
+  <!-- Tiny frog -->
+  <g transform="translate(230, 320)" fill="#1A3318" opacity="0.5">
+    <ellipse cx="0" cy="0" rx="7" ry="5"/>
+    <circle cx="-5" cy="-4" r="2.5"/>
+    <circle cx="5" cy="-4" r="2.5"/>
+  </g>
+
+  <!-- Tiny lizard -->
+  <g transform="translate(280, 322)" fill="#1A3318" opacity="0.5">
+    <ellipse cx="0" cy="0" rx="9" ry="4"/>
+    <path d="M9,0 L18,2 L22,0" stroke="#1A3318" stroke-width="2" fill="none"/>
+    <circle cx="-8" cy="-1" r="3"/>
+  </g>
 </svg>
