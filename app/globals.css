@@ -522,3 +522,27 @@ a { color: inherit; text-decoration: none; }
 .faq-contact h2 { font-family: 'Playfair Display', serif; font-size: var(--text-xl); color: var(--cream); margin-bottom: 0.5rem; }
 .faq-contact p { font-size: var(--text-base); color: var(--cream-75); font-weight: 300; }
 .faq-contact a { color: var(--gold); text-decoration: underline; text-underline-offset: 2px; }
+
+/* ── Responsive: 600–768px ── */
+@media (max-width: 768px) {
+  .dashboard-stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── Responsive: below 600px ── */
+@media (max-width: 600px) {
+  .nav-links { gap: 0.6rem; }
+  .nav-link { font-size: var(--text-sm); }
+}
+
+/* ── Responsive: below 480px ── */
+@media (max-width: 480px) {
+  .tab-btn { font-size: var(--text-xs); padding: 0.6rem 0.4rem; letter-spacing: 0.02em; }
+  .footer-content { padding: 1.25rem 1rem 1rem; }
+  .footer-bottom { padding: 0.75rem 1rem; }
+}
+
+/* ── Responsive: below 400px ── */
+@media (max-width: 400px) {
+  .nav-bar { flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; }
+  .nav-links { justify-content: center; }
+}

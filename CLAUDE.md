@@ -15,10 +15,17 @@ AI-powered species identification web app for Jalisco biodiversity research. Bui
 - **Styling**: CSS variables + DM Sans/Playfair Display/Cormorant Garamond (NO Tailwind)
 
 ## Project Structure
-- `app/` -- Next.js App Router pages and API routes
-- `app/(protected)/` -- Auth-required pages (dashboard, identify, observation detail)
+- `app/page.tsx` -- Public home page (onboarding, mission, pipeline, academic foundation)
+- `app/faq/page.tsx` -- Public FAQ page (10 bilingual Q&A items)
+- `app/(protected)/page.tsx` -- Redirects to /dashboard
+- `app/(protected)/dashboard/page.tsx` -- Dashboard (stats, observation history, contribution banner)
+- `app/(protected)/identify/page.tsx` -- Camera/upload + AI identification
+- `app/(protected)/observations/[id]/page.tsx` -- Single observation detail
+- `app/sign-in/[[...sign-in]]/page.tsx` -- Clerk sign-in page
 - `app/api/identify/route.ts` -- Main identification pipeline (iNat + GPT-4o + GBIF + EncicloVida)
-- `components/` -- React components (hero, capture area, result tabs)
+- `app/api/observations/route.ts` -- Observation list API
+- `app/api/observations/[id]/route.ts` -- Single observation API (GET, DELETE)
+- `components/` -- React components (onboarding-section, dashboard-stats, contribution-banner, site-footer, nav-links, capture-area, result-tabs, observation-list, observation-card, observation-detail, icons, etc.)
 - `components/tab-panels/` -- 6 result panels (overview, taxonomy, ecology, geography, conservation, similar)
 - `lib/openai.ts` -- GPT-4o Vision integration with system prompt
 - `lib/inaturalist.ts` -- iNaturalist regional species context
@@ -26,6 +33,7 @@ AI-powered species identification web app for Jalisco biodiversity research. Bui
 - `lib/enciclovida.ts` -- EncicloVida/CONABIO enrichment (endemic status, NOM-059, indigenous names, Wikipedia)
 - `lib/db/schema.ts` -- Single `observations` table with JSONB columns
 - `lib/types.ts` -- All TypeScript interfaces including GBIFData, EncicloVidaData
+- `docs/` -- Project documentation (API.md, ARCHITECTURE.md, FEATURES.md, FUNDING.md, ROADMAP.md)
 - `contexts/` -- React contexts (language EN/ES)
 - `hooks/` -- Custom hooks (useLanguage, useGeolocation)
 - `public/images/` -- Species illustrations (motmot, bearded lizard)
@@ -56,12 +64,16 @@ All four APIs are best-effort with independent timeouts. If any external API is 
 - **Bilingual** -- `LanguageContext` provides `lang`, `setLang`, and `t(en, es)` helper throughout the app.
 - **Grid-stacked tab panels** -- All tab panels occupy the same CSS grid cell (grid-row: 1, grid-column: 1). Container height = tallest panel. Switching tabs toggles visibility, never changes layout height.
 - **Sticky tab bar** -- Tab navigation sticks to top of viewport when scrolling long panel content.
+- **Two content widths** -- 1200px for home/dashboard/FAQ, 780px for identify/observation detail.
+- **Public vs protected nav** -- Public pages (/, /faq) have inline nav; protected pages use shared layout with NavLinks component.
+- **SiteFooter** -- Data sources (GBIF, iNaturalist, EncicloVida) and partners (UdeG, CONABIO).
+- **Blob storage** -- Public access (URLs are unguessable random strings, app access gated by Clerk auth).
 
 ## Current Focus
-Phase 1 complete and deployed. Four-API pipeline working (iNat + GPT-4o + GBIF + EncicloVida). Clerk auth configured on Vercel. Next priorities:
-- Set up Neon database + `pnpm db:push` for persistent observations
-- Set up Vercel Blob for image storage
-- End-to-end testing of full four-API pipeline in production
+Phase 1 complete. Four-API pipeline, Clerk auth, Neon database, Vercel Blob storage all deployed and working. Page structure: public home + FAQ, authenticated dashboard + identify + observation detail. Current priorities:
+- Mobile polish
+- Documentation updates
+- Production testing
 
 ## Known Issues
 - Vercel free tier has 10s function timeout; full pipeline (iNat + GPT-4o + GBIF + EncicloVida) can take 8-20s. Vercel Pro recommended.
