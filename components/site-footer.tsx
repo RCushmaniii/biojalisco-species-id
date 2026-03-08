@@ -13,7 +13,7 @@ export function SiteFooter() {
       <div className="footer-content">
         <div className="footer-brand">
           <div className="footer-logo">
-            <Image src="/images/bearded-lizard.png" alt="" width={28} height={18} className="footer-brand-icon" />
+            <Image src="/images/logo.png" alt="" width={28} height={18} className="footer-brand-icon" />
             <span className="accent">Bio</span>Jalisco
           </div>
           <p className="footer-tagline">

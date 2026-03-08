@@ -22,11 +22,11 @@ export default async function Image() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://biojalisco-species-id.vercel.app/images/bearded-lizard.png"
+          src="https://biojalisco-species-id.vercel.app/images/logo.png"
           alt=""
-          width={180}
-          height={115}
-          style={{ marginBottom: 24 }}
+          width={120}
+          height={120}
+          style={{ marginBottom: 24, filter: 'invert(1) sepia(1) saturate(3) hue-rotate(10deg) brightness(0.95)' }}
         />
         <div
           style={{

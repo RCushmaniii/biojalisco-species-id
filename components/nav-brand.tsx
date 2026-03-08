@@ -5,7 +5,7 @@ export function NavBrand({ href = '/' }: { href?: string }) {
   return (
     <Link href={href} className="nav-brand">
       <Image
-        src="/images/bearded-lizard.png"
+        src="/images/logo.png"
         alt=""
         width={64}
         height={40}
