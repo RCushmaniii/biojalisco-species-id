@@ -85,55 +85,6 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 1.5rem;
 }
 
-/* Clerk overrides — force dark theme on elements the appearance API can't reach */
-.sign-in-page .cl-socialButtonsBlockButton {
-  background-color: rgba(28,25,16,0.95) !important;
-  border: 1px solid rgba(231,182,51,0.15) !important;
-  color: #EDE3C8 !important;
-}
-.sign-in-page .cl-socialButtonsBlockButton:hover {
-  background-color: rgba(40,36,22,0.95) !important;
-  border-color: rgba(231,182,51,0.30) !important;
-}
-.sign-in-page .cl-socialButtonsIconButton {
-  background-color: rgba(28,25,16,0.95) !important;
-  border: 1px solid rgba(231,182,51,0.15) !important;
-  border-radius: 12px !important;
-}
-.sign-in-page .cl-socialButtonsIconButton:hover {
-  background-color: rgba(40,36,22,0.95) !important;
-  border-color: rgba(231,182,51,0.30) !important;
-}
-/* Apple icon is black by default — invert for dark bg */
-.sign-in-page .cl-socialButtonsProviderIcon[data-provider="apple"],
-.sign-in-page .cl-socialButtonsIconButton[data-provider="apple"] img,
-.sign-in-page .cl-socialButtonsIconButton[data-provider="apple"] svg {
-  filter: invert(1) !important;
-}
-/* "Last used" badge */
-.sign-in-page .cl-badge {
-  background-color: rgba(231,182,51,0.15) !important;
-  color: #e7b633 !important;
-  border: 1px solid rgba(231,182,51,0.25) !important;
-}
-/* Footer area */
-.sign-in-page .cl-footer,
-.sign-in-page .cl-footerAction {
-  background-color: transparent !important;
-}
-.sign-in-page .cl-internal-b3fm6y {
-  background-color: transparent !important;
-}
-/* "Use phone" and other action links */
-.sign-in-page .cl-formFieldAction {
-  color: #e7b633 !important;
-}
-/* Card internal backgrounds */
-.sign-in-page .cl-card,
-.sign-in-page .cl-cardBox {
-  background-color: rgba(18,16,10,0.95) !important;
-}
-
 /* ── Shared Animations ── */
 @keyframes rise { to { opacity: 1; transform: translateY(0); } }
 @keyframes spin { to { transform: rotate(360deg); } }
