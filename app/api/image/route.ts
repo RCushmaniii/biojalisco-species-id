@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { get } from '@vercel/blob';
+import { head } from '@vercel/blob';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,15 +30,33 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const blob = await get(url);
-    if (!blob) {
-      return new NextResponse('Not found', { status: 404 });
+    // Fetch the private blob using the server-side token
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      // Try without auth header (in case URL is already tokenized)
+      const fallback = await fetch(url);
+      if (!fallback.ok) {
+        return new NextResponse('Image not found', { status: 404 });
+      }
+      const body = await fallback.arrayBuffer();
+      return new NextResponse(body, {
+        headers: {
+          'Content-Type': fallback.headers.get('content-type') || 'image/jpeg',
+          'Cache-Control': 'private, max-age=3600',
+        },
+      });
     }
 
-    const body = await blob.arrayBuffer();
+    const body = await response.arrayBuffer();
     return new NextResponse(body, {
       headers: {
-        'Content-Type': blob.contentType || 'image/jpeg',
+        'Content-Type': response.headers.get('content-type') || 'image/jpeg',
         'Cache-Control': 'private, max-age=3600',
       },
     });
