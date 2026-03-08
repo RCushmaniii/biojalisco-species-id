@@ -1,4 +1,4 @@
-import { put, del, getDownloadUrl } from '@vercel/blob';
+import { put, del } from '@vercel/blob';
 
 export async function uploadImage(
   base64Data: string,
@@ -22,8 +22,12 @@ export async function uploadImage(
   return { url: blob.url, pathname: blob.pathname };
 }
 
-export async function getImageUrl(blobUrl: string): Promise<string> {
-  return getDownloadUrl(blobUrl);
+export function getImageUrl(blobUrl: string): string {
+  // Route private blob URLs through our authenticated image proxy
+  if (blobUrl.includes('.private.blob.vercel-storage.com/')) {
+    return `/api/image?url=${encodeURIComponent(blobUrl)}`;
+  }
+  return blobUrl;
 }
 
 export async function deleteImage(url: string): Promise<void> {

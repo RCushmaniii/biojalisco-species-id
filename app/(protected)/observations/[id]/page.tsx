@@ -38,15 +38,9 @@ export default async function ObservationPage({
   }
 
   const row = rows[0];
-  let signedImageUrl = row.imageUrl;
-  try {
-    signedImageUrl = await getImageUrl(row.imageUrl);
-  } catch {
-    // Fall back to raw URL
-  }
   const observation: Observation = {
     ...row,
-    imageUrl: signedImageUrl,
+    imageUrl: getImageUrl(row.imageUrl),
     taxonomy: row.taxonomy as Observation['taxonomy'],
     ecology: row.ecology as Observation['ecology'],
     geography: row.geography as Observation['geography'],
