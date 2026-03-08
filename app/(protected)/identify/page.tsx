@@ -61,14 +61,6 @@ export default function IdentifyPage() {
   return (
     <>
       <div className="header">
-        <Image
-          src="/images/bearded-lizard.png"
-          alt="Beaded lizard — Jalisco's iconic reptile"
-          width={180}
-          height={120}
-          className="header-mascot"
-          priority
-        />
         <h1>
           <span className="accent">{t('Species', 'Identificador')}</span>{' '}
           {t('Identifier', 'de Especies')}
@@ -82,6 +74,17 @@ export default function IdentifyPage() {
       </div>
 
       <CaptureArea onIdentify={handleIdentify} isLoading={isLoading} />
+
+      {!result && !isLoading && (
+        <Image
+          src="/images/bearded-lizard.png"
+          alt="Beaded lizard — Jalisco's iconic reptile"
+          width={180}
+          height={120}
+          className="header-mascot"
+          priority={false}
+        />
+      )}
 
       {isLoading && <LoadingSpinner />}
 
