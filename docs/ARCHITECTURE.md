@@ -166,7 +166,7 @@ All 6 tab panels (Overview, Taxonomy, Ecology, Geography, Conservation, Similar 
 - Glass-morphism cards: `backdrop-filter: blur()` with semi-transparent backgrounds
 - Gold accent: `#F0C040`
 - Background: `#0E0C08`
-- Content max-width: `780px`
+- Content max-width: `1200px` (home, dashboard, FAQ) / `780px` (identify, observation detail)
 - Typography: DM Sans (body) + Playfair Display (headings) + Cormorant Garamond (accents)
 - Scanning border animation on identification cards
 - Pill-shaped buttons with hover transitions

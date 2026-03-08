@@ -113,17 +113,27 @@ biojalisco-species-id/
 ├── app/
 │   ├── layout.tsx                       # Root layout (Clerk + Language providers)
 │   ├── globals.css                      # Design system (glass cards, gold accents)
-│   ├── icon.svg                         # Favicon (golden eye + viewfinder)
+│   ├── page.tsx                         # Public home page (onboarding, mission)
+│   ├── faq/page.tsx                     # Public FAQ (10 bilingual Q&A items)
+│   ├── sign-in/[[...sign-in]]/page.tsx  # Clerk sign-in page
 │   ├── (protected)/                     # Auth-required routes
-│   │   ├── page.tsx                     # Dashboard (observation list)
+│   │   ├── page.tsx                     # Redirects to /dashboard
+│   │   ├── dashboard/page.tsx           # Dashboard (stats, observations, activity)
 │   │   ├── identify/page.tsx            # Camera/upload + AI identification
 │   │   └── observations/[id]/page.tsx   # Single observation detail
 │   └── api/
-│       └── identify/route.ts            # POST: iNat + GPT-4o + GBIF + EncicloVida pipeline
+│       ├── identify/route.ts            # POST: Four-API identification pipeline
+│       └── observations/                # Observation CRUD endpoints
 ├── components/
-│   ├── hero-section.tsx                 # Landing page with species icons
+│   ├── onboarding-section.tsx           # Home page content (mission, pipeline, goals)
+│   ├── dashboard-stats.tsx              # Stat cards (observations, species, conservation)
+│   ├── contribution-banner.tsx          # Activity feedback messaging
+│   ├── site-footer.tsx                  # Footer (data sources, partners)
+│   ├── nav-links.tsx                    # Authenticated nav links
 │   ├── capture-area.tsx                 # Camera/upload/drag-drop with preview
 │   ├── result-tabs.tsx                  # Grid-stacked tabbed results
+│   ├── observation-list.tsx             # Observation card list
+│   ├── observation-detail.tsx           # Full observation view with delete
 │   └── tab-panels/                      # 6 result panels
 ├── lib/
 │   ├── openai.ts                        # GPT-4o Vision integration
@@ -133,6 +143,7 @@ biojalisco-species-id/
 │   ├── types.ts                         # All TypeScript interfaces
 │   ├── db/                              # Neon + Drizzle (optional)
 │   └── blob.ts                          # Vercel Blob upload/delete (optional)
+├── docs/                                # Project docs (API, architecture, roadmap)
 ├── contexts/language-context.tsx         # EN/ES toggle context
 ├── hooks/                               # useLanguage, useGeolocation
 ├── public/images/                        # Species illustrations
@@ -187,4 +198,4 @@ info@cushlabs.ai
 
 ---
 
-*Last Updated: 2026-03-07*
+*Last Updated: 2026-03-08*
