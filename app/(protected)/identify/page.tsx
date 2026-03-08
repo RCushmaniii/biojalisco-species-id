@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/hooks/use-language';
 import { useGeolocation } from '@/hooks/use-geolocation';
@@ -76,14 +76,27 @@ export default function IdentifyPage() {
       <CaptureArea onIdentify={handleIdentify} isLoading={isLoading} />
 
       {!result && !isLoading && (
-        <Image
-          src="/images/bearded-lizard.png"
-          alt="Beaded lizard — Jalisco's iconic reptile"
-          width={180}
-          height={120}
-          className="header-mascot"
-          priority={false}
-        />
+        <div className="identify-tips">
+          <div className="tips-card">
+            <h3>{t('Photo Tips', 'Consejos para Fotos')}</h3>
+            <ul className="tips-list">
+              <li>{t('Show the full body of the animal, not just the head', 'Muestra el cuerpo completo del animal, no solo la cabeza')}</li>
+              <li>{t('Good lighting improves accuracy — avoid heavy shadows', 'Buena iluminacion mejora la precision — evita sombras fuertes')}</li>
+              <li>{t('Enable location for regional species filtering', 'Activa la ubicacion para filtrado regional de especies')}</li>
+              <li>{t('One animal per photo works best', 'Una foto por animal funciona mejor')}</li>
+            </ul>
+          </div>
+          <Link href="/species-guide" className="guide-link-card">
+            <div className="guide-link-text">
+              <h3>{t('Protected Species of Jalisco', 'Especies Protegidas de Jalisco')}</h3>
+              <p>{t(
+                '20 rare and protected vertebrates across mammals, birds, reptiles, and amphibians',
+                '20 vertebrados raros y protegidos entre mamiferos, aves, reptiles y anfibios'
+              )}</p>
+            </div>
+            <span className="guide-link-arrow">&#8594;</span>
+          </Link>
+        </div>
       )}
 
       {isLoading && <LoadingSpinner />}

@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
-const isPublicRoute = createRouteMatcher(['/', '/faq', '/terms', '/privacy', '/sign-in(.*)']);
+const isPublicRoute = createRouteMatcher(['/', '/faq', '/terms', '/privacy', '/species-guide', '/sign-in(.*)']);
 
 const hasClerkKey = !!process.env.CLERK_SECRET_KEY;
 

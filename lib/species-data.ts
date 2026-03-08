@@ -1,0 +1,232 @@
+export interface ProtectedSpecies {
+  scientificName: string;
+  commonNameEn: string;
+  commonNameEs: string;
+  group: 'mammals' | 'birds' | 'reptiles' | 'amphibians';
+  nom059: 'P' | 'A' | 'Pr' | null;
+  iucn: string | null;
+  endemic: boolean;
+  notesEn: string;
+  notesEs: string;
+}
+
+export const GROUP_LABELS = {
+  mammals: { en: 'Mammals', es: 'Mamiferos' },
+  birds: { en: 'Birds', es: 'Aves' },
+  reptiles: { en: 'Reptiles', es: 'Reptiles' },
+  amphibians: { en: 'Amphibians', es: 'Anfibios' },
+} as const;
+
+export const NOM059_LABELS: Record<string, { en: string; es: string; color: string }> = {
+  P: { en: 'Endangered', es: 'En peligro de extincion', color: 'nom-p' },
+  A: { en: 'Threatened', es: 'Amenazada', color: 'nom-a' },
+  Pr: { en: 'Special Protection', es: 'Proteccion especial', color: 'nom-pr' },
+};
+
+export const protectedSpeciesJalisco: ProtectedSpecies[] = [
+  // ── MAMMALS ──
+  {
+    scientificName: 'Panthera onca',
+    commonNameEn: 'Jaguar',
+    commonNameEs: 'Jaguar',
+    group: 'mammals',
+    nom059: 'P',
+    iucn: 'Near Threatened',
+    endemic: false,
+    notesEn: 'Documented at Chamela-Cuixmala Biosphere Reserve on Jalisco\'s Pacific coast. Mexico\'s largest wild cat.',
+    notesEs: 'Documentado en la Reserva de la Biosfera Chamela-Cuixmala en la costa del Pacifico de Jalisco. El felino silvestre mas grande de Mexico.',
+  },
+  {
+    scientificName: 'Leopardus pardalis',
+    commonNameEn: 'Ocelot',
+    commonNameEs: 'Ocelote',
+    group: 'mammals',
+    nom059: 'P',
+    iucn: 'Least Concern',
+    endemic: false,
+    notesEn: 'Recorded in northern Jalisco (Bolanos) and Chamela-Cuixmala reserve. Nocturnal and secretive.',
+    notesEs: 'Registrado en el norte de Jalisco (Bolanos) y la reserva Chamela-Cuixmala. Nocturno y reservado.',
+  },
+  {
+    scientificName: 'Herpailurus yagouaroundi',
+    commonNameEn: 'Jaguarundi',
+    commonNameEs: 'Jaguarundi',
+    group: 'mammals',
+    nom059: 'A',
+    iucn: 'Least Concern',
+    endemic: false,
+    notesEn: 'Found in tropical dry forests and scrublands of Jalisco. Small, slender wild cat with uniform coloring.',
+    notesEs: 'Encontrado en bosques tropicales secos y matorrales de Jalisco. Felino silvestre pequeno y esbelto de color uniforme.',
+  },
+  {
+    scientificName: 'Tamandua mexicana',
+    commonNameEn: 'Northern Tamandua',
+    commonNameEs: 'Oso hormiguero',
+    group: 'mammals',
+    nom059: 'P',
+    iucn: 'Least Concern',
+    endemic: false,
+    notesEn: 'Inhabits tropical and subtropical forests in southern Jalisco. Arboreal anteater with prehensile tail.',
+    notesEs: 'Habita bosques tropicales y subtropicales en el sur de Jalisco. Oso hormiguero arboricola con cola prensil.',
+  },
+  {
+    scientificName: 'Puma concolor',
+    commonNameEn: 'Puma',
+    commonNameEs: 'Puma',
+    group: 'mammals',
+    nom059: null,
+    iucn: 'Least Concern',
+    endemic: false,
+    notesEn: 'Widespread apex predator at Chamela-Cuixmala. Not NOM-059 listed but ecologically critical in Jalisco.',
+    notesEs: 'Depredador apex en Chamela-Cuixmala. No listado en NOM-059 pero ecologicamente critico en Jalisco.',
+  },
+
+  // ── BIRDS ──
+  {
+    scientificName: 'Ara militaris',
+    commonNameEn: 'Military Macaw',
+    commonNameEs: 'Guacamaya verde',
+    group: 'birds',
+    nom059: 'P',
+    iucn: 'Vulnerable',
+    endemic: false,
+    notesEn: 'Jalisco hosts Mexico\'s second-largest population in the Nayarit-Jalisco Pacific corridor. Active conservation near Bahia de Banderas.',
+    notesEs: 'Jalisco alberga la segunda poblacion mas grande de Mexico en el corredor Nayarit-Jalisco del Pacifico. Conservacion activa cerca de Bahia de Banderas.',
+  },
+  {
+    scientificName: 'Amazona finschi',
+    commonNameEn: 'Lilac-crowned Parrot',
+    commonNameEs: 'Loro corona lila',
+    group: 'birds',
+    nom059: 'P',
+    iucn: 'Endangered',
+    endemic: true,
+    notesEn: 'Endemic to Mexico\'s Pacific slope. Highest abundance in Sinaloa, Jalisco, and Michoacan.',
+    notesEs: 'Endemico de la vertiente del Pacifico de Mexico. Mayor abundancia en Sinaloa, Jalisco y Michoacan.',
+  },
+  {
+    scientificName: 'Rhynchopsitta pachyrhyncha',
+    commonNameEn: 'Thick-billed Parrot',
+    commonNameEs: 'Cotorra serrana occidental',
+    group: 'birds',
+    nom059: 'P',
+    iucn: 'Endangered',
+    endemic: true,
+    notesEn: 'Pine-oak forests of Sierra Madre Occidental including northern Jalisco highlands. Depends on old-growth pine for nesting.',
+    notesEs: 'Bosques de pino-encino de la Sierra Madre Occidental incluyendo tierras altas del norte de Jalisco. Depende de pinos maduros para anidar.',
+  },
+  {
+    scientificName: 'Aquila chrysaetos',
+    commonNameEn: 'Golden Eagle',
+    commonNameEs: 'Aguila real',
+    group: 'birds',
+    nom059: 'A',
+    iucn: 'Least Concern',
+    endemic: false,
+    notesEn: 'Mexico\'s national symbol. Occurs in Jalisco highlands and open country above 1,500m elevation.',
+    notesEs: 'Simbolo nacional de Mexico. Habita en las tierras altas de Jalisco y campo abierto arriba de 1,500m de elevacion.',
+  },
+
+  // ── REPTILES ──
+  {
+    scientificName: 'Heloderma horridum',
+    commonNameEn: 'Mexican Beaded Lizard',
+    commonNameEs: 'Escorpion',
+    group: 'reptiles',
+    nom059: 'A',
+    iucn: 'Least Concern',
+    endemic: true,
+    notesEn: 'Iconic venomous lizard of western Mexico dry forests. One of only two venomous lizard genera in the world.',
+    notesEs: 'Lagarto venenoso iconico de los bosques secos del occidente de Mexico. Uno de solo dos generos de lagartos venenosos en el mundo.',
+  },
+  {
+    scientificName: 'Crocodylus acutus',
+    commonNameEn: 'American Crocodile',
+    commonNameEs: 'Cocodrilo americano',
+    group: 'reptiles',
+    nom059: 'Pr',
+    iucn: 'Vulnerable',
+    endemic: false,
+    notesEn: 'Found at Rio Tomatlan, Estero La Manzanilla, and around Puerto Vallarta in Jalisco.',
+    notesEs: 'Encontrado en el Rio Tomatlan, Estero La Manzanilla y alrededores de Puerto Vallarta en Jalisco.',
+  },
+  {
+    scientificName: 'Lepidochelys olivacea',
+    commonNameEn: 'Olive Ridley Sea Turtle',
+    commonNameEs: 'Tortuga golfina',
+    group: 'reptiles',
+    nom059: 'P',
+    iucn: 'Vulnerable',
+    endemic: false,
+    notesEn: 'Nests on Jalisco\'s Pacific beaches. Active conservation programs protect nesting sites near Sayulita.',
+    notesEs: 'Anida en las playas del Pacifico de Jalisco. Programas activos de conservacion protegen sitios de anidacion cerca de Sayulita.',
+  },
+  {
+    scientificName: 'Crotalus basiliscus',
+    commonNameEn: 'Mexican West Coast Rattlesnake',
+    commonNameEs: 'Cascabel del Pacifico',
+    group: 'reptiles',
+    nom059: 'Pr',
+    iucn: 'Least Concern',
+    endemic: true,
+    notesEn: 'Endemic to western Mexico. Large rattlesnake documented across Jalisco\'s diverse landscapes from coast to highlands.',
+    notesEs: 'Endemico del occidente de Mexico. Vibora de cascabel grande documentada en los diversos paisajes de Jalisco desde la costa hasta las tierras altas.',
+  },
+
+  // ── AMPHIBIANS ──
+  {
+    scientificName: 'Ambystoma flavipiperatum',
+    commonNameEn: 'Yellow-peppered Salamander',
+    commonNameEs: 'Ajolote de Jalisco',
+    group: 'amphibians',
+    nom059: 'Pr',
+    iucn: 'Endangered',
+    endemic: true,
+    notesEn: 'Found only at Sierra de Quila, ~100km south of Guadalajara at 2,165m elevation in pine-oak forest. On the verge of extinction.',
+    notesEs: 'Encontrado solo en la Sierra de Quila, ~100km al sur de Guadalajara a 2,165m de elevacion en bosque de pino-encino. Al borde de la extincion.',
+  },
+  {
+    scientificName: 'Ambystoma rosaceum',
+    commonNameEn: 'Tarahumara Salamander',
+    commonNameEs: 'Ajolote tarahumara',
+    group: 'amphibians',
+    nom059: 'Pr',
+    iucn: 'Least Concern',
+    endemic: true,
+    notesEn: 'Pine-oak forest streams in western Sierra Madre including Jalisco. Named for the Tarahumara people of the region.',
+    notesEs: 'Arroyos de bosque de pino-encino en la Sierra Madre Occidental incluyendo Jalisco. Nombrado por el pueblo tarahumara de la region.',
+  },
+  {
+    scientificName: 'Rana neovolcanica',
+    commonNameEn: 'Transvolcanic Leopard Frog',
+    commonNameEs: 'Rana leopardo neovolcanica',
+    group: 'amphibians',
+    nom059: 'Pr',
+    iucn: 'Near Threatened',
+    endemic: true,
+    notesEn: 'Distributed along the Neovolcanic axis from Jalisco to State of Mexico at 1,400-2,500m elevation.',
+    notesEs: 'Distribuida a lo largo del eje Neovolcanico desde Jalisco hasta el Estado de Mexico entre 1,400 y 2,500m de elevacion.',
+  },
+  {
+    scientificName: 'Exerodonta smaragdina',
+    commonNameEn: 'Emerald Treefrog',
+    commonNameEs: 'Rana esmeralda',
+    group: 'amphibians',
+    nom059: 'A',
+    iucn: 'Least Concern',
+    endemic: true,
+    notesEn: 'Tiny (26-28mm) bright green frog found in Jalisco\'s pine-oak and tropical dry forests.',
+    notesEs: 'Rana verde brillante diminuta (26-28mm) encontrada en bosques de pino-encino y bosques tropicales secos de Jalisco.',
+  },
+  {
+    scientificName: 'Craugastor occidentalis',
+    commonNameEn: 'Western Barking Frog',
+    commonNameEs: 'Rana ladradora occidental',
+    group: 'amphibians',
+    nom059: 'Pr',
+    iucn: 'Near Threatened',
+    endemic: true,
+    notesEn: 'Documented at Sierra de Quila in pine-oak forest. Named for its distinctive barking call.',
+    notesEs: 'Documentada en la Sierra de Quila en bosque de pino-encino. Nombrada por su distintivo canto ladrante.',
+  },
+];
