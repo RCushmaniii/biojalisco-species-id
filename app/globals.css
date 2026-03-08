@@ -530,7 +530,7 @@ a { color: inherit; text-decoration: none; }
 .nav-bar { width: 100%; max-width: var(--content-width); display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; }
 .nav-brand { font-family: 'Playfair Display', serif; font-size: var(--text-xl); color: var(--cream); display: flex; align-items: center; gap: 0.6rem; }
 .nav-brand .accent { color: var(--gold); font-style: italic; }
-.nav-brand-icon { width: 51px; height: auto; flex-shrink: 0; }
+.nav-brand-icon { width: 64px; height: auto; flex-shrink: 0; }
 .nav-links { display: flex; align-items: center; gap: 1rem; }
 .nav-link { font-size: var(--text-base); font-weight: 500; color: var(--cream-75); transition: color 0.2s; }
 .nav-link:hover { color: var(--gold); }
