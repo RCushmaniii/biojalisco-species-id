@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import Image from 'next/image';
 import { useLanguage } from '@/hooks/use-language';
 
@@ -39,6 +40,11 @@ export function SiteFooter() {
             <h4>{t('Partners', 'Socios')}</h4>
             <a href="https://www.udg.mx" target="_blank" rel="noopener noreferrer">Universidad de Guadalajara</a>
             <a href="https://www.conabio.gob.mx" target="_blank" rel="noopener noreferrer">CONABIO</a>
+          </div>
+          <div className="footer-column">
+            <h4>{t('Legal', 'Legal')}</h4>
+            <Link href="/terms">{t('Terms of Use', 'Terminos de Uso')}</Link>
+            <Link href="/privacy">{t('Privacy Policy', 'Politica de Privacidad')}</Link>
           </div>
         </div>
       </div>
