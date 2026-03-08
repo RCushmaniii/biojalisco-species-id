@@ -7,6 +7,7 @@ import { DashboardStats } from '@/components/dashboard-stats';
 import { ContributionBanner } from '@/components/contribution-banner';
 import Link from 'next/link';
 import { CameraIcon } from '@/components/icons';
+import { getImageUrl } from '@/lib/blob';
 import type { Observation } from '@/lib/types';
 
 async function getAuthUserId(): Promise<string | null> {
@@ -41,16 +42,28 @@ export default async function DashboardPage() {
     .orderBy(desc(observations.createdAt))
     .limit(50);
 
-  const obs: Observation[] = rows.map((r) => ({
-    ...r,
-    taxonomy: r.taxonomy as Observation['taxonomy'],
-    ecology: r.ecology as Observation['ecology'],
-    geography: r.geography as Observation['geography'],
-    conservation: r.conservation as Observation['conservation'],
-    similarSpecies: r.similarSpecies as Observation['similarSpecies'],
-    identifiedAt: r.identifiedAt,
-    createdAt: r.createdAt,
-  }));
+  // Generate signed URLs for private blob images
+  const obs: Observation[] = await Promise.all(
+    rows.map(async (r) => {
+      let signedImageUrl = r.imageUrl;
+      try {
+        signedImageUrl = await getImageUrl(r.imageUrl);
+      } catch {
+        // Fall back to raw URL if signing fails
+      }
+      return {
+        ...r,
+        imageUrl: signedImageUrl,
+        taxonomy: r.taxonomy as Observation['taxonomy'],
+        ecology: r.ecology as Observation['ecology'],
+        geography: r.geography as Observation['geography'],
+        conservation: r.conservation as Observation['conservation'],
+        similarSpecies: r.similarSpecies as Observation['similarSpecies'],
+        identifiedAt: r.identifiedAt,
+        createdAt: r.createdAt,
+      };
+    })
+  );
 
   // Compute stats
   const uniqueSpeciesSet = new Set(

@@ -15,7 +15,7 @@ export async function uploadImage(
     .toBuffer();
 
   const blob = await put(`observations/${filename}.jpg`, compressed, {
-    access: 'public',
+    access: 'private',
     contentType: 'image/jpeg',
   });
 

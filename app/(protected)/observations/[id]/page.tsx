@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeftIcon } from '@/components/icons';
 import { ObservationDetail } from '@/components/observation-detail';
+import { getImageUrl } from '@/lib/blob';
 import type { Observation } from '@/lib/types';
 
 async function getAuthUserId(): Promise<string | null> {
@@ -37,8 +38,15 @@ export default async function ObservationPage({
   }
 
   const row = rows[0];
+  let signedImageUrl = row.imageUrl;
+  try {
+    signedImageUrl = await getImageUrl(row.imageUrl);
+  } catch {
+    // Fall back to raw URL
+  }
   const observation: Observation = {
     ...row,
+    imageUrl: signedImageUrl,
     taxonomy: row.taxonomy as Observation['taxonomy'],
     ecology: row.ecology as Observation['ecology'],
     geography: row.geography as Observation['geography'],

@@ -42,7 +42,7 @@ export async function GET() {
   try {
     const { put, del } = await import('@vercel/blob');
     const testBlob = await put('_test/ping.txt', 'test', {
-      access: 'public',
+      access: 'private',
       contentType: 'text/plain',
     });
     checks.blobUpload = 'OK';
