@@ -8,6 +8,7 @@ export default function SignInPage() {
       </h1>
       <p className="subtitle">Species Identifier</p>
       <SignIn
+        forceRedirectUrl="/dashboard"
         appearance={{
           variables: {
             colorBackground: '#ffffff',

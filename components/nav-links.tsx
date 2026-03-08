@@ -11,8 +11,8 @@ export function NavLinks() {
   return (
     <>
       <Link
-        href="/"
-        className={`nav-link ${pathname === '/' ? 'active' : ''}`}
+        href="/dashboard"
+        className={`nav-link ${pathname === '/dashboard' ? 'active' : ''}`}
       >
         {t('Dashboard', 'Inicio')}
       </Link>
@@ -21,6 +21,12 @@ export function NavLinks() {
         className={`nav-link ${pathname === '/identify' ? 'active' : ''}`}
       >
         {t('Identify', 'Identificar')}
+      </Link>
+      <Link
+        href="/faq"
+        className={`nav-link ${pathname === '/faq' ? 'active' : ''}`}
+      >
+        FAQ
       </Link>
     </>
   );

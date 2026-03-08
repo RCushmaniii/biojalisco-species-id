@@ -18,7 +18,7 @@ export function ObservationDetail({ observation }: { observation: Observation })
 
     try {
       await fetch(`/api/observations/${observation.id}`, { method: 'DELETE' });
-      router.push('/');
+      router.push('/dashboard');
       router.refresh();
     } catch {
       setDeleting(false);

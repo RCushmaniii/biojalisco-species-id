@@ -51,7 +51,7 @@ export default async function ObservationPage({
   return (
     <>
       <div style={{ width: '100%', maxWidth: '520px', padding: '0 1.25rem' }}>
-        <Link href="/" className="back-link">
+        <Link href="/dashboard" className="back-link">
           <ArrowLeftIcon className="icon icon-sm" />
           Back to Dashboard
         </Link>

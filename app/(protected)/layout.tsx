@@ -14,8 +14,8 @@ export default function ProtectedLayout({
   return (
     <>
       <LanguageToggle />
-      <nav className="nav-bar">
-        <Link href="/" className="nav-brand">
+      <nav className="nav-bar nav-bar-wide">
+        <Link href="/dashboard" className="nav-brand">
           <span className="accent">Bio</span>Jalisco
         </Link>
         <div className="nav-links">
