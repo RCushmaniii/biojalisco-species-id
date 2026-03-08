@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { NavLinks } from '@/components/nav-links';
 import { LanguageToggle } from '@/components/language-toggle';
 import { ClerkUserButton } from '@/components/clerk-user-button';
+import { SiteFooter } from '@/components/site-footer';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,9 +24,7 @@ export default function ProtectedLayout({
         </div>
       </nav>
       {children}
-      <div className="footer">
-        Powered by GPT-4o Vision &middot; <a href="https://cushlabs.ai">CushLabs AI</a>
-      </div>
+      <SiteFooter />
     </>
   );
 }
