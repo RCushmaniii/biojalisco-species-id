@@ -48,10 +48,6 @@ export function PublicNav() {
 
   return (
     <>
-      <div className="toolbar-toggles">
-        <ThemeToggle />
-        <LanguageToggle />
-      </div>
       <nav className="nav-bar nav-bar-wide">
         <NavBrand />
         <div className="nav-links nav-links-desktop">
@@ -64,6 +60,10 @@ export function PublicNav() {
               {t(link.en, link.es)}
             </Link>
           ))}
+          <div className="nav-toggles">
+            <ThemeToggle />
+            <LanguageToggle />
+          </div>
         </div>
         <button
           className="hamburger-btn"

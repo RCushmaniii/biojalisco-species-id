@@ -38,14 +38,14 @@ export function ProtectedNav() {
 
   return (
     <>
-      <div className="toolbar-toggles">
-        <ThemeToggle />
-        <LanguageToggle />
-      </div>
       <nav className="nav-bar nav-bar-wide">
         <NavBrand />
         <div className="nav-links nav-links-desktop">
           <NavLinks />
+          <div className="nav-toggles">
+            <ThemeToggle />
+            <LanguageToggle />
+          </div>
           <ClerkUserButton />
         </div>
         <button
