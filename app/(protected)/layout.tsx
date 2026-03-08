@@ -19,7 +19,7 @@ export default function ProtectedLayout({
         <LanguageToggle />
       </div>
       <nav className="nav-bar nav-bar-wide">
-        <NavBrand href="/dashboard" />
+        <NavBrand />
         <div className="nav-links">
           <NavLinks />
           <ClerkUserButton />
