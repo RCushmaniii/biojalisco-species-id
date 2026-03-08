@@ -75,7 +75,8 @@ a { color: inherit; text-decoration: none; }
 }
 .sign-in-page .accent {
   font-style: italic;
-  color: var(--gold);
+  font-weight: 700;
+  color: #e7b633;
 }
 .sign-in-page .subtitle {
   color: var(--cream-50);
