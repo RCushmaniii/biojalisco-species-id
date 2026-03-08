@@ -110,18 +110,27 @@ export async function POST(request: NextRequest) {
     let id: string | null = null;
     let imageUrl: string | null = null;
 
-    if (userId && process.env.DATABASE_URL && process.env.BLOB_READ_WRITE_TOKEN) {
+    const hasDb = !!process.env.DATABASE_URL;
+    const hasBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
+    console.log(`Persistence check: userId=${!!userId}, DATABASE_URL=${hasDb}, BLOB_READ_WRITE_TOKEN=${hasBlob}`);
+
+    if (userId && hasDb && hasBlob) {
       try {
         const { uploadImage } = await import('@/lib/blob');
         const { db } = await import('@/lib/db');
         const { observations } = await import('@/lib/db/schema');
 
         const filename = `${userId}-${randomUUID()}`;
+        console.log('Uploading image to blob storage...');
         const blob = await uploadImage(imageData, filename);
         imageUrl = blob.url;
+        console.log(`Blob upload success: ${blob.pathname}`);
 
         id = randomUUID();
 
+        const confidenceVal = isError ? null : (typeof result.confidence === 'number' ? Math.round(result.confidence) : null);
+
+        console.log('Inserting observation into database...');
         await db.insert(observations).values({
           id,
           userId,
@@ -133,7 +142,7 @@ export async function POST(request: NextRequest) {
           nombreComun: isError ? null : result.identification.nombre_comun,
           scientificName: isError ? null : result.identification.scientific_name,
           breed: isError ? null : result.identification.breed,
-          confidence: isError ? null : result.confidence,
+          confidence: confidenceVal,
           taxonomy: isError ? null : result.taxonomy,
           ecology: isError ? null : result.ecology,
           geography: isError ? null : result.geography,
@@ -145,9 +154,16 @@ export async function POST(request: NextRequest) {
           error: isError ? result.error : null,
           suggestion: isError ? (result.suggestion ?? null) : null,
         });
+        console.log(`Observation persisted: ${id}`);
       } catch (persistError) {
-        console.error('Failed to persist observation (continuing):', persistError);
+        console.error('PERSISTENCE FAILED:', persistError instanceof Error ? persistError.message : persistError);
+        console.error('Full error:', persistError);
+        // Reset id so client knows persistence failed
+        id = null;
+        imageUrl = null;
       }
+    } else {
+      console.warn(`Skipping persistence: userId=${!!userId}, DB=${hasDb}, Blob=${hasBlob}`);
     }
 
     // Return the result (+ enrichment data + observation ID if persisted)

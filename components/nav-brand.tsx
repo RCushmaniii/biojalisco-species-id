@@ -7,8 +7,8 @@ export function NavBrand({ href = '/' }: { href?: string }) {
       <Image
         src="/images/bearded-lizard.png"
         alt=""
-        width={32}
-        height={20}
+        width={51}
+        height={32}
         className="nav-brand-icon"
       />
       <span className="accent">Bio</span>Jalisco

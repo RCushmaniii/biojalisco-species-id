@@ -14,7 +14,7 @@ export function ClerkUserButton() {
     <UserButton
       appearance={{
         elements: {
-          avatarBox: { width: '28px', height: '28px' },
+          avatarBox: { width: '34px', height: '34px' },
         },
       }}
     />
