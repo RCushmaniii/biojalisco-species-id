@@ -6,7 +6,7 @@ import { NavBrand } from '@/components/nav-brand';
 import { SiteFooter } from '@/components/site-footer';
 import { LanguageToggle } from '@/components/language-toggle';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { ObservationList } from '@/components/observation-list';
+import { CommunityCard } from '@/components/community-card';
 import { getImageUrl } from '@/lib/blob';
 import type { Observation } from '@/lib/types';
 
@@ -93,7 +93,11 @@ export default async function ObservationsPage() {
             </div>
           </div>
         ) : (
-          <ObservationList observations={obs} />
+          <div className="community-grid">
+            {obs.map((o) => (
+              <CommunityCard key={o.id} observation={o} />
+            ))}
+          </div>
         )}
       </div>
 

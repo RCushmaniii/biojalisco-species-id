@@ -21,7 +21,7 @@ importers:
         specifier: ^0.38.0
         version: 0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(@types/react@19.2.14)(react@19.2.4)
       next:
-        specifier: ^15.2.3
+        specifier: ^15.5.12
         version: 15.5.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       openai:
         specifier: ^4.82.0
@@ -55,7 +55,7 @@ importers:
         specifier: ^9.0.0
         version: 9.39.3
       eslint-config-next:
-        specifier: ^15.2.3
+        specifier: ^15.5.12
         version: 15.5.12(eslint@9.39.3)(typescript@5.9.3)
       typescript:
         specifier: ^5.0.0

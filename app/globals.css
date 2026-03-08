@@ -538,7 +538,7 @@ a { color: inherit; text-decoration: none; }
 .nav-link:hover { color: var(--gold); }
 .nav-link.active { color: var(--gold); }
 
-/* ── Observation Cards ── */
+/* ── Observation Cards (list mode — dashboard) ── */
 .observation-grid { width: 100%; max-width: var(--content-width-wide); padding: 0 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
 .observation-card { display: flex; align-items: center; gap: 0.85rem; padding: 0.85rem; background: var(--dark-surface); border-radius: var(--radius); border: 1px solid var(--gold-border); cursor: pointer; transition: border-color 0.2s, transform 0.18s, box-shadow 0.18s; text-decoration: none; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
 .observation-card:hover { border-color: rgba(240,192,64,0.4); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
@@ -548,6 +548,19 @@ a { color: inherit; text-decoration: none; }
 .observation-sci { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: var(--text-base); color: var(--cream-50); }
 .observation-date { font-size: var(--text-sm); color: var(--muted); margin-top: 0.2rem; }
 .observation-conf { font-size: var(--text-base); font-weight: 600; flex-shrink: 0; }
+
+/* ── Community Observations (gallery mode) ── */
+.observations-page { width: 100%; max-width: var(--content-width-wide); padding: 0 1.25rem; }
+.community-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; width: 100%; }
+.community-card { display: flex; flex-direction: column; background: var(--dark-surface); border-radius: var(--radius); border: 1px solid var(--gold-border); overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.18s, box-shadow 0.18s; text-decoration: none; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.community-card:hover { border-color: rgba(240,192,64,0.4); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+.community-card-image { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+.community-card-body { padding: 0.85rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.community-card-info { flex: 1; min-width: 0; }
+.community-card-name { font-size: var(--text-base); font-weight: 500; color: var(--cream); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.community-card-sci { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: var(--text-sm); color: var(--cream-50); }
+.community-card-date { font-size: var(--text-xs); color: var(--muted); margin-top: 0.15rem; }
+.community-card-conf { font-size: var(--text-base); font-weight: 600; flex-shrink: 0; }
 
 /* ── Empty State ── */
 .empty-state { text-align: center; padding: 3rem 1.5rem; }

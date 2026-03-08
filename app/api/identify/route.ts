@@ -33,6 +33,16 @@ export async function POST(request: NextRequest) {
       imageData = imageData.split(',')[1];
     }
 
+    // Validate file size (base64 is ~33% larger than raw bytes)
+    // Max 20MB raw = ~27MB base64
+    const MAX_BASE64_SIZE = 27 * 1024 * 1024;
+    if (imageData.length > MAX_BASE64_SIZE) {
+      return NextResponse.json(
+        { error: 'Image too large. Maximum file size is 20MB.', suggestion: 'Try a smaller image or reduce the resolution.' },
+        { status: 400 }
+      );
+    }
+
     const latitude: number | null = body.latitude ?? null;
     const longitude: number | null = body.longitude ?? null;
 
@@ -115,7 +125,6 @@ export async function POST(request: NextRequest) {
 
     const hasDb = !!process.env.DATABASE_URL;
     const hasBlob = !!process.env.BLOB_READ_WRITE_TOKEN;
-    console.log(`Persistence check: userId=${!!userId}, DATABASE_URL=${hasDb}, BLOB_READ_WRITE_TOKEN=${hasBlob}`);
 
     if (userId && hasDb && hasBlob) {
       try {
@@ -124,16 +133,12 @@ export async function POST(request: NextRequest) {
         const { observations } = await import('@/lib/db/schema');
 
         const filename = `${userId}-${randomUUID()}`;
-        console.log('Uploading image to blob storage...');
         const blob = await uploadImage(imageData, filename);
         imageUrl = blob.url;
-        console.log(`Blob upload success: ${blob.pathname}`);
 
         id = randomUUID();
-
         const confidenceVal = isError ? null : (typeof result.confidence === 'number' ? Math.round(result.confidence) : null);
 
-        console.log('Inserting observation into database...');
         await db.insert(observations).values({
           id,
           userId,
@@ -157,10 +162,8 @@ export async function POST(request: NextRequest) {
           error: isError ? result.error : null,
           suggestion: isError ? (result.suggestion ?? null) : null,
         });
-        console.log(`Observation persisted: ${id}`);
       } catch (persistError) {
-        console.error('PERSISTENCE FAILED:', persistError instanceof Error ? persistError.message : persistError);
-        console.error('Full error:', persistError);
+        console.error('Persistence failed:', persistError instanceof Error ? persistError.message : persistError);
         // Reset id so client knows persistence failed
         id = null;
         imageUrl = null;
