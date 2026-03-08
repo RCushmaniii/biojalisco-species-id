@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 import { observations } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
@@ -11,6 +12,55 @@ import { getImageUrl } from '@/lib/blob';
 import type { Observation } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+
+  if (!process.env.DATABASE_URL) {
+    return { title: 'Observation' };
+  }
+
+  try {
+    const rows = await db
+      .select({
+        commonName: observations.commonName,
+        scientificName: observations.scientificName,
+        description: observations.description,
+        imageUrl: observations.imageUrl,
+      })
+      .from(observations)
+      .where(eq(observations.id, id))
+      .limit(1);
+
+    if (rows.length === 0) {
+      return { title: 'Observation Not Found' };
+    }
+
+    const row = rows[0];
+    const title = row.commonName
+      ? `${row.commonName}${row.scientificName ? ` (${row.scientificName})` : ''}`
+      : 'Species Observation';
+    const description = row.description
+      || `Species observation identified by BioJalisco AI pipeline and verified against GBIF, iNaturalist, and CONABIO databases.`;
+
+    return {
+      title,
+      description,
+      alternates: { canonical: `/observations/${id}` },
+      openGraph: {
+        title: `${title} — BioJalisco`,
+        description,
+        images: row.imageUrl ? [{ url: getImageUrl(row.imageUrl), width: 1200, height: 630, alt: title }] : undefined,
+      },
+    };
+  } catch {
+    return { title: 'Observation' };
+  }
+}
 
 export default async function PublicObservationPage({
   params,

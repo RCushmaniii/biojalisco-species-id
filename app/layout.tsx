@@ -1,25 +1,58 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { ClerkProvider } from '@clerk/nextjs';
 import { LanguageProvider } from '@/contexts/language-context';
 import { ThemeProvider } from '@/contexts/theme-context';
 import './globals.css';
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0E0C08' },
+    { media: '(prefers-color-scheme: light)', color: '#FAF6EE' },
+  ],
+};
+
 export const metadata: Metadata = {
-  title: 'BioJalisco Species Identifier',
+  title: {
+    default: 'BioJalisco Species Identifier',
+    template: '%s — BioJalisco',
+  },
   description: 'AI-powered species identification for Jalisco biodiversity research. Verified against GBIF, iNaturalist, and CONABIO databases.',
   metadataBase: new URL('https://biojalisco-species-id.vercel.app'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'BioJalisco Species Identifier',
     description: 'AI-powered species identification verified against GBIF, iNaturalist, and CONABIO. Built for conservation biologists in Jalisco, Mexico.',
     siteName: 'BioJalisco',
     locale: 'en_US',
     type: 'website',
+    url: '/',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'BioJalisco Species Identifier',
     description: 'AI-powered species identification verified against GBIF, iNaturalist, and CONABIO.',
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  icons: {
+    icon: '/images/logo.png',
+    apple: '/images/logo.png',
+  },
+  manifest: '/site.webmanifest',
 };
 
 // Clerk key must be a real key (starts with pk_live_ or pk_test_ followed by actual chars)

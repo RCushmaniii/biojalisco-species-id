@@ -166,7 +166,7 @@ export default function SpeciesGuidePage() {
         </div>
 
         <div className="species-nom-key">
-          <h4>{t('NOM-059-SEMARNAT Key', 'Clave NOM-059-SEMARNAT')}</h4>
+          <h2>{t('NOM-059-SEMARNAT Key', 'Clave NOM-059-SEMARNAT')}</h2>
           <div className="nom-key-items">
             <span className="species-badge nom-p">P = {t('Endangered', 'En peligro de extincion')}</span>
             <span className="species-badge nom-a">A = {t('Threatened', 'Amenazada')}</span>

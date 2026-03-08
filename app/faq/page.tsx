@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useLanguage } from '@/hooks/use-language';
 import { PublicNav } from '@/components/public-nav';
 import { SiteFooter } from '@/components/site-footer';
+import { FAQPageJsonLd } from '@/components/json-ld';
 
 interface FAQItem {
   en: { q: string; a: string };
@@ -119,6 +120,7 @@ export default function FAQPage() {
 
   return (
     <>
+      <FAQPageJsonLd items={FAQ_ITEMS.map(item => ({ question: item.en.q, answer: item.en.a }))} />
       <PublicNav />
 
       <div className="faq-page">

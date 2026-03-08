@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 import { observations } from '@/lib/db/schema';
 import { desc } from 'drizzle-orm';
@@ -7,8 +8,19 @@ import { GalleryGrid } from '@/components/gallery-lightbox';
 import type { GalleryItem } from '@/components/gallery-lightbox';
 import { getImageUrl } from '@/lib/blob';
 import type { Observation } from '@/lib/types';
+import { BreadcrumbJsonLd } from '@/components/json-ld';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Community Observations',
+  description: 'Browse species observations submitted by conservation biologists and citizen scientists across Jalisco, Mexico. Verified with AI and scientific databases.',
+  alternates: { canonical: '/observations' },
+  openGraph: {
+    title: 'Community Observations — BioJalisco',
+    description: 'Explore biodiversity observations from field researchers in Jalisco, Mexico. Each identification verified against GBIF, iNaturalist, and CONABIO.',
+  },
+};
 
 export default async function ObservationsPage() {
   let obs: Observation[] = [];
@@ -42,6 +54,10 @@ export default async function ObservationsPage() {
 
   return (
     <>
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: 'https://biojalisco-species-id.vercel.app' },
+        { name: 'Observations', url: 'https://biojalisco-species-id.vercel.app/observations' },
+      ]} />
       <PublicNav />
 
       <div className="observations-page">

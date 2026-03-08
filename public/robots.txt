@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /identify
+Disallow: /sign-in
+
+Sitemap: https://biojalisco-species-id.vercel.app/sitemap.xml
