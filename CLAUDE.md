@@ -80,6 +80,8 @@ Phase 1 complete. Four-API pipeline, Clerk auth, Neon database, Vercel Blob stor
 - iNaturalist CV API is NOT publicly available (fee-based access only). We use their public observations API for species context instead.
 - No offline support -- requires network for identification.
 - No image cropping/rotation UI -- relies on device camera orientation.
+- No hamburger menu on mobile yet -- nav links reduce/stack at small breakpoints.
+- Blob storage uses public access -- URLs are unguessable but technically accessible without auth.
 
 ## Environment Setup
 Copy `.env.local.example` to `.env.local`. Only `OPENAI_API_KEY` is required for basic operation.
