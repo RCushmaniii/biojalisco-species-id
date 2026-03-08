@@ -15,6 +15,7 @@ export default function HomePage() {
       <nav className="nav-bar nav-bar-wide">
         <NavBrand />
         <div className="nav-links">
+          <Link href="/observations" className="nav-link">Observations</Link>
           <Link href="/faq" className="nav-link">FAQ</Link>
           <Link href="/sign-in" className="nav-link">Sign In</Link>
         </div>

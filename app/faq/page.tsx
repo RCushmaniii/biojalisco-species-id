@@ -57,11 +57,11 @@ const FAQ_ITEMS: FAQItem[] = [
   {
     en: {
       q: 'Who can access my observations?',
-      a: 'BioJalisco is currently an invite-only platform. Your observations are private and associated with your authenticated account. Only you can view, manage, and delete your own observation data. The platform does not share individual observation data publicly.',
+      a: 'BioJalisco is a community science platform. All observations are visible on the public Community Observations page so that researchers and the broader community can benefit from shared biodiversity data. Your observations are associated with your authenticated account, and only you can manage or delete them from your personal dashboard. No personal account information is displayed publicly — only species data, photos, and identification details.',
     },
     es: {
       q: 'Quien puede acceder a mis observaciones?',
-      a: 'BioJalisco es actualmente una plataforma solo por invitacion. Tus observaciones son privadas y estan asociadas con tu cuenta autenticada. Solo tu puedes ver, gestionar y eliminar tus propios datos de observacion. La plataforma no comparte datos individuales de observacion publicamente.',
+      a: 'BioJalisco es una plataforma de ciencia comunitaria. Todas las observaciones son visibles en la pagina publica de Observaciones de la Comunidad para que investigadores y la comunidad en general puedan beneficiarse de datos compartidos de biodiversidad. Tus observaciones estan asociadas con tu cuenta autenticada, y solo tu puedes gestionarlas o eliminarlas desde tu panel personal. No se muestra informacion personal de la cuenta publicamente — solo datos de especies, fotos y detalles de identificacion.',
     },
   },
   {
@@ -130,6 +130,7 @@ export default function FAQPage() {
         <NavBrand />
         <div className="nav-links">
           <Link href="/" className="nav-link">Home</Link>
+          <Link href="/observations" className="nav-link">Observations</Link>
           <Link href="/faq" className="nav-link active">FAQ</Link>
           <Link href="/sign-in" className="nav-link">Sign In</Link>
         </div>
