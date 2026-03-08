@@ -798,12 +798,19 @@ a { color: inherit; text-decoration: none; }
   color: var(--cream);
   margin-bottom: 2rem;
 }
-.testimonial-slide {
-  animation: testimonialFadeIn 0.5s ease;
+.testimonial-stack {
+  display: grid;
 }
-@keyframes testimonialFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+.testimonial-slide {
+  grid-row: 1;
+  grid-column: 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.testimonial-slide.active {
+  opacity: 1;
+  visibility: visible;
 }
 .testimonial-quote {
   font-family: 'Cormorant Garamond', serif;

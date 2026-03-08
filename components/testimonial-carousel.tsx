@@ -84,9 +84,6 @@ export function TestimonialCarousel() {
     return () => clearInterval(id);
   }, [paused, next]);
 
-  const testimonial = TESTIMONIALS[active];
-  const content = lang === 'es' ? testimonial.es : testimonial.en;
-
   return (
     <div
       className="testimonial-carousel"
@@ -95,27 +92,37 @@ export function TestimonialCarousel() {
     >
       <h2>{t('Voices from the Field', 'Voces desde el Campo')}</h2>
 
-      <div className="testimonial-slide" key={active}>
-        <blockquote className="testimonial-quote">
-          &ldquo;{content.quote}&rdquo;
-        </blockquote>
+      <div className="testimonial-stack">
+        {TESTIMONIALS.map((testimonial, i) => {
+          const content = lang === 'es' ? testimonial.es : testimonial.en;
+          return (
+            <div
+              key={i}
+              className={`testimonial-slide ${i === active ? 'active' : ''}`}
+            >
+              <blockquote className="testimonial-quote">
+                &ldquo;{content.quote}&rdquo;
+              </blockquote>
 
-        <div className="testimonial-attribution">
-          <div className="testimonial-avatar">
-            {content.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
-          </div>
-          <div className="testimonial-meta">
-            <span className="testimonial-name">{content.name}</span>
-            <span className="testimonial-role">{content.role}</span>
-            <span className="testimonial-location">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-              {content.location}
-            </span>
-          </div>
-        </div>
+              <div className="testimonial-attribution">
+                <div className="testimonial-avatar">
+                  {content.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                </div>
+                <div className="testimonial-meta">
+                  <span className="testimonial-name">{content.name}</span>
+                  <span className="testimonial-role">{content.role}</span>
+                  <span className="testimonial-location">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    {content.location}
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       <div className="testimonial-dots">
