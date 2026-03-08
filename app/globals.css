@@ -38,6 +38,125 @@
   --content-width-wide: 1200px;
 }
 
+/* ── Light Theme ── */
+[data-theme="light"] {
+  --dark: #FAF7F0;
+  --dark-surface: rgba(255,255,255,0.92);
+  --dark-elevated: rgba(245,242,235,0.95);
+  --gold: #C49A20;
+  --gold-border: rgba(168,128,24,0.20);
+  --gold-dim: rgba(168,128,24,0.08);
+  --gold-glow: rgba(168,128,24,0.04);
+  --warm: #b08818;
+  --cream: #1a1810;
+  --cream-75: rgba(26,24,16,0.70);
+  --cream-50: rgba(26,24,16,0.45);
+  --muted: #8a8070;
+  --green: #2D5A27;
+  --green-bright: #2a7a22;
+  --green-dim: rgba(45,90,39,0.10);
+  --red: #b84444;
+  --red-dim: rgba(184,68,68,0.10);
+  --terra: #c45a42;
+  --terra-dim: rgba(196,90,66,0.10);
+  --orange: #b87a2a;
+  --orange-dim: rgba(184,122,42,0.10);
+}
+
+/* Light theme adjustments for glass cards and overlays */
+[data-theme="light"] .glass-card,
+[data-theme="light"] .observation-card,
+[data-theme="light"] .onboarding-step,
+[data-theme="light"] .goal-card,
+[data-theme="light"] .stat-card,
+[data-theme="light"] .dashboard-empty-card {
+  box-shadow:
+    0 0 0 1px rgba(168,128,24,0.06),
+    0 8px 32px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+[data-theme="light"] .result-card {
+  box-shadow:
+    0 0 0 1px rgba(168,128,24,0.06),
+    0 8px 32px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.5);
+}
+
+[data-theme="light"] .desc-block,
+[data-theme="light"] .eco-card,
+[data-theme="light"] .similar-card {
+  background: rgba(0,0,0,0.02);
+  border-color: rgba(0,0,0,0.06);
+}
+
+[data-theme="light"] .info-row {
+  border-bottom-color: rgba(0,0,0,0.06);
+}
+
+[data-theme="light"] .taxonomy-tree li {
+  border-left-color: rgba(168,128,24,0.20);
+}
+[data-theme="light"] .taxonomy-tree li::before {
+  background: rgba(168,128,24,0.20);
+}
+[data-theme="light"] .taxonomy-tree li:last-child::before {
+  border-left-color: rgba(168,128,24,0.20);
+}
+
+[data-theme="light"] .tabs-wrapper {
+  background: rgba(255,255,255,0.95);
+}
+[data-theme="light"] .tabs-wrapper::after {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.95));
+}
+
+[data-theme="light"] .tabs {
+  border-bottom-color: rgba(0,0,0,0.06);
+}
+
+[data-theme="light"] .btn {
+  border-color: rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.85);
+  color: var(--cream-75);
+}
+[data-theme="light"] .btn:hover {
+  background: rgba(255,255,255,1);
+  border-color: rgba(0,0,0,0.18);
+}
+
+[data-theme="light"] .btn-primary {
+  background: var(--gold);
+  color: #ffffff;
+}
+[data-theme="light"] .btn-primary:hover {
+  background: var(--warm);
+  box-shadow: 0 8px 32px rgba(168,128,24,0.3);
+}
+
+[data-theme="light"] .preview-box {
+  border-color: rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.7);
+}
+
+[data-theme="light"] .faq-item {
+  border-bottom-color: rgba(0,0,0,0.08);
+}
+[data-theme="light"] .faq-item:first-child {
+  border-top-color: rgba(0,0,0,0.08);
+}
+
+[data-theme="light"] .site-footer {
+  border-top-color: rgba(0,0,0,0.08);
+  background: rgba(245,242,235,0.95);
+}
+
+[data-theme="light"] .footer-bottom {
+  border-top-color: rgba(0,0,0,0.05);
+}
+
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
@@ -328,10 +447,62 @@ a { color: inherit; text-decoration: none; }
 .result-error p { font-size: var(--text-base); margin-bottom: 0.5rem; color: var(--cream); font-weight: 400; }
 .result-error .suggestion { font-size: var(--text-base); color: var(--cream-50); font-weight: 300; }
 
+/* ── Toolbar Toggles (theme + language) ── */
+.toolbar-toggles { position: fixed; top: 0.85rem; right: 0.85rem; display: flex; align-items: center; gap: 0.5rem; z-index: 10; }
+
+/* ── Theme Toggle ── */
+.theme-toggle {
+  position: relative;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(237,227,200,0.12);
+  background: rgba(14,12,8,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  padding: 0;
+}
+.theme-toggle:hover { border-color: var(--gold-border); transform: scale(1.08); }
+.theme-toggle:active { transform: scale(0.95); }
+
+[data-theme="light"] .theme-toggle {
+  background: rgba(255,255,255,0.85);
+  border-color: rgba(0,0,0,0.10);
+}
+[data-theme="light"] .theme-toggle:hover {
+  border-color: rgba(0,0,0,0.20);
+}
+
+.theme-icon {
+  position: absolute;
+  width: 18px; height: 18px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  opacity: 0;
+  transform: scale(0.5) rotate(-90deg);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+.theme-icon.active {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+.theme-icon-sun { color: var(--gold); }
+.theme-icon-moon { color: var(--cream-75); fill: var(--cream-75); }
+[data-theme="light"] .theme-icon-moon { color: #5a5040; fill: #5a5040; }
+
 /* ── Language Toggle ── */
-.lang-toggle { position: fixed; top: 0.85rem; right: 0.85rem; display: flex; border-radius: 50px; overflow: hidden; border: 1px solid rgba(237,227,200,0.12); z-index: 10; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(14,12,8,0.85); }
+.lang-toggle { display: flex; border-radius: 50px; overflow: hidden; border: 1px solid rgba(237,227,200,0.12); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(14,12,8,0.85); }
+[data-theme="light"] .lang-toggle { background: rgba(255,255,255,0.85); border-color: rgba(0,0,0,0.10); }
 .lang-btn { padding: 0.4rem 0.7rem; background: transparent; color: var(--cream-50); border: none; font-family: 'DM Sans', sans-serif; font-size: var(--text-sm); font-weight: 500; cursor: pointer; transition: all 0.2s; letter-spacing: 0.03em; }
 .lang-btn.active { background: var(--gold); color: #160F00; }
+[data-theme="light"] .lang-btn.active { color: #ffffff; }
 
 /* ── Site Footer ── */
 .site-footer { width: 100%; margin-top: auto; border-top: 1px solid var(--gold-border); background: var(--dark-surface); }

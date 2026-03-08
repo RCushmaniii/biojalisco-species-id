@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ClerkProvider } from '@clerk/nextjs';
 import { LanguageProvider } from '@/contexts/language-context';
+import { ThemeProvider } from '@/contexts/theme-context';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -33,9 +34,11 @@ export default function RootLayout({
   const content = (
     <html lang="en">
       <body>
-        <LanguageProvider>
-          {children}
-        </LanguageProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

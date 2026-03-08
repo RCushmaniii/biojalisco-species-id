@@ -6,6 +6,7 @@ import { useLanguage } from '@/hooks/use-language';
 import { NavBrand } from '@/components/nav-brand';
 import { SiteFooter } from '@/components/site-footer';
 import { LanguageToggle } from '@/components/language-toggle';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 interface FAQItem {
   en: { q: string; a: string };
@@ -121,7 +122,10 @@ export default function FAQPage() {
 
   return (
     <>
-      <LanguageToggle />
+      <div className="toolbar-toggles">
+        <ThemeToggle />
+        <LanguageToggle />
+      </div>
       <nav className="nav-bar nav-bar-wide">
         <NavBrand />
         <div className="nav-links">

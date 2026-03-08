@@ -3,11 +3,15 @@ import { NavBrand } from '@/components/nav-brand';
 import { OnboardingSection } from '@/components/onboarding-section';
 import { SiteFooter } from '@/components/site-footer';
 import { LanguageToggle } from '@/components/language-toggle';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function HomePage() {
   return (
     <>
-      <LanguageToggle />
+      <div className="toolbar-toggles">
+        <ThemeToggle />
+        <LanguageToggle />
+      </div>
       <nav className="nav-bar nav-bar-wide">
         <NavBrand />
         <div className="nav-links">
