@@ -6,7 +6,8 @@ import { NavBrand } from '@/components/nav-brand';
 import { SiteFooter } from '@/components/site-footer';
 import { LanguageToggle } from '@/components/language-toggle';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { CommunityCard } from '@/components/community-card';
+import { GalleryGrid } from '@/components/gallery-lightbox';
+import type { GalleryItem } from '@/components/gallery-lightbox';
 import { getImageUrl } from '@/lib/blob';
 import type { Observation } from '@/lib/types';
 
@@ -34,8 +35,9 @@ export default async function ObservationsPage() {
         geography: r.geography as Observation['geography'],
         conservation: r.conservation as Observation['conservation'],
         similarSpecies: r.similarSpecies as Observation['similarSpecies'],
-        identifiedAt: r.identifiedAt,
-        createdAt: r.createdAt,
+        // Convert Date objects to ISO strings for client component serialization
+        identifiedAt: r.identifiedAt ? new Date(r.identifiedAt) : null,
+        createdAt: new Date(r.createdAt),
       }));
     }
   } catch {
@@ -93,11 +95,18 @@ export default async function ObservationsPage() {
             </div>
           </div>
         ) : (
-          <div className="community-grid">
-            {obs.map((o) => (
-              <CommunityCard key={o.id} observation={o} />
-            ))}
-          </div>
+          <GalleryGrid items={obs.map((o): GalleryItem => ({
+            id: o.id,
+            imageUrl: o.imageUrl,
+            commonName: o.commonName,
+            scientificName: o.scientificName,
+            confidence: o.confidence,
+            iucnStatus: o.conservation?.iucn_status ?? null,
+            latitude: o.latitude,
+            longitude: o.longitude,
+            description: o.description,
+            createdAt: o.createdAt.toISOString(),
+          }))} />
         )}
       </div>
 
