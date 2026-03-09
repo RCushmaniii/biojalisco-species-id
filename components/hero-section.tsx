@@ -19,7 +19,7 @@ export function HeroSection({ count }: { count: number }) {
     <div className="hero">
       <div className="hero-header">
         <Image
-          src="/images/tropical-bird.png"
+          src="/images/tropical-bird.webp"
           alt="Motmot — Jalisco's iconic tropical bird"
           width={140}
           height={180}

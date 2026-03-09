@@ -4,7 +4,7 @@ export function OrganizationJsonLd() {
     '@type': 'Organization',
     name: 'BioJalisco',
     url: 'https://biojalisco-species-id.vercel.app',
-    logo: 'https://biojalisco-species-id.vercel.app/images/logo.png',
+    logo: 'https://biojalisco-species-id.vercel.app/images/logo.webp',
     description: 'AI-powered species identification platform for Jalisco biodiversity research, verified against GBIF, iNaturalist, and CONABIO databases.',
     foundingDate: '2026',
     parentOrganization: {
