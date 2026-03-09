@@ -3,21 +3,29 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useLanguage } from '@/hooks/use-language';
 import { ConfidenceGauge } from './confidence-gauge';
-import { OverviewPanel } from './tab-panels/overview-panel';
-import { TaxonomyPanel } from './tab-panels/taxonomy-panel';
-import { EcologyPanel } from './tab-panels/ecology-panel';
-import { GeographyPanel } from './tab-panels/geography-panel';
-import { ConservationPanel } from './tab-panels/conservation-panel';
+import { AboutPanel } from './tab-panels/about-panel';
+import { HabitatPanel } from './tab-panels/habitat-panel';
 import { SimilarPanel } from './tab-panels/similar-panel';
-import type { IdentifySuccessResponse } from '@/lib/types';
+import { TaxonomyPanel } from './tab-panels/taxonomy-panel';
+import { ConservationPanel } from './tab-panels/conservation-panel';
+import { DataSourcesPanel } from './tab-panels/data-sources-panel';
+import type { IdentifySuccessResponse, ImageMetadata, LocationInfo } from '@/lib/types';
+
+type Mode = 'explore' | 'research';
 
 interface ResultTabsProps {
-  data: IdentifySuccessResponse;
+  data: IdentifySuccessResponse & {
+    locationInfo?: LocationInfo | null;
+    imageMetadata?: ImageMetadata | null;
+    latitude?: number | null;
+    longitude?: number | null;
+  };
 }
 
 export function ResultTabs({ data }: ResultTabsProps) {
   const { lang, t } = useLanguage();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [mode, setMode] = useState<Mode>('explore');
+  const [activeTab, setActiveTab] = useState('about');
 
   const id = data.identification;
   const conf = typeof data.confidence === 'number' ? data.confidence : 75;
@@ -48,23 +56,32 @@ export function ResultTabs({ data }: ResultTabsProps) {
 
   const handleTabChange = useCallback((key: string) => {
     setActiveTab(key);
-    // Scroll the tab bar into view so the user always sees navigation + content start
     requestAnimationFrame(() => {
       stickyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
   }, []);
 
-  const tabs = [
-    { key: 'overview', label: t('Overview', 'General') },
-    { key: 'taxonomy', label: t('Taxonomy', 'Taxonomia') },
-    { key: 'ecology', label: t('Ecology', 'Ecologia') },
-    { key: 'geography', label: t('Range', 'Rango') },
-    { key: 'conservation', label: t('Conservation', 'Conservacion') },
+  const handleModeChange = useCallback((newMode: Mode) => {
+    setMode(newMode);
+    // Set default tab for new mode
+    setActiveTab(newMode === 'explore' ? 'about' : 'taxonomy');
+  }, []);
+
+  const hasSimilar = data.similar_species && data.similar_species.length > 0;
+
+  const exploreTabs = [
+    { key: 'about', label: t('About', 'Acerca') },
+    { key: 'habitat', label: t('Habitat & Range', 'Habitat y Rango') },
+    ...(hasSimilar ? [{ key: 'similar', label: t('Similar', 'Similares') }] : []),
   ];
 
-  if (data.similar_species && data.similar_species.length > 0) {
-    tabs.push({ key: 'similar', label: t('Similar', 'Similares') });
-  }
+  const researchTabs = [
+    { key: 'taxonomy', label: t('Taxonomy', 'Taxonomia') },
+    { key: 'conservation', label: t('Conservation', 'Conservacion') },
+    { key: 'sources', label: t('Data Sources', 'Fuentes') },
+  ];
+
+  const tabs = mode === 'explore' ? exploreTabs : researchTabs;
 
   return (
     <div className="result-card visible">
@@ -75,6 +92,21 @@ export function ResultTabs({ data }: ResultTabsProps) {
           <div className="result-scientific">{id.scientific_name}</div>
           {id.breed && <div className="result-breed">{id.breed}</div>}
         </div>
+      </div>
+
+      <div className="mode-toggle">
+        <button
+          className={`mode-btn ${mode === 'explore' ? 'active' : ''}`}
+          onClick={() => handleModeChange('explore')}
+        >
+          {t('Explore', 'Explorar')}
+        </button>
+        <button
+          className={`mode-btn ${mode === 'research' ? 'active' : ''}`}
+          onClick={() => handleModeChange('research')}
+        >
+          {t('Research', 'Investigar')}
+        </button>
       </div>
 
       <div className="tabs-anchor" ref={stickyRef} />
@@ -93,26 +125,36 @@ export function ResultTabs({ data }: ResultTabsProps) {
       </div>
 
       <div className="tab-panels">
-        <div className={`tab-panel ${activeTab === 'overview' ? 'active' : ''}`}>
-          <OverviewPanel data={data} />
+        {/* Explore mode panels */}
+        <div className={`tab-panel ${activeTab === 'about' ? 'active' : ''}`}>
+          <AboutPanel data={data} />
         </div>
-        <div className={`tab-panel ${activeTab === 'taxonomy' ? 'active' : ''}`}>
-          <TaxonomyPanel taxonomy={data.taxonomy} gbif={data.gbif} />
+        <div className={`tab-panel ${activeTab === 'habitat' ? 'active' : ''}`}>
+          <HabitatPanel ecology={data.ecology} geography={data.geography} gbif={data.gbif} />
         </div>
-        <div className={`tab-panel ${activeTab === 'ecology' ? 'active' : ''}`}>
-          <EcologyPanel ecology={data.ecology} />
-        </div>
-        <div className={`tab-panel ${activeTab === 'geography' ? 'active' : ''}`}>
-          <GeographyPanel geography={data.geography} gbif={data.gbif} />
-        </div>
-        <div className={`tab-panel ${activeTab === 'conservation' ? 'active' : ''}`}>
-          <ConservationPanel conservation={data.conservation} gbif={data.gbif} enciclovida={data.enciclovida} />
-        </div>
-        {data.similar_species && data.similar_species.length > 0 && (
+        {hasSimilar && (
           <div className={`tab-panel ${activeTab === 'similar' ? 'active' : ''}`}>
             <SimilarPanel species={data.similar_species} />
           </div>
         )}
+
+        {/* Research mode panels */}
+        <div className={`tab-panel ${activeTab === 'taxonomy' ? 'active' : ''}`}>
+          <TaxonomyPanel taxonomy={data.taxonomy} gbif={data.gbif} />
+        </div>
+        <div className={`tab-panel ${activeTab === 'conservation' ? 'active' : ''}`}>
+          <ConservationPanel conservation={data.conservation} gbif={data.gbif} enciclovida={data.enciclovida} />
+        </div>
+        <div className={`tab-panel ${activeTab === 'sources' ? 'active' : ''}`}>
+          <DataSourcesPanel
+            gbif={data.gbif}
+            enciclovida={data.enciclovida}
+            imageMetadata={data.imageMetadata}
+            locationInfo={data.locationInfo}
+            latitude={data.latitude}
+            longitude={data.longitude}
+          />
+        </div>
       </div>
     </div>
   );

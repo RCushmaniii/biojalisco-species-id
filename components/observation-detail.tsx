@@ -84,7 +84,9 @@ export function ObservationDetail({ observation }: { observation: Observation })
         {observation.latitude && observation.longitude && (
           <div className="detail-meta-item">
             <MapPinIcon className="icon icon-sm" />
-            {observation.latitude.toFixed(4)}, {observation.longitude.toFixed(4)}
+            {observation.locationInfo
+              ? observation.locationInfo.displayName
+              : `${observation.latitude.toFixed(4)}, ${observation.longitude.toFixed(4)}`}
           </div>
         )}
       </div>
@@ -119,7 +121,11 @@ export function ObservationDetail({ observation }: { observation: Observation })
                 description: observation.description || '',
                 descripcion: observation.descripcion || '',
                 fun_fact: observation.funFact || '',
-              } satisfies IdentifySuccessResponse
+                locationInfo: observation.locationInfo || undefined,
+                imageMetadata: observation.imageMetadata || undefined,
+                latitude: observation.latitude,
+                longitude: observation.longitude,
+              } as IdentifySuccessResponse & { locationInfo?: typeof observation.locationInfo; imageMetadata?: typeof observation.imageMetadata; latitude?: number | null; longitude?: number | null }
             }
           />
         ) : null}
