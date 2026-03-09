@@ -1229,7 +1229,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: 0.5rem;
   transition: color 0.2s, background 0.2s;
 }
-.hamburger-btn:hover { color: var(--gold); background: var(--glass-bg); }
+.hamburger-btn:hover { color: var(--gold); background: rgba(240,192,64,0.08); }
 .hamburger-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 /* ── Mobile Drawer ── */
@@ -1251,7 +1251,7 @@ a { color: inherit; text-decoration: none; }
   right: 0;
   width: min(320px, 85vw);
   height: 100dvh;
-  background: var(--bg-color);
+  background: #0E0C08;
   border-left: 1px solid var(--gold-border);
   z-index: 999;
   display: flex;
@@ -1261,6 +1261,9 @@ a { color: inherit; text-decoration: none; }
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
 }
+[data-theme="light"] .nav-drawer {
+  background: #FAF7F0;
+}
 .nav-drawer.open { transform: translateX(0); }
 
 .nav-drawer-header {
@@ -1269,7 +1272,7 @@ a { color: inherit; text-decoration: none; }
   justify-content: space-between;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid rgba(240,192,64,0.12);
 }
 
 .nav-drawer-close {
@@ -1281,7 +1284,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: 0.5rem;
   transition: color 0.2s, background 0.2s;
 }
-.nav-drawer-close:hover { color: var(--gold); background: var(--glass-bg); }
+.nav-drawer-close:hover { color: var(--gold); background: rgba(240,192,64,0.08); }
 .nav-drawer-close:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 .nav-drawer-links {
@@ -1299,14 +1302,14 @@ a { color: inherit; text-decoration: none; }
   border-radius: 0.5rem;
   transition: color 0.2s, background 0.2s;
 }
-.nav-drawer-link:hover { color: var(--gold); background: var(--glass-bg); }
-.nav-drawer-link.active { color: var(--gold); background: var(--glass-bg); }
+.nav-drawer-link:hover { color: var(--gold); background: rgba(240,192,64,0.08); }
+.nav-drawer-link.active { color: var(--gold); background: rgba(240,192,64,0.08); }
 .nav-drawer-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 .nav-drawer-footer {
   margin-top: 1.5rem;
   padding: 1rem;
-  border-top: 1px solid var(--glass-border);
+  border-top: 1px solid rgba(240,192,64,0.12);
 }
 
 .nav-drawer-toggles {
