@@ -123,7 +123,7 @@ Minimum viable:
 - Without Clerk keys, middleware passes all requests through (no auth)
 - Sign-up is disabled in Clerk dashboard (invite-only)
 - All protected routes are under `app/(protected)/`
-- Public route: `/sign-in`
+- Public routes: `/`, `/faq`, `/terms`, `/privacy`, `/species-guide`, `/observations`, `/sign-in`
 
 ## Frontend Architecture
 
@@ -131,9 +131,26 @@ Minimum viable:
 
 | Page | Type | Location |
 |------|------|----------|
-| Landing / Hero | Server component | `app/(protected)/page.tsx` |
+| Home / Landing | Server component | `app/page.tsx` |
+| FAQ | Client component (accordion) | `app/faq/page.tsx` |
+| Species Guide | Client component (filters) | `app/species-guide/page.tsx` |
+| Observations Gallery | Server component + client gallery | `app/observations/page.tsx` |
+| Observation Detail | Server component | `app/observations/[id]/page.tsx` |
+| Terms / Privacy | Server components | `app/terms/page.tsx`, `app/privacy/page.tsx` |
+| Dashboard | Server component | `app/(protected)/dashboard/page.tsx` |
 | Identify | Client component (camera access) | `app/(protected)/identify/page.tsx` |
-| Observation detail | Server component | `app/(protected)/observations/[id]/page.tsx` |
+
+### Community Gallery System
+
+**File:** `components/gallery-lightbox.tsx`
+
+Dense CSS grid masonry layout with AI-driven cell sizing:
+
+- GPT-4o analyzes subject composition and returns `image_orientation` (`landscape` or `portrait`)
+- Portrait subjects get `gallery-cell-tall` (spans 2 rows); landscape subjects stay single-row
+- Featured observations sort first via `featured DESC NULLS LAST, created_at DESC`
+- Lightbox viewer with keyboard navigation, click-outside-to-close, and full bilingual content
+- IUCN status badges color-coded on every cell (LC green, VU orange, EN red, CR dark red)
 
 ### Tab Panel System
 
@@ -159,17 +176,39 @@ All 6 tab panels (Overview, Taxonomy, Ecology, Geography, Conservation, Similar 
 - `LanguageContext` provides `lang` (EN/ES), `setLang`, and `t(en, es)` helper
 - All UI text and species descriptions available in both languages
 - Language toggle persists in component state (not URL or cookie)
+- Gallery lightbox fully bilingual: species names, descriptions, dates, confidence labels
+
+### Theme System
+
+**File:** `contexts/theme-context.tsx`
+
+- `ThemeContext` provides `theme` (dark/light) and `toggleTheme`
+- Applies `data-theme="light"` attribute to `<html>` element
+- CSS variables swap via `[data-theme="light"]` selector block
+- Persists in localStorage; reads `prefers-color-scheme` on first visit
+- Animated sun/moon toggle button with rotate + scale transitions
+- Logo adapts via CSS `filter` (gold in dark mode, natural black in light mode)
+
+### Navigation
+
+**Files:** `components/public-nav.tsx`, `app/(protected)/layout.tsx`
+
+- **Desktop:** Inline nav bar with logo + links + theme/language toggles
+- **Mobile (< 768px):** Hamburger button reveals slide-out drawer with links, toggles, close button
+- **Drawer:** `transform: translateX()` animation, backdrop blur, full-height with scroll
+- Logo always links to home (`/`)
 
 ## Design System
 
 - No Tailwind -- CSS variables in `globals.css`
 - Glass-morphism cards: `backdrop-filter: blur()` with semi-transparent backgrounds
-- Gold accent: `#F0C040`
-- Background: `#0E0C08`
-- Content max-width: `1200px` (home, dashboard, FAQ) / `780px` (identify, observation detail)
+- Dark theme: gold `#F0C040`, background `#0E0C08`, cream text `#EDE3C8`
+- Light theme: gold `#C49A20`, background `#FAF7F0`, dark text `#1a1810`
+- Content max-width: `1200px` (home, dashboard, FAQ, gallery) / `780px` (identify, observation detail)
 - Typography: DM Sans (body) + Playfair Display (headings) + Cormorant Garamond (accents)
 - Scanning border animation on identification cards
 - Pill-shaped buttons with hover transitions
+- Grid-stacked carousel (testimonials use same technique as tab panels)
 
 ## Key Technical Decisions
 

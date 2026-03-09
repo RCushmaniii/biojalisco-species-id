@@ -72,6 +72,7 @@ Identifies a species from a photo using the four-API pipeline (iNaturalist + GPT
       "distinction": "Lacks the turquoise brow stripe; has a rufous crown"
     }
   ],
+  "image_orientation": "landscape",
   "description": "The Turquoise-browed Motmot is one of...",
   "descripcion": "El Momoto Cejiceleste es una de las...",
   "fun_fact": "Motmots create their distinctive racquet-shaped tail...",
@@ -201,6 +202,42 @@ All 7 Linnaean ranks: `kingdom`, `phylum`, `class`, `order`, `family`, `genus`, 
 
 ---
 
+## PATCH `/api/observations/[id]`
+
+Updates metadata on an existing observation. Used for admin curation of the community gallery.
+
+### Authentication
+
+Requires authenticated session. User must own the observation.
+
+### Request
+
+**Content-Type:** `application/json`
+
+```json
+{
+  "featured": true,
+  "imageOrientation": "portrait"
+}
+```
+
+All fields are optional. Only provided fields are updated.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `featured` | boolean | Flag observation as featured (sorts first in gallery, shows gold star) |
+| `imageOrientation` | `"landscape"` \| `"portrait"` | Override AI-assigned orientation for gallery grid layout |
+
+### Response
+
+**Status:** `200 OK` -- Returns the updated observation row.
+
+**Status:** `400 Bad Request` -- No valid fields provided.
+
+**Status:** `404 Not Found` -- Observation not found or not owned by user.
+
+---
+
 ## Database Schema
 
 Single `observations` table. JSONB columns store structured data without rigid normalization.
@@ -222,6 +259,8 @@ Single `observations` table. JSONB columns store structured data without rigid n
 | `geography` | JSONB | Range, Jalisco/Mexico flags, invasive flag |
 | `conservation` | JSONB | IUCN status, population trend, threats |
 | `similar_species` | JSONB | Array of similar species with distinctions |
+| `image_orientation` | TEXT | `landscape` or `portrait` -- AI-assigned based on subject composition, admin-overridable |
+| `featured` | BOOLEAN | Default false. Featured observations sort first in gallery |
 | `description` | TEXT | English narrative description |
 | `descripcion` | TEXT | Spanish narrative description |
 | `fun_fact` | TEXT | Interesting ecological fact |

@@ -15,28 +15,34 @@ AI-powered species identification web app for Jalisco biodiversity research. Bui
 - **Styling**: CSS variables + DM Sans/Playfair Display/Cormorant Garamond (NO Tailwind)
 
 ## Project Structure
-- `app/page.tsx` -- Public home page (onboarding, mission, pipeline, academic foundation)
+- `app/page.tsx` -- Public home page (onboarding, mission, pipeline, testimonials, academic foundation)
 - `app/faq/page.tsx` -- Public FAQ page (10 bilingual Q&A items)
+- `app/terms/page.tsx` -- Terms of Use (10 sections)
+- `app/privacy/page.tsx` -- Privacy Policy (11 sections)
+- `app/species-guide/page.tsx` -- Protected species guide (20 Jalisco vertebrates, filterable)
+- `app/observations/page.tsx` -- Public community observation gallery (masonry grid + lightbox)
+- `app/observations/[id]/page.tsx` -- Public single observation detail
+- `app/not-found.tsx` -- Custom 404 page
 - `app/(protected)/page.tsx` -- Redirects to /dashboard
 - `app/(protected)/dashboard/page.tsx` -- Dashboard (stats, observation history, contribution banner)
 - `app/(protected)/identify/page.tsx` -- Camera/upload + AI identification
-- `app/(protected)/observations/[id]/page.tsx` -- Single observation detail
 - `app/sign-in/[[...sign-in]]/page.tsx` -- Clerk sign-in page
 - `app/api/identify/route.ts` -- Main identification pipeline (iNat + GPT-4o + GBIF + EncicloVida)
 - `app/api/observations/route.ts` -- Observation list API
-- `app/api/observations/[id]/route.ts` -- Single observation API (GET, DELETE)
-- `components/` -- React components (onboarding-section, dashboard-stats, contribution-banner, site-footer, nav-links, capture-area, result-tabs, observation-list, observation-card, observation-detail, icons, etc.)
+- `app/api/observations/[id]/route.ts` -- Single observation API (GET, PATCH, DELETE)
+- `components/` -- React components (onboarding-section, testimonial-carousel, dashboard-stats, contribution-banner, public-nav, site-footer, nav-brand, nav-links, capture-area, result-tabs, gallery-lightbox, observation-list, observation-card, observation-detail, theme-toggle, language-toggle, icons, etc.)
 - `components/tab-panels/` -- 6 result panels (overview, taxonomy, ecology, geography, conservation, similar)
-- `lib/openai.ts` -- GPT-4o Vision integration with system prompt
+- `lib/openai.ts` -- GPT-4o Vision integration with system prompt (includes image_orientation)
 - `lib/inaturalist.ts` -- iNaturalist regional species context
 - `lib/gbif.ts` -- GBIF enrichment (verified taxonomy, IUCN, distributions)
 - `lib/enciclovida.ts` -- EncicloVida/CONABIO enrichment (endemic status, NOM-059, indigenous names, Wikipedia)
-- `lib/db/schema.ts` -- Single `observations` table with JSONB columns
+- `lib/db/schema.ts` -- Single `observations` table with JSONB columns + featured + imageOrientation
 - `lib/types.ts` -- All TypeScript interfaces including GBIFData, EncicloVidaData
+- `lib/species-data.ts` -- Bilingual species data for 20 protected Jalisco vertebrates
 - `docs/` -- Project documentation (API.md, ARCHITECTURE.md, FEATURES.md, FUNDING.md, ROADMAP.md)
-- `contexts/` -- React contexts (language EN/ES)
-- `hooks/` -- Custom hooks (useLanguage, useGeolocation)
-- `public/images/` -- Species illustrations (motmot, bearded lizard)
+- `contexts/` -- React contexts (language EN/ES, theme dark/light)
+- `hooks/` -- Custom hooks (useLanguage, useTheme, useGeolocation)
+- `public/images/` -- Frog silhouette logo (logo.png)
 
 ## Development Commands
 ```powershell
@@ -56,32 +62,35 @@ The `/api/identify` route runs this sequence:
 All four APIs are best-effort with independent timeouts. If any external API is slow/down, identification still works with AI-only data.
 
 ## Key Patterns & Conventions
-- **No Tailwind** -- all styling via CSS variables in `globals.css`. Dark theme with glass-morphism cards, gold accents, pill buttons.
-- **System prompt** -- `lib/openai.ts` contains the GPT-4o system prompt. It's been tuned for geographic context awareness (prioritizes Neotropical fauna when GPS indicates Mexico).
+- **No Tailwind** -- all styling via CSS variables in `globals.css`. Dark/light themes via `[data-theme="light"]` CSS variable swap.
+- **System prompt** -- `lib/openai.ts` contains the GPT-4o system prompt. Tuned for geographic context awareness (prioritizes Neotropical fauna when GPS indicates Mexico). Also returns `image_orientation` based on subject composition.
 - **Graceful degradation** -- App works with just OPENAI_API_KEY. Auth (Clerk), persistence (Neon + Blob), and enrichment (iNat + GBIF + EncicloVida) are all optional layers.
 - **Lazy service init** -- `lib/db/index.ts` and `lib/openai.ts` use lazy initialization so builds succeed without env vars.
-- **Server components for data** -- Dashboard and observation detail are server components. Identify page is a client component (camera access).
-- **Bilingual** -- `LanguageContext` provides `lang`, `setLang`, and `t(en, es)` helper throughout the app.
-- **Grid-stacked tab panels** -- All tab panels occupy the same CSS grid cell (grid-row: 1, grid-column: 1). Container height = tallest panel. Switching tabs toggles visibility, never changes layout height.
+- **Server components for data** -- Dashboard, observation detail, and gallery are server components. Identify page is a client component (camera access).
+- **Bilingual** -- `LanguageContext` provides `lang`, `setLang`, and `t(en, es)` helper throughout the app. Gallery lightbox fully bilingual.
+- **Theme** -- `ThemeContext` provides dark/light toggle. Persists in localStorage, respects prefers-color-scheme.
+- **Grid-stacked panels** -- Tab panels AND testimonial carousel use same CSS grid stacking technique (grid-row: 1, grid-column: 1). Container height = tallest item. Switching toggles opacity/visibility, never changes layout height.
 - **Sticky tab bar** -- Tab navigation sticks to top of viewport when scrolling long panel content.
-- **Two content widths** -- 1200px for home/dashboard/FAQ, 780px for identify/observation detail.
-- **Public vs protected nav** -- Public pages (/, /faq) have inline nav; protected pages use shared layout with NavLinks component.
-- **SiteFooter** -- Data sources (GBIF, iNaturalist, EncicloVida) and partners (UdeG, CONABIO).
+- **Two content widths** -- 1200px for home/dashboard/FAQ/gallery, 780px for identify/observation detail.
+- **Navigation** -- Public pages use `PublicNav` component; protected pages use shared layout. Mobile hamburger drawer at < 768px. Logo always links to home.
+- **Gallery layout** -- AI-driven orientation metadata determines grid cell sizing. Featured observations sort first. Click-outside-to-close lightbox.
+- **Upload validation** -- JPEG/PNG/WebP/HEIC only, 20MB client + server limit, bilingual error feedback.
+- **SiteFooter** -- Data sources (GBIF, iNaturalist, EncicloVida), partners (UdeG, CONABIO), legal links.
 - **Blob storage** -- Public access (URLs are unguessable random strings, app access gated by Clerk auth).
 
 ## Current Focus
-Phase 1 complete. Four-API pipeline, Clerk auth, Neon database, Vercel Blob storage all deployed and working. Page structure: public home + FAQ, authenticated dashboard + identify + observation detail. Current priorities:
-- Mobile polish
-- Documentation updates
-- Production testing
+Phase 1 complete + polish. Four-API pipeline, Clerk auth, Neon database, Vercel Blob storage, community gallery, theme system, mobile nav, SEO all deployed. Current priorities:
+- Phase 2 planning (species dashboards, geographic heatmaps)
+- Admin UI for gallery curation (currently API-only via PATCH)
+- Production testing with research team
 
 ## Known Issues
 - Vercel free tier has 10s function timeout; full pipeline (iNat + GPT-4o + GBIF + EncicloVida) can take 8-20s. Vercel Pro recommended.
 - iNaturalist CV API is NOT publicly available (fee-based access only). We use their public observations API for species context instead.
 - No offline support -- requires network for identification.
 - No image cropping/rotation UI -- relies on device camera orientation.
-- No hamburger menu on mobile yet -- nav links reduce/stack at small breakpoints.
 - Blob storage uses public access -- URLs are unguessable but technically accessible without auth.
+- Observations page heading not yet bilingual (server component, would need client wrapper).
 
 ## Environment Setup
 Copy `.env.local.example` to `.env.local`. Only `OPENAI_API_KEY` is required for basic operation.

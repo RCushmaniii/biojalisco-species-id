@@ -158,7 +158,7 @@ EncicloVida is the public biodiversity platform maintained by **CONABIO (Comisio
 
 ### Bilingual by Default
 
-All text is available in **both English and Spanish**: UI elements, species descriptions, ecological information, narrative explanations, and fun facts. A single toggle switches languages instantly, supporting research teams working across both English and Spanish scientific workflows.
+All text is available in **both English and Spanish**: UI elements, species descriptions, ecological information, narrative explanations, fun facts, gallery lightbox content, and dates. A single toggle switches languages instantly across the entire app, including the observation gallery and lightbox viewer.
 
 ### Verified Data Badges
 
@@ -170,6 +170,36 @@ The interface clearly distinguishes **AI-generated content** from **verified sci
 - "NOM-059-SEMARNAT Protection Status"
 
 Each badge links directly to the source database for further research.
+
+### Dark / Light Theme
+
+Animated sun/moon toggle switches between dark field mode (reduces glare outdoors) and light mode (better readability in bright environments). Theme persists in localStorage and respects `prefers-color-scheme` on first visit. All glass-morphism cards, buttons, badges, and the logo adapt automatically via CSS variables.
+
+### Community Observation Gallery
+
+Public gallery page (`/observations`) displays all species identifications in a dense CSS grid masonry layout with:
+
+- **AI-driven image orientation** -- GPT-4o analyzes subject composition (not pixel dimensions) and tags each image as `landscape` or `portrait`. Portrait subjects get tall grid cells; landscape subjects stay single-row. No more random modulo-based sizing.
+- **Featured observations** -- Admin-flagged observations sort first, with a gold star badge. Featured + date sub-sort.
+- **Lightbox viewer** -- Click any image for full-screen view with species info, nav arrows, keyboard shortcuts (Escape, arrow keys), and **click-outside-to-close** for users who don't see the X button.
+- **IUCN status badges** -- Color-coded conservation status (LC/NT/VU/EN/CR) on every gallery cell.
+- **Fully bilingual** -- Gallery cells, lightbox species names, descriptions, dates, and confidence labels all respect the language toggle.
+
+### Testimonial Carousel
+
+"Voices from the Field" section on the home page with 4 bilingual testimonials from researchers, students, and citizen scientists. Auto-advances every 7 seconds, pauses on hover, dot navigation. Uses CSS grid stacking (same technique as tab panels) to prevent layout height shifting between slides.
+
+### Jalisco Protected Species Guide
+
+Interactive reference page (`/species-guide`) with 20 protected vertebrate species from Jalisco, filterable by taxonomic group (mammals, birds, reptiles, amphibians). Shows NOM-059 status, IUCN status, and endemic classification for each species. Bilingual throughout.
+
+### Upload Validation
+
+Client-side file type allowlist (JPEG, PNG, WebP, HEIC only) with 20MB size limit and bilingual error messages. Rejects SVG, BMP, TIFF, and other formats that GPT-4o can't process well. Server enforces the same 20MB limit via base64 length validation.
+
+### Admin Observation Management
+
+`PATCH /api/observations/[id]` endpoint allows toggling `featured` status and overriding `imageOrientation` on any observation. Enables curation of the community gallery without direct database access.
 
 ### Graceful Degradation
 
@@ -189,11 +219,13 @@ A single API failure never blocks the identification workflow.
 
 ### Designed for Field Use
 
-- Dark mode to reduce glare outdoors
+- Dark/light theme toggle for different lighting conditions
 - Large touch targets for mobile devices
+- Mobile hamburger nav with slide-out drawer
 - Camera capture, file upload, and drag-and-drop
 - Sticky tab navigation during scrolling
 - Grid-based layout that prevents layout shifting between tabs
+- File type validation with bilingual error feedback
 
 ---
 
@@ -216,6 +248,30 @@ A single API failure never blocks the identification workflow.
 
 ---
 
+## Pages & Navigation
+
+| Page | Route | Access | Description |
+|------|-------|--------|-------------|
+| Home | `/` | Public | Onboarding, pipeline, mission, testimonials, CTA |
+| FAQ | `/faq` | Public | 10 bilingual Q&A items with accordion |
+| Species Guide | `/species-guide` | Public | 20 protected Jalisco vertebrates, filterable |
+| Observations | `/observations` | Public | Community gallery with masonry grid + lightbox |
+| Observation Detail | `/observations/[id]` | Public | Full species profile from a single observation |
+| Terms of Use | `/terms` | Public | 10-section legal terms |
+| Privacy Policy | `/privacy` | Public | 11-section privacy policy with data sharing table |
+| Dashboard | `/dashboard` | Auth | Stats, observation history, contribution banner |
+| Identify | `/identify` | Auth | Camera/upload + AI identification pipeline |
+| Sign In | `/sign-in` | Public | Clerk sign-in (invite-only) |
+| 404 | Not found | Public | Custom error page |
+
+**Navigation:**
+- Public pages: inline nav bar with logo link to home
+- Protected pages: shared layout with NavLinks component
+- Mobile: hamburger button with slide-out drawer (theme + language toggles inside)
+- Logo always links to home (`/`)
+
+---
+
 ## Current Limitations
 
 - Identification accuracy depends on photo quality and subject visibility
@@ -235,9 +291,10 @@ BioJalisco is designed to **assist field identification**, not replace expert ta
 - Confidence scoring across pipeline stages
 - Expanded taxonomic coverage beyond vertebrates
 - Optional integration with institutional biodiversity databases
+- Admin UI for featured/orientation management (currently API-only)
 
 ---
 
 *Built by CushLabs AI Services -- [info@cushlabs.ai](mailto:info@cushlabs.ai)*
 
-*Last updated: 2026-03-07*
+*Last updated: 2026-03-09*
