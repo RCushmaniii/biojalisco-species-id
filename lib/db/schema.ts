@@ -17,6 +17,7 @@ export const observations = pgTable('observations', {
   geography: jsonb('geography'),
   conservation: jsonb('conservation'),
   similarSpecies: jsonb('similar_species'),
+  imageOrientation: text('image_orientation'),
   description: text('description'),
   descripcion: text('descripcion'),
   funFact: text('fun_fact'),

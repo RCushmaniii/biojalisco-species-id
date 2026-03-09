@@ -4,6 +4,10 @@ import { useRef, useState, useCallback } from 'react';
 import { useLanguage } from '@/hooks/use-language';
 import { ViewfinderIcon, CameraIcon, UploadIcon, SearchIcon } from './icons';
 
+const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+const ACCEPTED_EXTENSIONS = '.jpg,.jpeg,.png,.webp,.heic,.heif';
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
+
 interface CaptureAreaProps {
   onIdentify: (imageData: string) => void;
   isLoading: boolean;
@@ -43,6 +47,7 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
       canvas.getContext('2d')!.drawImage(video, 0, 0);
       const data = canvas.toDataURL('image/jpeg', 0.85);
       setImageData(data);
+      setFileError(null);
       stopCamera();
       return;
     }
@@ -69,9 +74,28 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
     }
   };
 
+  const [fileError, setFileError] = useState<string | null>(null);
+
   const processFile = useCallback(
     (file: File) => {
-      if (!file.type.startsWith('image/')) return;
+      setFileError(null);
+
+      if (!ACCEPTED_TYPES.includes(file.type)) {
+        setFileError(t(
+          'Unsupported file type. Please use JPEG, PNG, or WebP images.',
+          'Tipo de archivo no soportado. Usa imagenes JPEG, PNG o WebP.'
+        ));
+        return;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        setFileError(t(
+          'Image too large (max 20MB). Try a smaller image or reduce the resolution.',
+          'Imagen demasiado grande (max 20MB). Intenta una imagen mas pequeña o reduce la resolucion.'
+        ));
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = (ev) => {
         const data = ev.target?.result as string;
@@ -80,7 +104,7 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
       };
       reader.readAsDataURL(file);
     },
-    [stopCamera]
+    [stopCamera, t]
   );
 
   const handleFile = useCallback(
@@ -176,17 +200,23 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
         </button>
       </div>
 
+      {fileError && (
+        <div className="capture-error">
+          <p>{fileError}</p>
+        </div>
+      )}
+
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept={ACCEPTED_EXTENSIONS}
         style={{ display: 'none' }}
         onChange={handleFile}
       />
       <input
         ref={cameraInputRef}
         type="file"
-        accept="image/*"
+        accept={ACCEPTED_EXTENSIONS}
         capture="environment"
         style={{ display: 'none' }}
         onChange={handleFile}

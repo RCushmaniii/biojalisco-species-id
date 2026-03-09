@@ -65,6 +65,7 @@ Respond in this exact JSON format:
       "distinction": "How to tell them apart"
     }
   ],
+  "image_orientation": "landscape or portrait — based on the SUBJECT composition, not pixel dimensions. If the animal is wider than tall (bird in flight, lizard on a branch, coiled snake, swimming turtle) use landscape. If the animal is taller than wide (perched owl, standing deer, tree frog on a vertical stem, upright heron) use portrait.",
   "description": "2-3 engaging sentences about the species. For domestic breeds include traits, temperament, origin.",
   "descripcion": "Same description in Spanish.",
   "fun_fact": "One surprising or delightful fact."

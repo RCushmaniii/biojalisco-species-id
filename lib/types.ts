@@ -74,6 +74,7 @@ export interface IdentifySuccessResponse {
   geography: Geography;
   conservation: Conservation;
   similar_species: SimilarSpecies[];
+  image_orientation: 'landscape' | 'portrait';
   description: string;
   descripcion: string;
   fun_fact: string;
@@ -105,6 +106,7 @@ export interface Observation {
   geography: Geography | null;
   conservation: Conservation | null;
   similarSpecies: SimilarSpecies[] | null;
+  imageOrientation: 'landscape' | 'portrait' | null;
   description: string | null;
   descripcion: string | null;
   funFact: string | null;

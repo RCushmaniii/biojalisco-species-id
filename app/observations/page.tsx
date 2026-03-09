@@ -44,6 +44,7 @@ export default async function ObservationsPage() {
         geography: r.geography as Observation['geography'],
         conservation: r.conservation as Observation['conservation'],
         similarSpecies: r.similarSpecies as Observation['similarSpecies'],
+        imageOrientation: r.imageOrientation as Observation['imageOrientation'],
         identifiedAt: r.identifiedAt ? new Date(r.identifiedAt) : null,
         createdAt: new Date(r.createdAt),
       }));
@@ -102,6 +103,7 @@ export default async function ObservationsPage() {
             scientificName: o.scientificName,
             confidence: o.confidence,
             iucnStatus: o.conservation?.iucn_status ?? null,
+            imageOrientation: o.imageOrientation ?? null,
             latitude: o.latitude,
             longitude: o.longitude,
             description: o.description,

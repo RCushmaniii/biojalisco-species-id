@@ -156,6 +156,7 @@ export async function POST(request: NextRequest) {
           geography: isError ? null : result.geography,
           conservation: isError ? null : result.conservation,
           similarSpecies: isError ? null : result.similar_species,
+          imageOrientation: isError ? null : (result.image_orientation || 'landscape'),
           description: isError ? null : result.description,
           descripcion: isError ? null : result.descripcion,
           funFact: isError ? null : result.fun_fact,

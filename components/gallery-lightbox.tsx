@@ -8,6 +8,7 @@ export interface GalleryItem {
   scientificName: string | null;
   confidence: number | null;
   iucnStatus: string | null;
+  imageOrientation: string | null;
   latitude: number | null;
   longitude: number | null;
   description: string | null;
@@ -86,7 +87,7 @@ export function GalleryGrid({ items }: GalleryGridProps) {
           return (
             <button
               key={obs.id}
-              className={`gallery-cell ${i % 7 === 0 ? 'gallery-cell-tall' : ''} ${i % 11 === 0 && i > 0 ? 'gallery-cell-wide' : ''}`}
+              className={`gallery-cell ${obs.imageOrientation === 'portrait' ? 'gallery-cell-tall' : ''}`}
               onClick={() => openLightbox(i)}
               aria-label={`View ${obs.commonName || 'observation'}`}
             >
