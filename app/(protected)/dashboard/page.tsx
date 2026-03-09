@@ -88,13 +88,13 @@ export default async function DashboardPage() {
               totalObservations={obs.length}
               latestSpecies={latestSpecies}
             />
-            <ObservationList observations={obs} />
             <div className="dashboard-cta">
               <Link href="/identify" className="btn btn-primary hero-btn">
                 <CameraIcon />
                 Identify Another
               </Link>
             </div>
+            <ObservationList observations={obs} />
           </>
         ) : (
           <DashboardEmpty />
