@@ -33,6 +33,46 @@ export async function GET(
   }
 }
 
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const userId = await getAuthUserId();
+    const body = await request.json();
+
+    // Build update object from allowed fields
+    const updates: Record<string, unknown> = {};
+    if (typeof body.featured === 'boolean') updates.featured = body.featured;
+    if (body.imageOrientation === 'landscape' || body.imageOrientation === 'portrait') {
+      updates.imageOrientation = body.imageOrientation;
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+    }
+
+    const rows = await db
+      .update(observations)
+      .set(updates)
+      .where(and(eq(observations.id, id), eq(observations.userId, userId)))
+      .returning();
+
+    if (rows.length === 0) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(rows[0]);
+  } catch (error) {
+    console.error('Patch observation error:', error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

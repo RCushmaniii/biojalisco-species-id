@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, real, integer, jsonb, timestamp, index } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, real, integer, jsonb, timestamp, boolean, index } from 'drizzle-orm/pg-core';
 
 export const observations = pgTable('observations', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -18,6 +18,7 @@ export const observations = pgTable('observations', {
   conservation: jsonb('conservation'),
   similarSpecies: jsonb('similar_species'),
   imageOrientation: text('image_orientation'),
+  featured: boolean('featured').default(false),
   description: text('description'),
   descripcion: text('descripcion'),
   funFact: text('fun_fact'),

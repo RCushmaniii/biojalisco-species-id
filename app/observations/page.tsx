@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 import { observations } from '@/lib/db/schema';
-import { desc } from 'drizzle-orm';
+import { desc, sql } from 'drizzle-orm';
 import { PublicNav } from '@/components/public-nav';
 import { SiteFooter } from '@/components/site-footer';
 import { GalleryGrid } from '@/components/gallery-lightbox';
@@ -33,7 +33,7 @@ export default async function ObservationsPage() {
       const rows = await db
         .select()
         .from(observations)
-        .orderBy(desc(observations.createdAt))
+        .orderBy(sql`${observations.featured} DESC NULLS LAST`, desc(observations.createdAt))
         .limit(100);
 
       obs = rows.map((r) => ({
@@ -105,6 +105,7 @@ export default async function ObservationsPage() {
             confidence: o.confidence,
             iucnStatus: o.conservation?.iucn_status ?? null,
             imageOrientation: o.imageOrientation ?? null,
+            featured: o.featured ?? false,
             latitude: o.latitude,
             longitude: o.longitude,
             description: o.description,

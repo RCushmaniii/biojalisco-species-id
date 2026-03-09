@@ -107,6 +107,7 @@ export interface Observation {
   conservation: Conservation | null;
   similarSpecies: SimilarSpecies[] | null;
   imageOrientation: 'landscape' | 'portrait' | null;
+  featured: boolean | null;
   description: string | null;
   descripcion: string | null;
   funFact: string | null;
