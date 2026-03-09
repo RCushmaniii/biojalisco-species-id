@@ -125,7 +125,7 @@ export default function IdentifyPage() {
 
         {isSuccess && (
           <>
-            <ResultTabs data={result as IdentifySuccessResponse} />
+            <ResultTabs data={result as IdentifySuccessResponse & Record<string, unknown>} />
             {observationId && (
               <div style={{ textAlign: 'center', marginTop: '1rem' }}>
                 <button
