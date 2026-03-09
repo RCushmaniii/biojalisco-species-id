@@ -53,6 +53,7 @@ export default async function DashboardPage() {
     imageOrientation: r.imageOrientation as Observation['imageOrientation'],
     locationInfo: r.locationInfo as Observation['locationInfo'],
     imageMetadata: r.imageMetadata as Observation['imageMetadata'],
+    gpsSource: r.gpsSource as Observation['gpsSource'],
     identifiedAt: r.identifiedAt,
     createdAt: r.createdAt,
   }));

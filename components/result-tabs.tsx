@@ -9,7 +9,7 @@ import { SimilarPanel } from './tab-panels/similar-panel';
 import { TaxonomyPanel } from './tab-panels/taxonomy-panel';
 import { ConservationPanel } from './tab-panels/conservation-panel';
 import { DataSourcesPanel } from './tab-panels/data-sources-panel';
-import type { IdentifySuccessResponse, ImageMetadata, LocationInfo } from '@/lib/types';
+import type { IdentifySuccessResponse, ImageMetadata, LocationInfo, GpsSource } from '@/lib/types';
 
 type Mode = 'explore' | 'research';
 
@@ -17,6 +17,7 @@ interface ResultTabsProps {
   data: IdentifySuccessResponse & {
     locationInfo?: LocationInfo | null;
     imageMetadata?: ImageMetadata | null;
+    gpsSource?: GpsSource;
     latitude?: number | null;
     longitude?: number | null;
   };
@@ -151,6 +152,7 @@ export function ResultTabs({ data }: ResultTabsProps) {
             enciclovida={data.enciclovida}
             imageMetadata={data.imageMetadata}
             locationInfo={data.locationInfo}
+            gpsSource={data.gpsSource}
             latitude={data.latitude}
             longitude={data.longitude}
           />

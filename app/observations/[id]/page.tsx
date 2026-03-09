@@ -98,6 +98,7 @@ export default async function PublicObservationPage({
     imageOrientation: row.imageOrientation as Observation['imageOrientation'],
     locationInfo: row.locationInfo as Observation['locationInfo'],
     imageMetadata: row.imageMetadata as Observation['imageMetadata'],
+    gpsSource: row.gpsSource as Observation['gpsSource'],
     identifiedAt: row.identifiedAt,
     createdAt: row.createdAt,
   };

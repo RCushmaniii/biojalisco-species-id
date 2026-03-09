@@ -89,6 +89,8 @@ export interface IdentifyErrorResponse {
 
 export type IdentifyResponse = IdentifySuccessResponse | IdentifyErrorResponse;
 
+export type GpsSource = 'exif' | 'browser' | 'user' | null;
+
 export interface ImageMetadata {
   dateTaken: string | null;
   cameraMake: string | null;
@@ -132,6 +134,7 @@ export interface Observation {
   suggestion: string | null;
   locationInfo: LocationInfo | null;
   imageMetadata: ImageMetadata | null;
+  gpsSource: GpsSource;
   identifiedAt: Date | null;
   createdAt: Date;
 }

@@ -1,13 +1,35 @@
 'use client';
 
 import { useLanguage } from '@/hooks/use-language';
-import type { GBIFData, EncicloVidaData, ImageMetadata, LocationInfo } from '@/lib/types';
+import type { GBIFData, EncicloVidaData, ImageMetadata, LocationInfo, GpsSource } from '@/lib/types';
+
+function GpsProvenanceBadge({ source }: { source: GpsSource }) {
+  const { t } = useLanguage();
+
+  if (!source) return null;
+
+  const labels: Record<string, { en: string; es: string; className: string }> = {
+    exif: { en: 'From photo metadata', es: 'De metadatos de foto', className: 'gps-badge-exif' },
+    browser: { en: 'From browser location', es: 'De ubicacion del navegador', className: 'gps-badge-browser' },
+    user: { en: 'User-provided location', es: 'Ubicacion proporcionada', className: 'gps-badge-user' },
+  };
+
+  const info = labels[source];
+  if (!info) return null;
+
+  return (
+    <span className={`gps-provenance-badge ${info.className}`}>
+      {t(info.en, info.es)}
+    </span>
+  );
+}
 
 export function DataSourcesPanel({
   gbif,
   enciclovida,
   imageMetadata,
   locationInfo,
+  gpsSource,
   latitude,
   longitude,
 }: {
@@ -15,6 +37,7 @@ export function DataSourcesPanel({
   enciclovida?: EncicloVidaData | null;
   imageMetadata?: ImageMetadata | null;
   locationInfo?: LocationInfo | null;
+  gpsSource?: GpsSource;
   latitude?: number | null;
   longitude?: number | null;
 }) {
@@ -81,7 +104,10 @@ export function DataSourcesPanel({
             )}
             {latitude != null && longitude != null && (
               <div className="data-source-item">
-                <span className="data-source-label">GPS</span>
+                <span className="data-source-label">
+                  GPS
+                  {gpsSource && <GpsProvenanceBadge source={gpsSource} />}
+                </span>
                 <span className="data-source-value">{latitude.toFixed(4)}, {longitude.toFixed(4)}</span>
               </div>
             )}

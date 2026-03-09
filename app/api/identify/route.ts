@@ -47,6 +47,9 @@ export async function POST(request: NextRequest) {
     const latitude: number | null = body.latitude ?? null;
     const longitude: number | null = body.longitude ?? null;
 
+    // GPS provenance tracking
+    const gpsSource: string | null = body.gps_source ?? null;
+
     // EXIF metadata from client-side extraction
     const dateTaken: string | null = body.date_taken ?? null;
     const cameraMake: string | null = body.camera_make ?? null;
@@ -192,6 +195,7 @@ export async function POST(request: NextRequest) {
             cameraMake,
             cameraModel,
           } : null,
+          gpsSource,
         });
       } catch (persistError) {
         console.error('Persistence failed:', persistError instanceof Error ? persistError.message : persistError);
@@ -212,6 +216,7 @@ export async function POST(request: NextRequest) {
       ...((dateTaken || cameraMake || cameraModel) ? {
         imageMetadata: { dateTaken, cameraMake, cameraModel },
       } : {}),
+      ...(gpsSource ? { gpsSource } : {}),
       ...(id ? { id, imageUrl } : {}),
     });
   } catch (error) {

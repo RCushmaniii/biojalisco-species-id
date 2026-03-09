@@ -9,7 +9,7 @@ import { CaptureArea } from '@/components/capture-area';
 import type { IdentifyPayload } from '@/components/capture-area';
 import { ResultTabs } from '@/components/result-tabs';
 import { LoadingSpinner } from '@/components/loading-spinner';
-import type { IdentifyResponse, IdentifySuccessResponse } from '@/lib/types';
+import type { IdentifyResponse, IdentifySuccessResponse, GpsSource } from '@/lib/types';
 
 export default function IdentifyPage() {
   const { t } = useLanguage();
@@ -29,9 +29,24 @@ export default function IdentifyPage() {
     setResult(null);
     setObservationId(null);
 
-    // EXIF GPS takes priority over browser geolocation (more accurate, from photo location)
-    const lat = payload.exifLatitude ?? position?.latitude ?? null;
-    const lon = payload.exifLongitude ?? position?.longitude ?? null;
+    // Priority: EXIF GPS > user-provided location > browser geolocation
+    let lat: number | null = null;
+    let lon: number | null = null;
+    let gpsSource: GpsSource = payload.gpsSource;
+
+    if (payload.exifLatitude != null && payload.exifLongitude != null) {
+      lat = payload.exifLatitude;
+      lon = payload.exifLongitude;
+      gpsSource = 'exif';
+    } else if (payload.userLatitude != null && payload.userLongitude != null) {
+      lat = payload.userLatitude;
+      lon = payload.userLongitude;
+      gpsSource = 'user';
+    } else if (position?.latitude != null && position?.longitude != null) {
+      lat = position.latitude;
+      lon = position.longitude;
+      gpsSource = 'browser';
+    }
 
     try {
       const res = await fetch('/api/identify', {
@@ -41,8 +56,7 @@ export default function IdentifyPage() {
           image_data: payload.imageData,
           latitude: lat,
           longitude: lon,
-          exif_latitude: payload.exifLatitude,
-          exif_longitude: payload.exifLongitude,
+          gps_source: gpsSource,
           date_taken: payload.dateTaken,
           camera_make: payload.cameraMake,
           camera_model: payload.cameraModel,

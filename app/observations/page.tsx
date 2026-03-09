@@ -47,6 +47,7 @@ export default async function ObservationsPage() {
         imageOrientation: r.imageOrientation as Observation['imageOrientation'],
         locationInfo: r.locationInfo as Observation['locationInfo'],
         imageMetadata: r.imageMetadata as Observation['imageMetadata'],
+        gpsSource: r.gpsSource as Observation['gpsSource'],
         identifiedAt: r.identifiedAt ? new Date(r.identifiedAt) : null,
         createdAt: new Date(r.createdAt),
       }));

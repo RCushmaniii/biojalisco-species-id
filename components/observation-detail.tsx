@@ -123,9 +123,10 @@ export function ObservationDetail({ observation }: { observation: Observation })
                 fun_fact: observation.funFact || '',
                 locationInfo: observation.locationInfo || undefined,
                 imageMetadata: observation.imageMetadata || undefined,
+                gpsSource: observation.gpsSource || undefined,
                 latitude: observation.latitude,
                 longitude: observation.longitude,
-              } as IdentifySuccessResponse & { locationInfo?: typeof observation.locationInfo; imageMetadata?: typeof observation.imageMetadata; latitude?: number | null; longitude?: number | null }
+              } as IdentifySuccessResponse & { locationInfo?: typeof observation.locationInfo; imageMetadata?: typeof observation.imageMetadata; gpsSource?: typeof observation.gpsSource; latitude?: number | null; longitude?: number | null }
             }
           />
         ) : null}
