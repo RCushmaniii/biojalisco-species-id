@@ -175,6 +175,34 @@ body {
 
 a { color: inherit; text-decoration: none; }
 
+/* ── 404 Page ── */
+.not-found-page {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 3rem 1.25rem; min-height: 60vh;
+}
+.not-found-code {
+  font-family: 'Playfair Display', serif; font-size: var(--text-hero);
+  font-weight: 700; color: var(--gold); opacity: 0.25; line-height: 1; margin-bottom: 0.5rem;
+}
+.not-found-heading {
+  font-family: 'Playfair Display', serif; font-size: var(--text-2xl);
+  color: var(--cream); margin-bottom: 0.75rem;
+}
+.not-found-message {
+  font-size: var(--text-base); color: var(--cream-50); font-weight: 300;
+  max-width: 440px; line-height: 1.6; margin-bottom: 2rem;
+}
+.not-found-links { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem; }
+.not-found-links .btn { padding: 0.85rem 1.5rem; }
+.not-found-suggestions { text-align: center; }
+.not-found-suggestions-label { font-size: var(--text-sm); color: var(--cream-50); margin-bottom: 0.75rem; }
+.not-found-suggestion-links { display: flex; gap: 1.25rem; flex-wrap: wrap; justify-content: center; }
+.not-found-suggestion-links a {
+  font-size: var(--text-sm); color: var(--gold); font-weight: 500;
+  transition: opacity 0.2s; text-decoration: none;
+}
+.not-found-suggestion-links a:hover { opacity: 0.7; }
+
 /* ── Sign-In Page ── */
 .sign-in-page {
   display: flex;

@@ -1,20 +1,53 @@
+'use client';
+
 import Link from 'next/link';
+import { useLanguage } from '@/hooks/use-language';
+import { PublicNav } from '@/components/public-nav';
+import { SiteFooter } from '@/components/site-footer';
+import { CameraIcon } from '@/components/icons';
 
 export default function NotFound() {
+  const { t } = useLanguage();
+
   return (
-    <div className="legal-page">
-      <div className="legal-content" style={{ textAlign: 'center', paddingTop: '4rem', paddingBottom: '4rem' }}>
-        <h1 style={{ fontSize: 'var(--text-hero)', marginBottom: '0.5rem' }}>404</h1>
-        <p style={{ fontSize: 'var(--text-xl)', color: 'var(--cream-75)', fontWeight: 300, marginBottom: '0.5rem' }}>
-          Page not found
+    <>
+      <PublicNav />
+
+      <div className="not-found-page">
+        <div className="not-found-code">404</div>
+        <h1 className="not-found-heading">
+          {t('Page Not Found', 'Pagina No Encontrada')}
+        </h1>
+        <p className="not-found-message">
+          {t(
+            'The page you\'re looking for doesn\'t exist or has been moved.',
+            'La pagina que buscas no existe o ha sido movida.'
+          )}
         </p>
-        <p style={{ fontSize: 'var(--text-base)', color: 'var(--cream-50)', fontWeight: 300, marginBottom: '2rem', maxWidth: '420px', margin: '0 auto 2rem' }}>
-          The page you&apos;re looking for doesn&apos;t exist or has been moved. Try heading back to the home page.
-        </p>
-        <Link href="/" className="btn btn-primary" style={{ display: 'inline-flex', padding: '0.85rem 2rem', fontSize: 'var(--text-base)' }}>
-          Back to Home
-        </Link>
+
+        <div className="not-found-links">
+          <Link href="/" className="btn btn-primary">
+            {t('Back to Home', 'Volver al Inicio')}
+          </Link>
+          <Link href="/identify" className="btn">
+            <CameraIcon />
+            {t('Identify a Species', 'Identificar una Especie')}
+          </Link>
+        </div>
+
+        <div className="not-found-suggestions">
+          <p className="not-found-suggestions-label">
+            {t('Or try one of these:', 'O prueba una de estas:')}
+          </p>
+          <div className="not-found-suggestion-links">
+            <Link href="/observations">{t('Community Observations', 'Observaciones de la Comunidad')}</Link>
+            <Link href="/species-guide">{t('Protected Species Guide', 'Guia de Especies Protegidas')}</Link>
+            <Link href="/faq">{t('Frequently Asked Questions', 'Preguntas Frecuentes')}</Link>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <SiteFooter />
+    </>
   );
 }
