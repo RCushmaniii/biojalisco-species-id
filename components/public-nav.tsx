@@ -3,20 +3,34 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
 import { NavBrand } from '@/components/nav-brand';
 import { LanguageToggle } from '@/components/language-toggle';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useLanguage } from '@/hooks/use-language';
 
-const PUBLIC_LINKS = [
+const SHARED_LINKS = [
   { href: '/observations', en: 'Observations', es: 'Observaciones' },
   { href: '/faq', en: 'FAQ', es: 'FAQ' },
-  { href: '/sign-in', en: 'Sign In', es: 'Iniciar Sesion' },
 ] as const;
 
 export function PublicNav() {
   const pathname = usePathname();
   const { t } = useLanguage();
+
+  let isSignedIn = false;
+  try {
+    const auth = useAuth();
+    isSignedIn = !!auth.isSignedIn;
+  } catch {
+    // Clerk not configured — treat as signed out
+  }
+
+  const authLink = isSignedIn
+    ? { href: '/dashboard', en: 'Dashboard', es: 'Panel' }
+    : { href: '/sign-in', en: 'Sign In', es: 'Iniciar Sesion' };
+
+  const navLinks = [...SHARED_LINKS, authLink];
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
@@ -51,7 +65,7 @@ export function PublicNav() {
       <nav className="nav-bar nav-bar-wide">
         <NavBrand />
         <div className="nav-links nav-links-desktop">
-          {PUBLIC_LINKS.map(link => (
+          {navLinks.map(link => (
             <Link
               key={link.href}
               href={link.href}
@@ -98,7 +112,7 @@ export function PublicNav() {
           </button>
         </div>
         <div className="nav-drawer-links">
-          {PUBLIC_LINKS.map(link => (
+          {navLinks.map(link => (
             <Link
               key={link.href}
               href={link.href}
