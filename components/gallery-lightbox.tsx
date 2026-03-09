@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useLanguage } from '@/hooks/use-language';
+
 export interface GalleryItem {
   id: string;
   imageUrl: string;
   commonName: string | null;
+  nombreComun: string | null;
   scientificName: string | null;
   confidence: number | null;
   iucnStatus: string | null;
@@ -12,6 +15,7 @@ export interface GalleryItem {
   latitude: number | null;
   longitude: number | null;
   description: string | null;
+  descripcion: string | null;
   createdAt: string;
 }
 
@@ -49,6 +53,7 @@ interface GalleryGridProps {
 
 export function GalleryGrid({ items }: GalleryGridProps) {
   const observations = items;
+  const { lang, t } = useLanguage();
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const openLightbox = (index: number) => setLightboxIndex(index);
@@ -84,24 +89,25 @@ export function GalleryGrid({ items }: GalleryGridProps) {
       <div className="gallery-grid">
         {observations.map((obs, i) => {
           const badge = iucnBadge(obs.iucnStatus);
+          const displayName = (lang === 'es' ? obs.nombreComun : obs.commonName) || obs.commonName;
           return (
             <button
               key={obs.id}
               className={`gallery-cell ${obs.imageOrientation === 'portrait' ? 'gallery-cell-tall' : ''}`}
               onClick={() => openLightbox(i)}
-              aria-label={`View ${obs.commonName || 'observation'}`}
+              aria-label={`${t('View', 'Ver')} ${displayName || t('observation', 'observacion')}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={obs.imageUrl}
-                alt={obs.commonName || 'Observation'}
+                alt={displayName || t('Observation', 'Observacion')}
                 className="gallery-cell-image"
                 loading="lazy"
               />
               <div className="gallery-cell-overlay">
                 <div className="gallery-cell-meta">
                   <span className="gallery-cell-name">
-                    {obs.commonName || 'Unknown'}
+                    {displayName || t('Unknown', 'Desconocido')}
                   </span>
                   {obs.scientificName && (
                     <span className="gallery-cell-sci">{obs.scientificName}</span>
@@ -154,20 +160,26 @@ function Lightbox({
   onNext: () => void;
   onPrev: () => void;
 }) {
+  const { lang, t } = useLanguage();
   const obs = observations[index];
   const badge = iucnBadge(obs.iucnStatus);
+  const displayName = (lang === 'es' ? obs.nombreComun : obs.commonName) || obs.commonName;
+  const displayDesc = (lang === 'es' ? obs.descripcion : obs.description) || obs.description;
 
-  const date = new Date(obs.createdAt).toLocaleDateString('en-US', {
+  const dateLocale = lang === 'es' ? 'es-MX' : 'en-US';
+  const date = new Date(obs.createdAt).toLocaleDateString(dateLocale, {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
   });
 
+  const stop = (e: React.MouseEvent) => e.stopPropagation();
+
   return (
-    <div className="lightbox-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-label="Image viewer">
-      <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+    <div className="lightbox-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-label={t('Image viewer', 'Visor de imagen')}>
+      <div className="lightbox-content">
         {/* Close button */}
-        <button className="lightbox-close" onClick={onClose} aria-label="Close">
+        <button className="lightbox-close" onClick={onClose} aria-label={t('Close', 'Cerrar')}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
           </svg>
@@ -176,12 +188,12 @@ function Lightbox({
         {/* Navigation arrows */}
         {observations.length > 1 && (
           <>
-            <button className="lightbox-nav lightbox-prev" onClick={onPrev} aria-label="Previous">
+            <button className="lightbox-nav lightbox-prev" onClick={(e) => { stop(e); onPrev(); }} aria-label={t('Previous', 'Anterior')}>
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
-            <button className="lightbox-nav lightbox-next" onClick={onNext} aria-label="Next">
+            <button className="lightbox-nav lightbox-next" onClick={(e) => { stop(e); onNext(); }} aria-label={t('Next', 'Siguiente')}>
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="9 6 15 12 9 18" />
               </svg>
@@ -190,20 +202,20 @@ function Lightbox({
         )}
 
         {/* Image */}
-        <div className="lightbox-image-wrap">
+        <div className="lightbox-image-wrap" onClick={stop}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={obs.imageUrl}
-            alt={obs.commonName || 'Observation'}
+            alt={displayName || t('Observation', 'Observacion')}
             className="lightbox-image"
           />
         </div>
 
-        {/* Info panel overlaid on bottom */}
-        <div className="lightbox-info">
+        {/* Info panel */}
+        <div className="lightbox-info" onClick={stop}>
           <div className="lightbox-info-primary">
             <h2 className="lightbox-species-name">
-              {obs.commonName || 'Unknown Species'}
+              {displayName || t('Unknown Species', 'Especie Desconocida')}
             </h2>
             {obs.scientificName && (
               <p className="lightbox-sci-name">{obs.scientificName}</p>
@@ -214,7 +226,7 @@ function Lightbox({
             <span className="lightbox-detail">{date}</span>
             {obs.confidence !== null && (
               <span className="lightbox-detail" style={{ color: confColor(obs.confidence) }}>
-                {obs.confidence}% confidence
+                {obs.confidence}% {t('confidence', 'confianza')}
               </span>
             )}
             {badge && (
@@ -227,8 +239,8 @@ function Lightbox({
             )}
           </div>
 
-          {obs.description && (
-            <p className="lightbox-description">{obs.description}</p>
+          {displayDesc && (
+            <p className="lightbox-description">{displayDesc}</p>
           )}
 
           <div className="lightbox-counter">

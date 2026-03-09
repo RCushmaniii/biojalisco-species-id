@@ -100,6 +100,7 @@ export default async function ObservationsPage() {
             id: o.id,
             imageUrl: o.imageUrl,
             commonName: o.commonName,
+            nombreComun: o.nombreComun,
             scientificName: o.scientificName,
             confidence: o.confidence,
             iucnStatus: o.conservation?.iucn_status ?? null,
@@ -107,6 +108,7 @@ export default async function ObservationsPage() {
             latitude: o.latitude,
             longitude: o.longitude,
             description: o.description,
+            descripcion: o.descripcion,
             createdAt: o.createdAt.toISOString(),
           }))} />
         )}
