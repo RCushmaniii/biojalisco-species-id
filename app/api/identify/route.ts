@@ -48,8 +48,6 @@ export async function POST(request: NextRequest) {
     const longitude: number | null = body.longitude ?? null;
 
     // EXIF metadata from client-side extraction
-    const exifLatitude: number | null = body.exif_latitude ?? null;
-    const exifLongitude: number | null = body.exif_longitude ?? null;
     const dateTaken: string | null = body.date_taken ?? null;
     const cameraMake: string | null = body.camera_make ?? null;
     const cameraModel: string | null = body.camera_model ?? null;

@@ -49,10 +49,34 @@ export function DataSourcesPanel({
                 </span>
               </div>
             )}
-            {locationInfo && (
+            {locationInfo?.country && (
               <div className="data-source-item">
-                <span className="data-source-label">{t('Location', 'Ubicacion')}</span>
-                <span className="data-source-value">{locationInfo.displayName}</span>
+                <span className="data-source-label">{t('Country', 'Pais')}</span>
+                <span className="data-source-value">{locationInfo.country}</span>
+              </div>
+            )}
+            {locationInfo?.state && (
+              <div className="data-source-item">
+                <span className="data-source-label">{t('State', 'Estado')}</span>
+                <span className="data-source-value">{locationInfo.state}</span>
+              </div>
+            )}
+            {locationInfo?.region && (
+              <div className="data-source-item">
+                <span className="data-source-label">{t('Region', 'Region')}</span>
+                <span className="data-source-value">{locationInfo.region}</span>
+              </div>
+            )}
+            {locationInfo?.municipality && (
+              <div className="data-source-item">
+                <span className="data-source-label">{t('Municipality', 'Municipio')}</span>
+                <span className="data-source-value">{locationInfo.municipality}</span>
+              </div>
+            )}
+            {locationInfo?.city && (
+              <div className="data-source-item">
+                <span className="data-source-label">{t('City / Town', 'Ciudad / Pueblo')}</span>
+                <span className="data-source-value">{locationInfo.city}</span>
               </div>
             )}
             {latitude != null && longitude != null && (

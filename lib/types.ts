@@ -98,8 +98,11 @@ export interface ImageMetadata {
 export interface LocationInfo {
   city: string | null;
   municipality: string | null;
+  region: string | null;
   state: string | null;
   country: string | null;
+  countryCode: string | null;
+  postcode: string | null;
   displayName: string;
 }
 
