@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/hooks/use-language';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { CaptureArea } from '@/components/capture-area';
+import type { IdentifyPayload } from '@/components/capture-area';
 import { ResultTabs } from '@/components/result-tabs';
 import { LoadingSpinner } from '@/components/loading-spinner';
 import type { IdentifyResponse, IdentifySuccessResponse } from '@/lib/types';
@@ -23,19 +24,28 @@ export default function IdentifyPage() {
     requestPosition();
   }, [requestPosition]);
 
-  const handleIdentify = async (imageData: string) => {
+  const handleIdentify = async (payload: IdentifyPayload) => {
     setIsLoading(true);
     setResult(null);
     setObservationId(null);
+
+    // EXIF GPS takes priority over browser geolocation (more accurate, from photo location)
+    const lat = payload.exifLatitude ?? position?.latitude ?? null;
+    const lon = payload.exifLongitude ?? position?.longitude ?? null;
 
     try {
       const res = await fetch('/api/identify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          image_data: imageData,
-          latitude: position?.latitude ?? null,
-          longitude: position?.longitude ?? null,
+          image_data: payload.imageData,
+          latitude: lat,
+          longitude: lon,
+          exif_latitude: payload.exifLatitude,
+          exif_longitude: payload.exifLongitude,
+          date_taken: payload.dateTaken,
+          camera_make: payload.cameraMake,
+          camera_model: payload.cameraModel,
         }),
       });
 

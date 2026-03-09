@@ -89,6 +89,20 @@ export interface IdentifyErrorResponse {
 
 export type IdentifyResponse = IdentifySuccessResponse | IdentifyErrorResponse;
 
+export interface ImageMetadata {
+  dateTaken: string | null;
+  cameraMake: string | null;
+  cameraModel: string | null;
+}
+
+export interface LocationInfo {
+  city: string | null;
+  municipality: string | null;
+  state: string | null;
+  country: string | null;
+  displayName: string;
+}
+
 export interface Observation {
   id: string;
   userId: string;
@@ -113,6 +127,8 @@ export interface Observation {
   funFact: string | null;
   error: string | null;
   suggestion: string | null;
+  locationInfo: LocationInfo | null;
+  imageMetadata: ImageMetadata | null;
   identifiedAt: Date | null;
   createdAt: Date;
 }

@@ -24,6 +24,8 @@ export const observations = pgTable('observations', {
   funFact: text('fun_fact'),
   error: text('error'),
   suggestion: text('suggestion'),
+  locationInfo: jsonb('location_info'),
+  imageMetadata: jsonb('image_metadata'),
   identifiedAt: timestamp('identified_at', { withTimezone: true }).defaultNow(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [

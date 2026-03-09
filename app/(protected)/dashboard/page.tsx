@@ -51,6 +51,8 @@ export default async function DashboardPage() {
     conservation: r.conservation as Observation['conservation'],
     similarSpecies: r.similarSpecies as Observation['similarSpecies'],
     imageOrientation: r.imageOrientation as Observation['imageOrientation'],
+    locationInfo: r.locationInfo as Observation['locationInfo'],
+    imageMetadata: r.imageMetadata as Observation['imageMetadata'],
     identifiedAt: r.identifiedAt,
     createdAt: r.createdAt,
   }));

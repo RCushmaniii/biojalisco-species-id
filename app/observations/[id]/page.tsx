@@ -96,6 +96,8 @@ export default async function PublicObservationPage({
     conservation: row.conservation as Observation['conservation'],
     similarSpecies: row.similarSpecies as Observation['similarSpecies'],
     imageOrientation: row.imageOrientation as Observation['imageOrientation'],
+    locationInfo: row.locationInfo as Observation['locationInfo'],
+    imageMetadata: row.imageMetadata as Observation['imageMetadata'],
     identifiedAt: row.identifiedAt,
     createdAt: row.createdAt,
   };

@@ -3,13 +3,23 @@
 import { useRef, useState, useCallback } from 'react';
 import { useLanguage } from '@/hooks/use-language';
 import { ViewfinderIcon, CameraIcon, UploadIcon, SearchIcon } from './icons';
+import { extractExif, stripExif, type ExifMetadata } from '@/lib/exif';
 
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
 const ACCEPTED_EXTENSIONS = '.jpg,.jpeg,.png,.webp,.heic,.heif';
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
+export interface IdentifyPayload {
+  imageData: string;
+  exifLatitude: number | null;
+  exifLongitude: number | null;
+  dateTaken: string | null;
+  cameraMake: string | null;
+  cameraModel: string | null;
+}
+
 interface CaptureAreaProps {
-  onIdentify: (imageData: string) => void;
+  onIdentify: (payload: IdentifyPayload) => void;
   isLoading: boolean;
 }
 
@@ -47,6 +57,7 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
       canvas.getContext('2d')!.drawImage(video, 0, 0);
       const data = canvas.toDataURL('image/jpeg', 0.85);
       setImageData(data);
+      setExifData(null);
       setFileError(null);
       stopCamera();
       return;
@@ -68,17 +79,27 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
       });
   }, [cameraActive, stopCamera]);
 
+  const [exifData, setExifData] = useState<ExifMetadata | null>(null);
+
   const handleIdentify = () => {
     if (imageData) {
-      onIdentify(imageData);
+      onIdentify({
+        imageData,
+        exifLatitude: exifData?.latitude ?? null,
+        exifLongitude: exifData?.longitude ?? null,
+        dateTaken: exifData?.dateTaken ?? null,
+        cameraMake: exifData?.cameraMake ?? null,
+        cameraModel: exifData?.cameraModel ?? null,
+      });
     }
   };
 
   const [fileError, setFileError] = useState<string | null>(null);
 
   const processFile = useCallback(
-    (file: File) => {
+    async (file: File) => {
       setFileError(null);
+      setExifData(null);
 
       if (!ACCEPTED_TYPES.includes(file.type)) {
         setFileError(t(
@@ -96,10 +117,21 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
         return;
       }
 
+      // Extract EXIF metadata (GPS, camera, date) before stripping
+      const exif = await extractExif(file);
+      setExifData(exif);
+
+      // Read the file, then strip EXIF via canvas re-render for privacy
       const reader = new FileReader();
-      reader.onload = (ev) => {
-        const data = ev.target?.result as string;
-        setImageData(data);
+      reader.onload = async (ev) => {
+        const rawData = ev.target?.result as string;
+        try {
+          const cleanData = await stripExif(rawData);
+          setImageData(cleanData);
+        } catch {
+          // Fallback: use raw data if stripping fails
+          setImageData(rawData);
+        }
         stopCamera();
       };
       reader.readAsDataURL(file);

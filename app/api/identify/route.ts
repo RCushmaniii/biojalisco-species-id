@@ -3,6 +3,7 @@ import { identifySpecies } from '@/lib/openai';
 import { getLocalSpecies, formatSpeciesContext } from '@/lib/inaturalist';
 import { enrichFromGBIF } from '@/lib/gbif';
 import { enrichFromEncicloVida } from '@/lib/enciclovida';
+import { reverseGeocode } from '@/lib/nominatim';
 import { randomUUID } from 'crypto';
 
 // Extend function timeout (Hobby: max 60s, Pro: max 300s)
@@ -46,18 +47,43 @@ export async function POST(request: NextRequest) {
     const latitude: number | null = body.latitude ?? null;
     const longitude: number | null = body.longitude ?? null;
 
-    // Fetch regional species data from iNaturalist (non-blocking, best-effort)
+    // EXIF metadata from client-side extraction
+    const exifLatitude: number | null = body.exif_latitude ?? null;
+    const exifLongitude: number | null = body.exif_longitude ?? null;
+    const dateTaken: string | null = body.date_taken ?? null;
+    const cameraMake: string | null = body.camera_make ?? null;
+    const cameraModel: string | null = body.camera_model ?? null;
+
+    // Fetch regional species data from iNaturalist + reverse geocode in parallel
     let speciesContext = '';
+    let locationInfo = null;
+
     if (latitude != null && longitude != null) {
-      const localSpecies = await getLocalSpecies(latitude, longitude);
-      speciesContext = formatSpeciesContext(localSpecies);
-      if (localSpecies.length > 0) {
-        console.log(`iNaturalist: found ${localSpecies.length} local species for ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
+      const [speciesResult, geocodeResult] = await Promise.allSettled([
+        getLocalSpecies(latitude, longitude).then(species => {
+          const ctx = formatSpeciesContext(species);
+          if (species.length > 0) {
+            console.log(`iNaturalist: found ${species.length} local species for ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
+          }
+          return ctx;
+        }),
+        reverseGeocode(latitude, longitude),
+      ]);
+
+      if (speciesResult.status === 'fulfilled') {
+        speciesContext = speciesResult.value;
+      }
+      if (geocodeResult.status === 'fulfilled' && geocodeResult.value) {
+        locationInfo = geocodeResult.value;
+        console.log(`Nominatim: resolved to ${locationInfo.displayName}`);
       }
     }
 
+    // Build location name for GPT-4o (e.g. "San Sebastian del Oeste, Jalisco, Mexico")
+    const locationName = locationInfo?.displayName || null;
+
     // Call GPT-4o for identification (with location + regional species context)
-    const result = await identifySpecies(imageData, latitude, longitude, speciesContext);
+    const result = await identifySpecies(imageData, latitude, longitude, speciesContext, locationName);
 
     // Enrich with verified data from GBIF + EncicloVida (in parallel, best-effort)
     const isError = 'error' in result;
@@ -162,6 +188,12 @@ export async function POST(request: NextRequest) {
           funFact: isError ? null : result.fun_fact,
           error: isError ? result.error : null,
           suggestion: isError ? (result.suggestion ?? null) : null,
+          locationInfo: locationInfo || null,
+          imageMetadata: (dateTaken || cameraMake || cameraModel) ? {
+            dateTaken,
+            cameraMake,
+            cameraModel,
+          } : null,
         });
       } catch (persistError) {
         console.error('Persistence failed:', persistError instanceof Error ? persistError.message : persistError);
@@ -173,11 +205,15 @@ export async function POST(request: NextRequest) {
       console.warn(`Skipping persistence: userId=${!!userId}, DB=${hasDb}, Blob=${hasBlob}`);
     }
 
-    // Return the result (+ enrichment data + observation ID if persisted)
+    // Return the result (+ enrichment data + location + metadata + observation ID if persisted)
     return NextResponse.json({
       ...result,
       ...(gbifData ? { gbif: gbifData } : {}),
       ...(evData ? { enciclovida: evData } : {}),
+      ...(locationInfo ? { locationInfo } : {}),
+      ...((dateTaken || cameraMake || cameraModel) ? {
+        imageMetadata: { dateTaken, cameraMake, cameraModel },
+      } : {}),
       ...(id ? { id, imageUrl } : {}),
     });
   } catch (error) {

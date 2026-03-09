@@ -45,6 +45,8 @@ export default async function ObservationsPage() {
         conservation: r.conservation as Observation['conservation'],
         similarSpecies: r.similarSpecies as Observation['similarSpecies'],
         imageOrientation: r.imageOrientation as Observation['imageOrientation'],
+        locationInfo: r.locationInfo as Observation['locationInfo'],
+        imageMetadata: r.imageMetadata as Observation['imageMetadata'],
         identifiedAt: r.identifiedAt ? new Date(r.identifiedAt) : null,
         createdAt: new Date(r.createdAt),
       }));

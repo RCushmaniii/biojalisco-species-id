@@ -92,10 +92,15 @@ export async function identifySpecies(
   latitude?: number | null,
   longitude?: number | null,
   regionalSpeciesContext?: string,
+  locationName?: string | null,
 ): Promise<IdentifyResponse> {
   let userText = 'Identify the species in this photo.';
   if (latitude != null && longitude != null) {
-    userText += ` Photo taken at GPS coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)} (use this location to inform your identification — prioritize species found in this geographic region).`;
+    userText += ` Photo taken at GPS coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+    if (locationName) {
+      userText += ` (${locationName})`;
+    }
+    userText += '. Use this location to inform your identification — prioritize species found in this geographic region.';
   } else {
     userText += ' No GPS coordinates available, but assume the photo was taken in Jalisco, Mexico unless the species is clearly from another region.';
   }
