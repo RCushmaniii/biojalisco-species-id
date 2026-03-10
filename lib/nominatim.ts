@@ -59,3 +59,45 @@ export async function reverseGeocode(
     return null;
   }
 }
+
+export interface ForwardGeocodeResult {
+  latitude: number;
+  longitude: number;
+  displayName: string;
+}
+
+/**
+ * Forward geocode a place name to GPS coordinates using OpenStreetMap Nominatim.
+ * Returns the top result, or null if no match found.
+ * Client-safe: called from an API route, not directly from the browser.
+ */
+export async function forwardGeocode(
+  query: string,
+): Promise<ForwardGeocodeResult[]> {
+  try {
+    const url = new URL('https://nominatim.openstreetmap.org/search');
+    url.searchParams.set('q', query);
+    url.searchParams.set('format', 'json');
+    url.searchParams.set('limit', '5');
+    url.searchParams.set('addressdetails', '1');
+
+    const response = await fetch(url.toString(), {
+      headers: {
+        'User-Agent': 'BioJalisco-SpeciesID/1.1 (biojalisco-species-id.vercel.app)',
+        'Accept-Language': 'en,es',
+      },
+      signal: AbortSignal.timeout(5000),
+    });
+
+    if (!response.ok) return [];
+
+    const data = await response.json();
+    return data.map((item: { lat: string; lon: string; display_name: string }) => ({
+      latitude: parseFloat(item.lat),
+      longitude: parseFloat(item.lon),
+      displayName: item.display_name,
+    }));
+  } catch {
+    return [];
+  }
+}
