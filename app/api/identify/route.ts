@@ -4,6 +4,7 @@ import { getLocalSpecies, formatSpeciesContext } from '@/lib/inaturalist';
 import { enrichFromGBIF } from '@/lib/gbif';
 import { enrichFromEncicloVida } from '@/lib/enciclovida';
 import { reverseGeocode } from '@/lib/nominatim';
+import { getElevation } from '@/lib/elevation';
 import { randomUUID } from 'crypto';
 
 // Extend function timeout (Hobby: max 60s, Pro: max 300s)
@@ -50,17 +51,21 @@ export async function POST(request: NextRequest) {
     // GPS provenance tracking
     const gpsSource: string | null = body.gps_source ?? null;
 
+    // Observer's environment/habitat notes
+    const environmentNotes: string | null = body.environment_notes?.trim() || null;
+
     // EXIF metadata from client-side extraction
     const dateTaken: string | null = body.date_taken ?? null;
     const cameraMake: string | null = body.camera_make ?? null;
     const cameraModel: string | null = body.camera_model ?? null;
 
-    // Fetch regional species data from iNaturalist + reverse geocode in parallel
+    // Fetch regional species data, reverse geocode, and elevation in parallel
     let speciesContext = '';
     let locationInfo = null;
+    let elevation: number | null = null;
 
     if (latitude != null && longitude != null) {
-      const [speciesResult, geocodeResult] = await Promise.allSettled([
+      const [speciesResult, geocodeResult, elevationResult] = await Promise.allSettled([
         getLocalSpecies(latitude, longitude).then(species => {
           const ctx = formatSpeciesContext(species);
           if (species.length > 0) {
@@ -69,6 +74,7 @@ export async function POST(request: NextRequest) {
           return ctx;
         }),
         reverseGeocode(latitude, longitude),
+        getElevation(latitude, longitude),
       ]);
 
       if (speciesResult.status === 'fulfilled') {
@@ -78,13 +84,17 @@ export async function POST(request: NextRequest) {
         locationInfo = geocodeResult.value;
         console.log(`Nominatim: resolved to ${locationInfo.displayName}`);
       }
+      if (elevationResult.status === 'fulfilled' && elevationResult.value != null) {
+        elevation = elevationResult.value;
+        console.log(`Elevation: ${elevation}m`);
+      }
     }
 
     // Build location name for GPT-4o (e.g. "San Sebastian del Oeste, Jalisco, Mexico")
     const locationName = locationInfo?.displayName || null;
 
-    // Call GPT-4o for identification (with location + regional species context)
-    const result = await identifySpecies(imageData, latitude, longitude, speciesContext, locationName);
+    // Call GPT-4o for identification (with location + regional species context + elevation + environment)
+    const result = await identifySpecies(imageData, latitude, longitude, speciesContext, locationName, elevation, environmentNotes);
 
     // Enrich with verified data from GBIF + EncicloVida (in parallel, best-effort)
     const isError = 'error' in result;
@@ -196,6 +206,8 @@ export async function POST(request: NextRequest) {
             cameraModel,
           } : null,
           gpsSource,
+          elevation,
+          environmentNotes,
         });
       } catch (persistError) {
         console.error('Persistence failed:', persistError instanceof Error ? persistError.message : persistError);
@@ -216,6 +228,8 @@ export async function POST(request: NextRequest) {
       ...((dateTaken || cameraMake || cameraModel) ? {
         imageMetadata: { dateTaken, cameraMake, cameraModel },
       } : {}),
+      ...(elevation != null ? { elevation } : {}),
+      ...(environmentNotes ? { environmentNotes } : {}),
       ...(gpsSource ? { gpsSource } : {}),
       ...(id ? { id, imageUrl } : {}),
     });

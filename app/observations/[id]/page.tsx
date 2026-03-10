@@ -99,6 +99,8 @@ export default async function PublicObservationPage({
     locationInfo: row.locationInfo as Observation['locationInfo'],
     imageMetadata: row.imageMetadata as Observation['imageMetadata'],
     gpsSource: row.gpsSource as Observation['gpsSource'],
+    elevation: row.elevation,
+    environmentNotes: row.environmentNotes,
     identifiedAt: row.identifiedAt,
     createdAt: row.createdAt,
   };

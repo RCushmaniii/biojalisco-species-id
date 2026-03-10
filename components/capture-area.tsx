@@ -18,6 +18,7 @@ export interface IdentifyPayload {
   userLongitude: number | null;
   userLocationName: string | null;
   gpsSource: GpsSource;
+  environmentNotes: string | null;
   dateTaken: string | null;
   cameraMake: string | null;
   cameraModel: string | null;
@@ -100,6 +101,9 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
   const [selectedLocation, setSelectedLocation] = useState<GeocodeSuggestion | null>(null);
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Environment notes
+  const [environmentNotes, setEnvironmentNotes] = useState('');
+
   // Show location search when image has no EXIF GPS
   useEffect(() => {
     if (imageData && exifData && exifData.latitude == null && exifData.longitude == null) {
@@ -171,6 +175,7 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
         userLongitude: selectedLocation?.longitude ?? null,
         userLocationName: selectedLocation?.displayName ?? null,
         gpsSource,
+        environmentNotes: environmentNotes.trim() || null,
         dateTaken: exifData?.dateTaken ?? null,
         cameraMake: exifData?.cameraMake ?? null,
         cameraModel: exifData?.cameraModel ?? null,
@@ -187,6 +192,7 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
       setSelectedLocation(null);
       setLocationQuery('');
       setSuggestions([]);
+      setEnvironmentNotes('');
 
       if (!ACCEPTED_TYPES.includes(file.type)) {
         setFileError(t(
@@ -367,6 +373,23 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
             {' \u2014 '}
             {exifData.latitude.toFixed(4)}, {exifData.longitude!.toFixed(4)}
           </span>
+        </div>
+      )}
+
+      {/* Environment notes — optional habitat context */}
+      {hasImage && (
+        <div className="environment-notes">
+          <textarea
+            className="environment-notes-input"
+            placeholder={t(
+              'Describe the environment (optional): vegetation type, habitat, elevation zone, weather...',
+              'Describe el entorno (opcional): tipo de vegetacion, habitat, zona de elevacion, clima...'
+            )}
+            value={environmentNotes}
+            onChange={(e) => setEnvironmentNotes(e.target.value)}
+            rows={2}
+            maxLength={300}
+          />
         </div>
       )}
 

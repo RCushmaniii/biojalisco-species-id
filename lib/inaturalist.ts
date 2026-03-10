@@ -39,7 +39,7 @@ export async function getLocalSpecies(
   const params = new URLSearchParams({
     lat: latitude.toFixed(4),
     lng: longitude.toFixed(4),
-    radius: '50',                              // km
+    radius: '15',                              // km — tight radius to surface local endemics over widespread species
     taxon_id: VERTEBRATE_TAXON_IDS.join(','),  // vertebrates only
     quality_grade: 'research',                 // verified observations
     per_page: '50',                            // top 50 species

@@ -18,6 +18,8 @@ interface ResultTabsProps {
     locationInfo?: LocationInfo | null;
     imageMetadata?: ImageMetadata | null;
     gpsSource?: GpsSource;
+    elevation?: number | null;
+    environmentNotes?: string | null;
     latitude?: number | null;
     longitude?: number | null;
   };
@@ -153,6 +155,8 @@ export function ResultTabs({ data }: ResultTabsProps) {
             imageMetadata={data.imageMetadata}
             locationInfo={data.locationInfo}
             gpsSource={data.gpsSource}
+            elevation={data.elevation}
+            environmentNotes={data.environmentNotes}
             latitude={data.latitude}
             longitude={data.longitude}
           />

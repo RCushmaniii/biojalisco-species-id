@@ -124,9 +124,11 @@ export function ObservationDetail({ observation }: { observation: Observation })
                 locationInfo: observation.locationInfo || undefined,
                 imageMetadata: observation.imageMetadata || undefined,
                 gpsSource: observation.gpsSource || undefined,
+                elevation: observation.elevation || undefined,
+                environmentNotes: observation.environmentNotes || undefined,
                 latitude: observation.latitude,
                 longitude: observation.longitude,
-              } as IdentifySuccessResponse & { locationInfo?: typeof observation.locationInfo; imageMetadata?: typeof observation.imageMetadata; gpsSource?: typeof observation.gpsSource; latitude?: number | null; longitude?: number | null }
+              } as IdentifySuccessResponse & { locationInfo?: typeof observation.locationInfo; imageMetadata?: typeof observation.imageMetadata; gpsSource?: typeof observation.gpsSource; elevation?: number | null; environmentNotes?: string | null; latitude?: number | null; longitude?: number | null }
             }
           />
         ) : null}

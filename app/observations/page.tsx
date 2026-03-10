@@ -48,6 +48,8 @@ export default async function ObservationsPage() {
         locationInfo: r.locationInfo as Observation['locationInfo'],
         imageMetadata: r.imageMetadata as Observation['imageMetadata'],
         gpsSource: r.gpsSource as Observation['gpsSource'],
+        elevation: r.elevation,
+        environmentNotes: r.environmentNotes,
         identifiedAt: r.identifiedAt ? new Date(r.identifiedAt) : null,
         createdAt: new Date(r.createdAt),
       }));

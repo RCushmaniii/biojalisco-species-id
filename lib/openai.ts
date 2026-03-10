@@ -78,6 +78,9 @@ IMPORTANT RULES:
 - All fields are required. Use "Unknown" for genuinely unknown values.
 - GEOGRAPHIC CONTEXT IS CRITICAL: This app is used in Jalisco, Mexico. When GPS coordinates are provided, strongly weight species that are native to or found in that region. Do NOT identify a species as one found only in Europe, Asia, or other continents unless the morphology is unmistakable AND no similar New World species exists. For example, a gray snake with zigzag markings in Mexico is far more likely to be Storeria storerioides (Mexican Brown Snake) than Vipera berus (European Adder), which does not exist in the Americas.
 - When location data suggests Mexico/Central America, prioritize Neotropical fauna in your identification. Consider range maps as a key factor alongside morphology.
+- ELEVATION AND HABITAT ARE CRITICAL for species that share visual similarity. A hummingbird at 1200m in cloud forest is a completely different candidate set than one at sea level in tropical dry forest. When elevation and/or habitat context are provided, strongly weight range-restricted species that match those conditions — even if they are rarer than widespread lookalikes.
+- For visually similar species (e.g. female hummingbirds, small flycatchers, juvenile raptors), reduce your confidence score and list the most likely alternatives in similar_species. If you cannot confidently distinguish between two species based on the photo, say so explicitly in the description and set confidence accordingly (50-70%).
+- When the observer provides environment/habitat notes, treat these as expert field observations — they are highly reliable context for narrowing identification.
 
 If the image doesn't contain a clearly identifiable organism, respond with:
 {
@@ -93,6 +96,8 @@ export async function identifySpecies(
   longitude?: number | null,
   regionalSpeciesContext?: string,
   locationName?: string | null,
+  elevation?: number | null,
+  environmentNotes?: string | null,
 ): Promise<IdentifyResponse> {
   let userText = 'Identify the species in this photo.';
   if (latitude != null && longitude != null) {
@@ -100,9 +105,17 @@ export async function identifySpecies(
     if (locationName) {
       userText += ` (${locationName})`;
     }
+    if (elevation != null) {
+      userText += ` at approximately ${elevation}m elevation`;
+    }
     userText += '. Use this location to inform your identification — prioritize species found in this geographic region.';
   } else {
     userText += ' No GPS coordinates available, but assume the photo was taken in Jalisco, Mexico unless the species is clearly from another region.';
+  }
+
+  if (environmentNotes) {
+    userText += `\n\nOBSERVER'S FIELD NOTES on habitat/environment: "${environmentNotes}"`;
+    userText += '\nThese are direct observations from the person who took the photo. Use them as reliable context for narrowing your identification.';
   }
 
   if (regionalSpeciesContext) {

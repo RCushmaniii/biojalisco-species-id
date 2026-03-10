@@ -57,6 +57,7 @@ export default function IdentifyPage() {
           latitude: lat,
           longitude: lon,
           gps_source: gpsSource,
+          environment_notes: payload.environmentNotes,
           date_taken: payload.dateTaken,
           camera_make: payload.cameraMake,
           camera_model: payload.cameraModel,

@@ -27,6 +27,8 @@ export const observations = pgTable('observations', {
   locationInfo: jsonb('location_info'),
   imageMetadata: jsonb('image_metadata'),
   gpsSource: text('gps_source'),
+  elevation: integer('elevation'),
+  environmentNotes: text('environment_notes'),
   identifiedAt: timestamp('identified_at', { withTimezone: true }).defaultNow(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [

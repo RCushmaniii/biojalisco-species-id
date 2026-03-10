@@ -478,6 +478,14 @@ a { color: inherit; text-decoration: none; }
 .location-detected .icon { width: 14px; height: 14px; stroke: var(--green-bright); }
 .location-selected .icon { width: 14px; height: 14px; stroke: var(--gold); }
 
+/* ── Environment Notes ── */
+.environment-notes { margin: 0.5rem 0; }
+.environment-notes-input { width: 100%; padding: 0.6rem 0.85rem; background: var(--dark-surface); border: 1px solid var(--gold-border); border-radius: 8px; color: var(--cream); font-size: var(--text-sm); font-family: 'DM Sans', sans-serif; outline: none; resize: vertical; min-height: 2.5rem; transition: border-color 0.2s; }
+.environment-notes-input::placeholder { color: var(--cream-50); font-size: var(--text-xs); }
+.environment-notes-input:focus { border-color: var(--gold); }
+[data-theme="light"] .environment-notes-input { background: rgba(255,255,255,0.95); border-color: rgba(0,0,0,0.12); color: #333; }
+[data-theme="light"] .environment-notes-input::placeholder { color: #999; }
+
 /* ── Panel Content ── */
 .info-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.55rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: var(--text-base); gap: 1rem; }
 .info-row:last-child { border-bottom: none; }

@@ -30,6 +30,8 @@ export function DataSourcesPanel({
   imageMetadata,
   locationInfo,
   gpsSource,
+  elevation,
+  environmentNotes,
   latitude,
   longitude,
 }: {
@@ -38,13 +40,15 @@ export function DataSourcesPanel({
   imageMetadata?: ImageMetadata | null;
   locationInfo?: LocationInfo | null;
   gpsSource?: GpsSource;
+  elevation?: number | null;
+  environmentNotes?: string | null;
   latitude?: number | null;
   longitude?: number | null;
 }) {
   const { t } = useLanguage();
 
   const hasImageData = imageMetadata?.dateTaken || imageMetadata?.cameraMake || imageMetadata?.cameraModel;
-  const hasLocation = locationInfo || (latitude != null && longitude != null);
+  const hasLocation = locationInfo || (latitude != null && longitude != null) || elevation != null || environmentNotes;
 
   return (
     <>
@@ -109,6 +113,18 @@ export function DataSourcesPanel({
                   {gpsSource && <GpsProvenanceBadge source={gpsSource} />}
                 </span>
                 <span className="data-source-value">{latitude.toFixed(4)}, {longitude.toFixed(4)}</span>
+              </div>
+            )}
+            {elevation != null && (
+              <div className="data-source-item">
+                <span className="data-source-label">{t('Elevation', 'Elevacion')}</span>
+                <span className="data-source-value">{elevation.toLocaleString()}m</span>
+              </div>
+            )}
+            {environmentNotes && (
+              <div className="data-source-item full-width">
+                <span className="data-source-label">{t('Environment Notes', 'Notas del Entorno')}</span>
+                <span className="data-source-value">{environmentNotes}</span>
               </div>
             )}
           </div>

@@ -54,6 +54,8 @@ export default async function DashboardPage() {
     locationInfo: r.locationInfo as Observation['locationInfo'],
     imageMetadata: r.imageMetadata as Observation['imageMetadata'],
     gpsSource: r.gpsSource as Observation['gpsSource'],
+    elevation: r.elevation,
+    environmentNotes: r.environmentNotes,
     identifiedAt: r.identifiedAt,
     createdAt: r.createdAt,
   }));

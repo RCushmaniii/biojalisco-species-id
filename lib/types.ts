@@ -135,6 +135,8 @@ export interface Observation {
   locationInfo: LocationInfo | null;
   imageMetadata: ImageMetadata | null;
   gpsSource: GpsSource;
+  elevation: number | null;
+  environmentNotes: string | null;
   identifiedAt: Date | null;
   createdAt: Date;
 }
