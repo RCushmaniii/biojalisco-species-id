@@ -19,7 +19,7 @@ Each identification triggers a four-API pipeline that produces 30+ structured da
 | **Narratives** | Full description (EN), full description (ES), fun fact, Wikipedia summary (ES) | GPT-4o + EncicloVida |
 | **Source Links** | GBIF species page URL, EncicloVida species page URL | GBIF + EncicloVida |
 | **Photo** | Compressed JPEG (max 1920px, ~80% quality), stored in private Vercel Blob | Device camera + sharp |
-| **Location** | Latitude, longitude from device GPS | Browser Geolocation API |
+| **Location** | Latitude, longitude | EXIF GPS (priority) > user-provided location search > browser geolocation (fallback) |
 | **Metadata** | User ID, observation timestamp, creation timestamp | Clerk + system |
 
 ### Data Verification Layers
@@ -58,6 +58,38 @@ Each identification triggers a four-API pipeline that produces 30+ structured da
 | **Server-side signed URLs** | Private blob images served through expiring signed URLs; no direct public access to storage |
 | **Neon Postgres** | Serverless Postgres scales to zero when team isn't in the field; no idle database costs |
 | **GPS + timestamps on every observation** | Enables geographic analysis, seasonal patterns, and survey coverage mapping |
+
+---
+
+## Phase 1.5 -- PWA & Mobile Distribution
+
+### Completed (v1.1)
+
+- Progressive Web App (PWA) conversion with offline-capable service worker
+- Full manifest with maskable icons (72-512px) for Android and iOS home screen install
+- Apple-specific meta tags for iOS standalone mode
+- Service worker: cache-first for static assets, network-first for pages, bypass for API routes
+- Pre-caches home page and logo for instant offline launch
+
+### GPS Location Priority Chain
+
+Photos uploaded to BioJalisco resolve location through a three-tier fallback:
+
+1. **EXIF GPS** -- extracted client-side via `exifr` before upload (highest accuracy, from the photo itself)
+2. **User-provided location** -- text search with geocoding, shown when EXIF GPS is absent
+3. **Browser geolocation** -- device's current position (fallback; inaccurate if uploading from a different location than where the photo was taken)
+
+Note: Photos shared via messaging apps, email, or social media typically have GPS stripped for privacy. Original photos taken directly on the device or downloaded from Google Photos retain EXIF GPS.
+
+### Planned -- Capacitor Native Wrapper
+
+If PWA testing reveals limitations with GPS accuracy, camera EXIF handling, or offline reliability, the upgrade path is **Capacitor** (Ionic):
+
+- Wraps the existing Next.js app in a native Android/iOS shell
+- `@capacitor/geolocation` provides native GPS (more reliable than browser geolocation)
+- `@capacitor/camera` provides native camera with full EXIF preservation
+- Same codebase, no rewrite required
+- Android first (Google Play, $25 one-time), iOS later if needed ($99/year)
 
 ---
 
@@ -111,7 +143,7 @@ All data below is already being collected. These features are views on top of ex
 
 ## Phase 3 -- Advanced Features (Future)
 
-- **Offline mode**: Cache recent regional species data for field use without connectivity
+- **Enhanced offline mode**: Queue identifications taken offline and process when connectivity returns (PWA service worker provides basic offline page caching in Phase 1.5)
 - **Batch upload**: Process multiple photos from a day's fieldwork at once
 - **Species comparison**: Side-by-side comparison of similar species with distinguishing features
 - **Seasonal patterns**: When are specific species most frequently observed?

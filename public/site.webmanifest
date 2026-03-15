@@ -1,16 +1,68 @@
 {
   "name": "BioJalisco Species Identifier",
   "short_name": "BioJalisco",
-  "description": "AI-powered species identification for Jalisco biodiversity research",
+  "description": "AI-powered species identification for Jalisco biodiversity research. Verified against GBIF, iNaturalist, and CONABIO databases.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#0E0C08",
   "theme_color": "#F0C040",
+  "categories": ["education", "science"],
+  "lang": "en",
+  "dir": "ltr",
   "icons": [
     {
-      "src": "/images/logo.webp",
+      "src": "/images/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/webp"
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { ClerkProvider } from '@clerk/nextjs';
 import { LanguageProvider } from '@/contexts/language-context';
 import { ThemeProvider } from '@/contexts/theme-context';
+import { PWARegister } from '@/components/pwa-register';
 import './globals.css';
 
 export const viewport: Viewport = {
@@ -55,8 +56,18 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/images/logo.webp',
-    apple: '/images/logo.webp',
+    icon: [
+      { url: '/images/icon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/images/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/images/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: '/images/apple-touch-icon.png',
+  },
+  other: {
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'black-translucent',
+    'apple-mobile-web-app-title': 'BioJalisco',
+    'mobile-web-app-capable': 'yes',
   },
   manifest: '/site.webmanifest',
 };
@@ -75,6 +86,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <LanguageProvider>
+            <PWARegister />
             {children}
           </LanguageProvider>
         </ThemeProvider>
