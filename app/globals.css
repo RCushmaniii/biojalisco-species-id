@@ -119,7 +119,13 @@
 
 [data-theme="light"] .mode-btn {
   border-color: rgba(0,0,0,0.10);
-  color: var(--cream-50);
+  color: #4a4238;
+}
+[data-theme="light"] .tab-btn {
+  color: #4a4238;
+}
+[data-theme="light"] .tab-btn.active {
+  color: var(--gold);
 }
 [data-theme="light"] .mode-btn.active {
   background: rgba(196,154,32,0.10);
