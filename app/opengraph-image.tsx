@@ -18,23 +18,27 @@ export default async function Image() {
           justifyContent: 'center',
           background: '#0E0C08',
           fontFamily: 'serif',
+          padding: '48px',
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="https://biojalisco-species-id.vercel.app/images/logo.webp"
           alt=""
-          width={120}
-          height={120}
-          style={{ marginBottom: 24, filter: 'invert(1) sepia(1) saturate(3) hue-rotate(10deg) brightness(0.95)' }}
+          width={220}
+          height={220}
+          style={{
+            marginBottom: 36,
+            filter: 'invert(1) sepia(1) saturate(3) hue-rotate(10deg) brightness(0.95)',
+          }}
         />
         <div
           style={{
             display: 'flex',
             alignItems: 'baseline',
-            gap: 0,
-            fontSize: 72,
+            fontSize: 128,
             letterSpacing: '-0.02em',
+            lineHeight: 1,
           }}
         >
           <span style={{ color: '#F0C040', fontStyle: 'italic', fontWeight: 700 }}>Bio</span>
@@ -42,28 +46,15 @@ export default async function Image() {
         </div>
         <div
           style={{
-            fontSize: 28,
-            color: 'rgba(237,227,200,0.5)',
-            fontWeight: 300,
-            letterSpacing: '0.1em',
+            fontSize: 36,
+            color: 'rgba(237,227,200,0.45)',
+            fontWeight: 400,
+            letterSpacing: '0.15em',
             textTransform: 'uppercase' as const,
-            marginTop: 8,
+            marginTop: 16,
           }}
         >
           Species Identifier
-        </div>
-        <div
-          style={{
-            fontSize: 20,
-            color: 'rgba(237,227,200,0.35)',
-            fontWeight: 300,
-            marginTop: 32,
-            maxWidth: 700,
-            textAlign: 'center' as const,
-            lineHeight: 1.5,
-          }}
-        >
-          AI-powered species identification verified against GBIF, iNaturalist, and CONABIO
         </div>
       </div>
     ),
