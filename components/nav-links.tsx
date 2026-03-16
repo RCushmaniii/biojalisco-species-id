@@ -1,8 +1,49 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/hooks/use-language';
+
+function ReviewLink({ pathname, onClose }: { pathname: string; onClose?: () => void }) {
+  const { t } = useLanguage();
+  const [isReviewer, setIsReviewer] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    // Check if user has reviewer role by trying the review API
+    fetch('/api/review?count=true')
+      .then(res => {
+        if (res.ok) return res.json();
+        return null;
+      })
+      .then(data => {
+        if (data && typeof data.count === 'number') {
+          setIsReviewer(true);
+          setPendingCount(data.count);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  if (!isReviewer) return null;
+
+  const linkClass = onClose ? 'nav-drawer-link' : 'nav-link';
+  const activeClass = pathname === '/review' ? 'active' : '';
+
+  return (
+    <Link
+      href="/review"
+      className={`${linkClass} ${activeClass}`}
+      onClick={onClose}
+    >
+      {t('Review', 'Revisar')}
+      {pendingCount > 0 && (
+        <span className="review-badge">{pendingCount}</span>
+      )}
+    </Link>
+  );
+}
 
 export function NavLinks() {
   const pathname = usePathname();
@@ -34,6 +75,7 @@ export function NavLinks() {
       >
         FAQ
       </Link>
+      <ReviewLink pathname={pathname} />
     </>
   );
 }
@@ -61,6 +103,7 @@ export function NavLinksDrawer({ onClose }: { onClose: () => void }) {
           {t(link.en, link.es)}
         </Link>
       ))}
+      <ReviewLink pathname={pathname} onClose={onClose} />
     </div>
   );
 }

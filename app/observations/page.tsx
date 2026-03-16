@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 import { observations } from '@/lib/db/schema';
-import { desc, sql } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import { PublicNav } from '@/components/public-nav';
 import { SiteFooter } from '@/components/site-footer';
 import { GalleryGrid } from '@/components/gallery-lightbox';
@@ -33,6 +33,7 @@ export default async function ObservationsPage() {
       const rows = await db
         .select()
         .from(observations)
+        .where(eq(observations.status, 'approved'))
         .orderBy(sql`${observations.featured} DESC NULLS LAST`, desc(observations.createdAt))
         .limit(100);
 
@@ -50,6 +51,11 @@ export default async function ObservationsPage() {
         gpsSource: r.gpsSource as Observation['gpsSource'],
         elevation: r.elevation,
         environmentNotes: r.environmentNotes,
+        status: r.status as Observation['status'],
+        reviewerNotes: r.reviewerNotes,
+        reviewedBy: r.reviewedBy,
+        reviewedAt: r.reviewedAt,
+        originalAiIdentification: r.originalAiIdentification as Observation['originalAiIdentification'],
         identifiedAt: r.identifiedAt ? new Date(r.identifiedAt) : null,
         createdAt: new Date(r.createdAt),
       }));

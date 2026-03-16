@@ -26,20 +26,23 @@ AI-powered species identification web app for Jalisco biodiversity research. Bui
 - `app/(protected)/page.tsx` -- Redirects to /dashboard
 - `app/(protected)/dashboard/page.tsx` -- Dashboard (stats, observation history, contribution banner)
 - `app/(protected)/identify/page.tsx` -- Camera/upload + AI identification
+- `app/(protected)/review/page.tsx` -- Reviewer-only observation approval queue
 - `app/sign-in/[[...sign-in]]/page.tsx` -- Clerk sign-in page
 - `app/api/identify/route.ts` -- Main identification pipeline (iNat + GPT-4o + GBIF + EncicloVida)
 - `app/api/observations/route.ts` -- Observation list API
 - `app/api/observations/[id]/route.ts` -- Single observation API (GET, PATCH, DELETE)
-- `components/` -- React components (onboarding-section, testimonial-carousel, dashboard-stats, contribution-banner, public-nav, site-footer, nav-brand, nav-links, capture-area, result-tabs, gallery-lightbox, observation-list, observation-card, observation-detail, theme-toggle, language-toggle, icons, etc.)
+- `app/api/review/route.ts` -- Review queue API (GET pending list, GET count)
+- `app/api/review/[id]/route.ts` -- Review action API (PATCH: approve/reject/correct)
+- `components/` -- React components (onboarding-section, testimonial-carousel, dashboard-stats, contribution-banner, public-nav, site-footer, nav-brand, nav-links, capture-area, result-tabs, gallery-lightbox, observation-list, observation-card, observation-detail, review-queue, theme-toggle, language-toggle, icons, pwa-register, etc.)
 - `components/tab-panels/` -- 6 result panels (overview, taxonomy, ecology, geography, conservation, similar)
 - `lib/openai.ts` -- GPT-4o Vision integration with system prompt (includes image_orientation)
 - `lib/inaturalist.ts` -- iNaturalist regional species context
 - `lib/gbif.ts` -- GBIF enrichment (verified taxonomy, IUCN, distributions)
 - `lib/enciclovida.ts` -- EncicloVida/CONABIO enrichment (endemic status, NOM-059, indigenous names, Wikipedia)
-- `lib/db/schema.ts` -- Single `observations` table with JSONB columns + featured + imageOrientation
+- `lib/db/schema.ts` -- Single `observations` table with JSONB columns + featured + imageOrientation + approval workflow fields (status, reviewerNotes, reviewedBy, reviewedAt, originalAiIdentification)
 - `lib/types.ts` -- All TypeScript interfaces including GBIFData, EncicloVidaData
 - `lib/species-data.ts` -- Bilingual species data for 20 protected Jalisco vertebrates
-- `docs/` -- Project documentation (API.md, ARCHITECTURE.md, FEATURES.md, FUNDING.md, ROADMAP.md)
+- `docs/` -- Project documentation (API.md, ARCHITECTURE.md, FEATURES.md, FUNDING.md, ROADMAP.md, APPROVAL-WORKFLOW.md)
 - `contexts/` -- React contexts (language EN/ES, theme dark/light)
 - `hooks/` -- Custom hooks (useLanguage, useTheme, useGeolocation)
 - `public/images/` -- Frog silhouette logo (logo.png)
@@ -74,14 +77,16 @@ All four APIs are best-effort with independent timeouts. If any external API is 
 - **Two content widths** -- 1200px for home/dashboard/FAQ/gallery, 780px for identify/observation detail.
 - **Navigation** -- Public pages use `PublicNav` component; protected pages use shared layout. Mobile hamburger drawer at < 768px. Logo always links to home.
 - **Gallery layout** -- AI-driven orientation metadata determines grid cell sizing. Featured observations sort first. Click-outside-to-close lightbox.
+- **Approval workflow** -- New observations save as `status: 'pending'`. Public gallery only shows `status: 'approved'`. Reviewer role set via Clerk `publicMetadata.role = 'reviewer'`. Review queue at `/review` with approve/reject/correct actions. Corrections snapshot original AI data to `originalAiIdentification` JSONB before overwriting. See `docs/APPROVAL-WORKFLOW.md` for full documentation.
 - **Upload validation** -- JPEG/PNG/WebP/HEIC only, 20MB client + server limit, bilingual error feedback.
 - **SiteFooter** -- Data sources (GBIF, iNaturalist, EncicloVida), partners (UdeG, CONABIO), legal links.
 - **Blob storage** -- Public access (URLs are unguessable random strings, app access gated by Clerk auth).
 
 ## Current Focus
-Phase 1 complete + polish. Four-API pipeline, Clerk auth, Neon database, Vercel Blob storage, community gallery, theme system, mobile nav, SEO all deployed. Current priorities:
+Phase 1 complete + PWA conversion + approval workflow. Four-API pipeline, Clerk auth, Neon database, Vercel Blob storage, community gallery, theme system, mobile nav, SEO, PWA all deployed. Current priorities:
+- Deploy approval workflow schema migration (`pnpm db:push` + SQL to approve existing rows)
+- Set reviewer role on Dr. Rosas's Clerk account
 - Phase 2 planning (species dashboards, geographic heatmaps)
-- Admin UI for gallery curation (currently API-only via PATCH)
 - Production testing with research team
 
 ## Known Issues

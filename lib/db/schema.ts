@@ -29,10 +29,17 @@ export const observations = pgTable('observations', {
   gpsSource: text('gps_source'),
   elevation: integer('elevation'),
   environmentNotes: text('environment_notes'),
+  // Approval workflow
+  status: text('status').default('pending').notNull(),
+  reviewerNotes: text('reviewer_notes'),
+  reviewedBy: text('reviewed_by'),
+  reviewedAt: timestamp('reviewed_at', { withTimezone: true }),
+  originalAiIdentification: jsonb('original_ai_identification'),
   identifiedAt: timestamp('identified_at', { withTimezone: true }).defaultNow(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 }, (table) => [
   index('idx_observations_user_id').on(table.userId),
   index('idx_observations_created_at').on(table.createdAt),
   index('idx_observations_scientific_name').on(table.scientificName),
+  index('idx_observations_status').on(table.status),
 ]);

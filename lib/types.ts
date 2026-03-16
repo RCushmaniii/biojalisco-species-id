@@ -108,6 +108,8 @@ export interface LocationInfo {
   displayName: string;
 }
 
+export type ObservationStatus = 'pending' | 'approved' | 'rejected';
+
 export interface Observation {
   id: string;
   userId: string;
@@ -137,6 +139,11 @@ export interface Observation {
   gpsSource: GpsSource;
   elevation: number | null;
   environmentNotes: string | null;
+  status: ObservationStatus;
+  reviewerNotes: string | null;
+  reviewedBy: string | null;
+  reviewedAt: Date | null;
+  originalAiIdentification: Record<string, unknown> | null;
   identifiedAt: Date | null;
   createdAt: Date;
 }

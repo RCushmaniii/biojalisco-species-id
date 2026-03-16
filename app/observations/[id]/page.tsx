@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { db } from '@/lib/db';
 import { observations } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { PublicNav } from '@/components/public-nav';
@@ -33,7 +33,7 @@ export async function generateMetadata({
         imageUrl: observations.imageUrl,
       })
       .from(observations)
-      .where(eq(observations.id, id))
+      .where(and(eq(observations.id, id), eq(observations.status, 'approved')))
       .limit(1);
 
     if (rows.length === 0) {
@@ -79,7 +79,7 @@ export default async function PublicObservationPage({
   const rows = await db
     .select()
     .from(observations)
-    .where(eq(observations.id, id))
+    .where(and(eq(observations.id, id), eq(observations.status, 'approved')))
     .limit(1);
 
   if (rows.length === 0) {
@@ -101,6 +101,11 @@ export default async function PublicObservationPage({
     gpsSource: row.gpsSource as Observation['gpsSource'],
     elevation: row.elevation,
     environmentNotes: row.environmentNotes,
+    status: row.status as Observation['status'],
+    reviewerNotes: row.reviewerNotes,
+    reviewedBy: row.reviewedBy,
+    reviewedAt: row.reviewedAt,
+    originalAiIdentification: row.originalAiIdentification as Observation['originalAiIdentification'],
     identifiedAt: row.identifiedAt,
     createdAt: row.createdAt,
   };

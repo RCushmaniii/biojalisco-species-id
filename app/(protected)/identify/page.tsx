@@ -145,11 +145,17 @@ export default function IdentifyPage() {
               <div style={{ textAlign: 'center', marginTop: '1rem' }}>
                 <button
                   className="btn btn-primary"
-                  onClick={() => router.push(`/observations/${observationId}`)}
+                  onClick={() => router.push('/dashboard')}
                   style={{ display: 'inline-flex', padding: '0.7rem 1.5rem' }}
                 >
-                  {t('View Observation', 'Ver Observacion')}
+                  {t('View in Dashboard', 'Ver en Panel')}
                 </button>
+                <p className="pending-notice">
+                  {t(
+                    'Your observation has been submitted for expert review. It will appear in the community gallery once approved by the research lead.',
+                    'Tu observacion ha sido enviada para revision experta. Aparecera en la galeria comunitaria una vez aprobada por la lider de investigacion.'
+                  )}
+                </p>
               </div>
             )}
           </>

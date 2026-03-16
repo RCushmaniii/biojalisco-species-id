@@ -208,6 +208,7 @@ export async function POST(request: NextRequest) {
           gpsSource,
           elevation,
           environmentNotes,
+          status: 'pending',
         });
       } catch (persistError) {
         console.error('Persistence failed:', persistError instanceof Error ? persistError.message : persistError);

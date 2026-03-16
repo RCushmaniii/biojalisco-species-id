@@ -8,6 +8,13 @@ function confColor(conf: number | null): string {
   return 'var(--red)';
 }
 
+function StatusBadge({ status }: { status: string }) {
+  if (status === 'approved') return null; // Don't clutter approved items
+  const label = status === 'pending' ? 'Pending Review' : 'Rejected';
+  const className = status === 'pending' ? 'status-badge status-pending' : 'status-badge status-rejected';
+  return <span className={className}>{label}</span>;
+}
+
 export function ObservationCard({ observation }: { observation: Observation }) {
   const date = new Date(observation.createdAt).toLocaleDateString('en-US', {
     month: 'short',
@@ -30,7 +37,10 @@ export function ObservationCard({ observation }: { observation: Observation }) {
         {observation.scientificName && (
           <div className="observation-sci">{observation.scientificName}</div>
         )}
-        <div className="observation-date">{date}</div>
+        <div className="observation-date">
+          {date}
+          <StatusBadge status={observation.status} />
+        </div>
       </div>
       {observation.confidence !== null && (
         <div

@@ -56,6 +56,11 @@ export default async function DashboardPage() {
     gpsSource: r.gpsSource as Observation['gpsSource'],
     elevation: r.elevation,
     environmentNotes: r.environmentNotes,
+    status: r.status as Observation['status'],
+    reviewerNotes: r.reviewerNotes,
+    reviewedBy: r.reviewedBy,
+    reviewedAt: r.reviewedAt,
+    originalAiIdentification: r.originalAiIdentification as Observation['originalAiIdentification'],
     identifiedAt: r.identifiedAt,
     createdAt: r.createdAt,
   }));
