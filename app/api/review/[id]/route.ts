@@ -35,6 +35,14 @@ export async function PATCH(
 
     const current = rows[0];
 
+    // Prevent re-reviewing already processed observations
+    if (current.status !== 'pending') {
+      return NextResponse.json(
+        { error: `Observation already ${current.status}` },
+        { status: 409 }
+      );
+    }
+
     // Build update
     const updates: Record<string, unknown> = {
       status: action === 'approve' ? 'approved' : 'rejected',
@@ -59,11 +67,13 @@ export async function PATCH(
         };
       }
 
-      // Apply corrections
-      if (corrections.commonName !== undefined) updates.commonName = corrections.commonName;
-      if (corrections.nombreComun !== undefined) updates.nombreComun = corrections.nombreComun;
-      if (corrections.scientificName !== undefined) updates.scientificName = corrections.scientificName;
-      if (corrections.breed !== undefined) updates.breed = corrections.breed;
+      // Apply corrections (validate types and length)
+      const MAX_FIELD = 200;
+      const strOrNull = (v: unknown) => (typeof v === 'string' ? v.slice(0, MAX_FIELD) : null);
+      if (corrections.commonName !== undefined) updates.commonName = strOrNull(corrections.commonName);
+      if (corrections.nombreComun !== undefined) updates.nombreComun = strOrNull(corrections.nombreComun);
+      if (corrections.scientificName !== undefined) updates.scientificName = strOrNull(corrections.scientificName);
+      if (corrections.breed !== undefined) updates.breed = strOrNull(corrections.breed);
     }
 
     const updated = await db
@@ -74,8 +84,10 @@ export async function PATCH(
 
     return NextResponse.json(updated[0]);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Internal server error';
+    const message = error instanceof Error ? error.message : '';
     const status = message === 'Forbidden' ? 403 : message === 'Unauthorized' ? 401 : 500;
-    return NextResponse.json({ error: message }, { status });
+    const clientMessage = status === 403 ? 'Forbidden' : status === 401 ? 'Unauthorized' : 'Review action failed';
+    console.error('Review error:', message || error);
+    return NextResponse.json({ error: clientMessage }, { status });
   }
 }

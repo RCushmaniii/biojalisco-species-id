@@ -5,24 +5,46 @@ import { enrichFromGBIF } from '@/lib/gbif';
 import { enrichFromEncicloVida } from '@/lib/enciclovida';
 import { reverseGeocode } from '@/lib/nominatim';
 import { getElevation } from '@/lib/elevation';
+import { checkRateLimit } from '@/lib/rate-limit';
 import { randomUUID } from 'crypto';
 
 // Extend function timeout (Hobby: max 60s, Pro: max 300s)
 export const maxDuration = 60;
 
-async function getOptionalUserId(): Promise<string | null> {
+// Rate limit: 10 identifications per 15 minutes per user
+const RATE_LIMIT_MAX = 10;
+const RATE_LIMIT_WINDOW = 15 * 60 * 1000;
+
+async function getRequiredUserId(): Promise<string> {
   try {
     const { auth } = await import('@clerk/nextjs/server');
     const { userId } = await auth();
+    if (!userId) throw new Error('Unauthorized');
     return userId;
   } catch {
-    return null;
+    throw new Error('Unauthorized');
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = await getOptionalUserId();
+    // Require authentication (middleware enforces this too, but defense-in-depth)
+    let userId: string;
+    try {
+      userId = await getRequiredUserId();
+    } catch {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
+    // Rate limiting per user
+    const rateCheck = checkRateLimit(`identify:${userId}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Please wait before trying again.', retryAfterMs: rateCheck.resetMs },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
 
     let imageData: string = body.image_data || '';
@@ -45,14 +67,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate image magic bytes (JPEG, PNG, WebP, HEIC) before sending to OpenAI
+    const headerBytes = imageData.slice(0, 16);
+    const isJPEG = headerBytes.startsWith('/9j/');           // FFD8FF in base64
+    const isPNG = headerBytes.startsWith('iVBORw');          // 89504E47 in base64
+    const isWebP = headerBytes.startsWith('UklGR');          // RIFF in base64
+    const isHEIC = headerBytes.startsWith('AAAAIG') || headerBytes.startsWith('AAAAHG'); // ftyp box
+    if (!isJPEG && !isPNG && !isWebP && !isHEIC) {
+      return NextResponse.json(
+        { error: 'Invalid image format. Please upload a JPEG, PNG, WebP, or HEIC image.' },
+        { status: 400 }
+      );
+    }
+
     const latitude: number | null = body.latitude ?? null;
     const longitude: number | null = body.longitude ?? null;
 
     // GPS provenance tracking
     const gpsSource: string | null = body.gps_source ?? null;
 
-    // Observer's environment/habitat notes
-    const environmentNotes: string | null = body.environment_notes?.trim() || null;
+    // Observer's environment/habitat notes (truncated to limit prompt injection surface)
+    const rawNotes: string | null = body.environment_notes?.trim() || null;
+    const environmentNotes = rawNotes ? rawNotes.slice(0, 500) : null;
 
     // EXIF metadata from client-side extraction
     const dateTaken: string | null = body.date_taken ?? null;
@@ -235,13 +271,9 @@ export async function POST(request: NextRequest) {
       ...(id ? { id, imageUrl } : {}),
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Internal server error';
-    console.error('Identify error:', message, error);
+    console.error('Identify error:', error instanceof Error ? error.message : error);
     return NextResponse.json(
-      {
-        error: message,
-        suggestion: 'Check server logs for details. Make sure OPENAI_API_KEY is configured.',
-      },
+      { error: 'Identification failed. Please try again.' },
       { status: 500 }
     );
   }

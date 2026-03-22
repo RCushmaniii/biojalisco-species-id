@@ -42,11 +42,14 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (request.method !== 'GET') return;
 
-  // Skip Clerk auth requests
-  if (url.hostname.includes('clerk')) return;
+  // Skip cross-origin requests (Clerk, fonts, external APIs)
+  if (url.origin !== self.location.origin) return;
 
   // Skip API routes — always go to network (identification needs live APIs)
   if (url.pathname.startsWith('/api/')) return;
+
+  // Skip Next.js data/RSC requests
+  if (url.searchParams.has('_rsc') || url.searchParams.has('__nextDataReq')) return;
 
   // Static assets (images, fonts, CSS, JS chunks): cache-first
   if (

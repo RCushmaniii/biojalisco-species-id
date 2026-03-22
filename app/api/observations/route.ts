@@ -8,8 +8,8 @@ export async function GET(request: NextRequest) {
   try {
     const userId = await getAuthUserId();
     const { searchParams } = new URL(request.url);
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100);
-    const offset = parseInt(searchParams.get('offset') || '0');
+    const limit = Math.min(Math.max(parseInt(searchParams.get('limit') || '20') || 20, 1), 100);
+    const offset = Math.max(parseInt(searchParams.get('offset') || '0') || 0, 0);
 
     const rows = await db
       .select()
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('List observations error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      { error: 'Failed to list observations' },
       { status: 500 }
     );
   }

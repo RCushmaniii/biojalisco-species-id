@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLanguage } from '@/hooks/use-language';
 
 export interface GalleryItem {
@@ -167,6 +167,7 @@ function Lightbox({
   onPrev: () => void;
 }) {
   const { lang, t } = useLanguage();
+  const backdropRef = useRef<HTMLDivElement>(null);
   const obs = observations[index];
   const badge = iucnBadge(obs.iucnStatus);
   const displayName = (lang === 'es' ? obs.nombreComun : obs.commonName) || obs.commonName;
@@ -179,10 +180,20 @@ function Lightbox({
     year: 'numeric',
   });
 
+  useEffect(() => {
+    backdropRef.current?.focus();
+  }, []);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') onClose();
+    if (e.key === 'ArrowRight') onNext();
+    if (e.key === 'ArrowLeft') onPrev();
+  };
+
   const stop = (e: React.MouseEvent) => e.stopPropagation();
 
   return (
-    <div className="lightbox-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-label={t('Image viewer', 'Visor de imagen')}>
+    <div ref={backdropRef} className="lightbox-backdrop" onClick={onClose} onKeyDown={handleKeyDown} tabIndex={-1} role="dialog" aria-modal="true" aria-label={t('Image viewer', 'Visor de imagen')}>
       <div className="lightbox-content">
         {/* Close button */}
         <button className="lightbox-close" onClick={onClose} aria-label={t('Close', 'Cerrar')}>

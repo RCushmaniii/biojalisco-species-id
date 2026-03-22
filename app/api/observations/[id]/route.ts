@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAuthUserId } from '@/lib/auth';
+import { getAuthUserId, getAuthUserWithRole } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { observations } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
@@ -27,7 +27,7 @@ export async function GET(
   } catch (error) {
     console.error('Get observation error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      { error: 'Operation failed' },
       { status: 500 }
     );
   }
@@ -39,12 +39,13 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    const userId = await getAuthUserId();
+    const { userId, isReviewer } = await getAuthUserWithRole();
     const body = await request.json();
 
     // Build update object from allowed fields
     const updates: Record<string, unknown> = {};
-    if (typeof body.featured === 'boolean') updates.featured = body.featured;
+    // Only reviewers can set featured status
+    if (typeof body.featured === 'boolean' && isReviewer) updates.featured = body.featured;
     if (body.imageOrientation === 'landscape' || body.imageOrientation === 'portrait') {
       updates.imageOrientation = body.imageOrientation;
     }
@@ -67,7 +68,7 @@ export async function PATCH(
   } catch (error) {
     console.error('Patch observation error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      { error: 'Operation failed' },
       { status: 500 }
     );
   }
@@ -113,7 +114,7 @@ export async function DELETE(
   } catch (error) {
     console.error('Delete observation error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Internal server error' },
+      { error: 'Operation failed' },
       { status: 500 }
     );
   }

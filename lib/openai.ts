@@ -157,5 +157,10 @@ export async function identifySpecies(
     resultText = resultText.trim();
   }
 
-  return JSON.parse(resultText) as IdentifyResponse;
+  try {
+    return JSON.parse(resultText) as IdentifyResponse;
+  } catch {
+    console.error('GPT-4o returned malformed JSON:', resultText.slice(0, 200));
+    throw new Error('AI returned an invalid response. Please try again.');
+  }
 }

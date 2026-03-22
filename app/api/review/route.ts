@@ -33,8 +33,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(items);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Internal server error';
+    const message = error instanceof Error ? error.message : '';
     const status = message === 'Forbidden' ? 403 : message === 'Unauthorized' ? 401 : 500;
-    return NextResponse.json({ error: message }, { status });
+    const clientMessage = status === 403 ? 'Forbidden' : status === 401 ? 'Unauthorized' : 'Failed to load review queue';
+    console.error('Review list error:', message || error);
+    return NextResponse.json({ error: clientMessage }, { status });
   }
 }
