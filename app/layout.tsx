@@ -3,6 +3,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { LanguageProvider } from '@/contexts/language-context';
 import { ThemeProvider } from '@/contexts/theme-context';
 import { PWARegister } from '@/components/pwa-register';
+import { PWAInstallPrompt } from '@/components/pwa-install-prompt';
 import './globals.css';
 
 export const viewport: Viewport = {
@@ -87,6 +88,7 @@ export default function RootLayout({
         <ThemeProvider>
           <LanguageProvider>
             <PWARegister />
+            <PWAInstallPrompt />
             {children}
           </LanguageProvider>
         </ThemeProvider>
