@@ -11,6 +11,12 @@
   "categories": ["education", "science"],
   "lang": "en",
   "dir": "ltr",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://biojalisco-species-id.vercel.app/site.webmanifest"
+    }
+  ],
   "icons": [
     {
       "src": "/images/icon-72x72.png",

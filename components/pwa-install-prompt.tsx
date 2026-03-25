@@ -9,6 +9,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 const DISMISS_KEY = 'biojalisco-pwa-dismiss';
+const INSTALLED_KEY = 'biojalisco-pwa-installed';
 const DISMISS_EXPIRY_DAYS = 14;
 
 export function PWAInstallPrompt() {
@@ -28,6 +29,9 @@ export function PWAInstallPrompt() {
     setIsStandalone(standalone);
     if (standalone) return;
 
+    // Check if previously installed
+    if (localStorage.getItem(INSTALLED_KEY)) return;
+
     // Detect iOS
     const ua = navigator.userAgent;
     const ios = /iPad|iPhone|iPod/.test(ua) || (ua.includes('Mac') && 'ontouchend' in document);
@@ -41,6 +45,20 @@ export function PWAInstallPrompt() {
       localStorage.removeItem(DISMISS_KEY);
     }
 
+    // Check getInstalledRelatedApps (Chromium — detects install even from browser)
+    const checkInstalled = async () => {
+      if ('getInstalledRelatedApps' in navigator) {
+        try {
+          const apps = await (navigator as unknown as { getInstalledRelatedApps: () => Promise<unknown[]> }).getInstalledRelatedApps();
+          if (apps.length > 0) {
+            localStorage.setItem(INSTALLED_KEY, 'true');
+            return true;
+          }
+        } catch { /* ignore */ }
+      }
+      return false;
+    };
+
     // Android/Chrome: capture the beforeinstallprompt event
     const handler = (e: Event) => {
       e.preventDefault();
@@ -48,14 +66,22 @@ export function PWAInstallPrompt() {
     };
     window.addEventListener('beforeinstallprompt', handler);
 
+    // Listen for successful install to immediately hide banner
+    const installHandler = () => {
+      localStorage.setItem(INSTALLED_KEY, 'true');
+      setShowBanner(false);
+    };
+    window.addEventListener('appinstalled', installHandler);
+
     // Show banner after brief delay (let user engage with content first)
-    const timer = setTimeout(() => {
-      setShowBanner(true);
-    }, 5000);
+    checkInstalled().then((alreadyInstalled) => {
+      if (alreadyInstalled) return;
+      setTimeout(() => setShowBanner(true), 5000);
+    });
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handler);
-      clearTimeout(timer);
+      window.removeEventListener('appinstalled', installHandler);
     };
   }, []);
 
