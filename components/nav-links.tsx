@@ -11,14 +11,10 @@ function ReviewLink({ pathname, onClose }: { pathname: string; onClose?: () => v
   const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
-    // Check if user has reviewer role by trying the review API
     fetch('/api/review?count=true')
-      .then(res => {
-        if (res.ok) return res.json();
-        return null;
-      })
+      .then(res => res.ok ? res.json() : null)
       .then(data => {
-        if (data && typeof data.count === 'number') {
+        if (data?.isReviewer) {
           setIsReviewer(true);
           setPendingCount(data.count);
         }
