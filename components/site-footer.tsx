@@ -50,7 +50,7 @@ export function SiteFooter() {
       </div>
 
       <div className="footer-bottom">
-        <span>&copy; {year} BioJalisco &middot; <a href="https://cushlabs.ai">CushLabs AI Services</a></span>
+        <span>&copy; {year} BioJalisco &middot; <a href="https://cushlabs.ai" target="_blank" rel="noopener noreferrer">CushLabs AI Services</a></span>
       </div>
     </footer>
   );

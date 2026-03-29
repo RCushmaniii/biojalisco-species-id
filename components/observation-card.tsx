@@ -29,6 +29,7 @@ export function ObservationCard({ observation }: { observation: Observation }) {
         src={observation.imageUrl}
         alt={observation.commonName || 'Observation'}
         className="observation-thumb"
+        loading="lazy"
       />
       <div className="observation-info">
         <div className="observation-name">

@@ -2,8 +2,9 @@ import { PublicNav } from '@/components/public-nav';
 import { SiteFooter } from '@/components/site-footer';
 
 export const metadata = {
-  title: 'Privacy Policy — BioJalisco',
+  title: 'Privacy Policy',
   description: 'Privacy policy for the BioJalisco Species Identifier platform.',
+  alternates: { canonical: '/privacy' },
 };
 
 export default function PrivacyPage() {

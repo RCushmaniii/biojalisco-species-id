@@ -84,6 +84,10 @@ export default function RootLayout({
 }) {
   const content = (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body>
         <ThemeProvider>
           <LanguageProvider>

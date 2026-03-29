@@ -326,6 +326,7 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
               value={locationQuery}
               onChange={(e) => setLocationQuery(e.target.value)}
               autoComplete="off"
+              aria-label={t('Search for a location', 'Buscar una ubicacion')}
             />
             {isSearching && <span className="location-search-spinner" />}
           </div>
@@ -389,6 +390,7 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
             onChange={(e) => setEnvironmentNotes(e.target.value)}
             rows={2}
             maxLength={300}
+            aria-label={t('Environment description', 'Descripcion del entorno')}
           />
         </div>
       )}

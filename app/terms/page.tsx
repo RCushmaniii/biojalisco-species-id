@@ -2,8 +2,9 @@ import { PublicNav } from '@/components/public-nav';
 import { SiteFooter } from '@/components/site-footer';
 
 export const metadata = {
-  title: 'Terms of Use — BioJalisco',
+  title: 'Terms of Use',
   description: 'Terms of use for the BioJalisco Species Identifier platform.',
+  alternates: { canonical: '/terms' },
 };
 
 export default function TermsPage() {
