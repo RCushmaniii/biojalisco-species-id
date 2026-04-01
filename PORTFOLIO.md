@@ -3,8 +3,8 @@
 # PORTFOLIO.MD — BioJalisco Species Identifier
 # =============================================================================
 portfolio_enabled: true
-portfolio_priority: 3
-portfolio_featured: true
+portfolio_priority: 11
+portfolio_featured: false
 portfolio_last_reviewed: "2026-03-09"
 
 title: "BioJalisco Species Identifier"
