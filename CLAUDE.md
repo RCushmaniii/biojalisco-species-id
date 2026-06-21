@@ -107,3 +107,10 @@ Copy `.env.local.example` to `.env.local`. Only `OPENAI_API_KEY` is required for
 | `CLERK_SECRET_KEY` | No | Clerk dashboard |
 | `DATABASE_URL` | No | Neon dashboard |
 | `BLOB_READ_WRITE_TOKEN` | No | Vercel project settings > Storage |
+
+
+## Session Log
+
+A running log of all working sessions is maintained at `docs/SESSION_LOG.md`.
+Always append a new entry at the top of this file before closing a session.
+Use the `session-logger` skill to generate the entry.

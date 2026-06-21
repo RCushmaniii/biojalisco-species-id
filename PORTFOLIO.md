@@ -4,11 +4,11 @@
 # =============================================================================
 portfolio_enabled: true
 portfolio_priority: 11
-portfolio_featured: false
+portfolio_featured: true
 portfolio_last_reviewed: "2026-03-09"
 
 title: "BioJalisco Species Identifier"
-tagline: "Five-API species identification pipeline with EXIF GPS extraction, reverse geocoding, and Mexico-specific conservation data"
+tagline: "AI-powered species identification for conservation researchers in Mexico — photo in, verified species data out"
 slug: "biojalisco-species-id"
 
 category: "AI Automation"
@@ -27,16 +27,36 @@ tags:
 
 thumbnail: "/images/portfolio/biojalisco-thumb.webp"
 hero_images:
-  - "/images/portfolio/biojalisco-slide-01.webp"
-  - "/images/portfolio/biojalisco-slide-02.webp"
-  - "/images/portfolio/biojalisco-slide-03.webp"
-  - "/images/portfolio/biojalisco-slide-04.webp"
-  - "/images/portfolio/biojalisco-slide-05.webp"
-  - "/images/portfolio/biojalisco-slide-06.webp"
-  - "/images/portfolio/biojalisco-slide-07.webp"
-  - "/images/portfolio/biojalisco-slide-08.webp"
-  - "/images/portfolio/biojalisco-slide-09.webp"
-  - "/images/portfolio/biojalisco-slide-10.webp"
+  - src: "/images/portfolio/biojalisco-slide-01.webp"
+    alt_en: "BioJalisco home screen with drag-and-drop photo upload for species identification"
+    alt_es: "Pantalla de inicio de BioJalisco con carga de fotos por arrastrar y soltar para identificar especies"
+  - src: "/images/portfolio/biojalisco-slide-02.webp"
+    alt_en: "Species identification result showing the identified animal with common and scientific names"
+    alt_es: "Resultado de identificación de especie mostrando el animal identificado con nombre común y científico"
+  - src: "/images/portfolio/biojalisco-slide-03.webp"
+    alt_en: "Explore mode tabs — About, Habitat and Range, and Similar Species for casual users"
+    alt_es: "Pestañas del modo Explorar — Acerca de, Hábitat y distribución, y Especies similares para usuarios casuales"
+  - src: "/images/portfolio/biojalisco-slide-04.webp"
+    alt_en: "Research mode taxonomy tab with verified GBIF classification data"
+    alt_es: "Pestaña de taxonomía del modo Investigación con datos de clasificación verificados de GBIF"
+  - src: "/images/portfolio/biojalisco-slide-05.webp"
+    alt_en: "Conservation tab showing IUCN Red List status and Mexico's NOM-059 protection level"
+    alt_es: "Pestaña de conservación mostrando el estatus de la Lista Roja de la UICN y el nivel de protección NOM-059 de México"
+  - src: "/images/portfolio/biojalisco-slide-06.webp"
+    alt_en: "Data Sources panel with location metadata, GBIF match data, and EncicloVida enrichment"
+    alt_es: "Panel de Fuentes de datos con metadatos de ubicación, datos de coincidencia de GBIF y enriquecimiento de EncicloVida"
+  - src: "/images/portfolio/biojalisco-slide-07.webp"
+    alt_en: "EXIF GPS extraction and reverse-geocoded location showing state, municipality, and city"
+    alt_es: "Extracción de GPS desde EXIF y ubicación geocodificada mostrando estado, municipio y ciudad"
+  - src: "/images/portfolio/biojalisco-slide-08.webp"
+    alt_en: "Verified-data badges distinguishing authoritative sources from AI-generated content"
+    alt_es: "Insignias de datos verificados que distinguen las fuentes autorizadas del contenido generado por IA"
+  - src: "/images/portfolio/biojalisco-slide-09.webp"
+    alt_en: "Community observation gallery with featured species submitted by researchers"
+    alt_es: "Galería de observaciones de la comunidad con especies destacadas enviadas por investigadores"
+  - src: "/images/portfolio/biojalisco-slide-10.webp"
+    alt_en: "Bilingual interface with dark and light theme support for the research team"
+    alt_es: "Interfaz bilingüe con soporte para tema oscuro y claro para el equipo de investigación"
 demo_video_url: "/video/biojalisco-brief.mp4"
 demo_video_poster: "/images/portfolio/biojalisco-brief-poster.webp"
 
@@ -51,6 +71,17 @@ problem_solved: |
   combines AI vision, regional species data, global taxonomy verification, and
   Mexico-specific conservation status (NOM-059, endemic classification) in one flow.
 
+solution: |
+  BioJalisco chains five independent data sources into one identification flow.
+  It extracts GPS coordinates from photo EXIF metadata (stripping them for
+  privacy), reverse geocodes the exact location, and feeds that context to
+  GPT-4o Vision so identifications are grounded in regional reality instead of
+  global visual lookalikes. GBIF then overlays verified taxonomy and IUCN status,
+  while CONABIO/EncicloVida adds Mexico-specific data — endemic classification,
+  NOM-059 protection, and indigenous-language names. Verified-data badges keep
+  authoritative sources clearly separated from AI-generated content, and graceful
+  degradation lets the app run on just an OpenAI key.
+
 key_outcomes:
   - "Five-API pipeline: iNaturalist context + GPT-4o Vision + GBIF verification + EncicloVida/CONABIO enrichment + Nominatim reverse geocoding"
   - "EXIF GPS extraction from photo metadata for precise location-aware identification (proven: corrected Broad-billed Hummingbird to Cinnamon Hummingbird with accurate coordinates)"
@@ -60,6 +91,12 @@ key_outcomes:
   - "Explore/Research dual-mode tab system: casual users see About + Habitat + Similar Species; scientists see Taxonomy + Conservation + Data Sources"
   - "Bilingual (EN/ES) with dark/light theme, community observation gallery, and EXIF privacy stripping"
   - "Graceful degradation: works with just an OpenAI key, enriched with optional services"
+
+metrics:
+  - "EXIF-based location proven to correct real misidentifications (Broad-billed → Cinnamon Hummingbird)"
+  - "Verified taxonomy and IUCN status sourced from GBIF and CONABIO, not AI guesswork"
+  - "Dual-mode interface serves both casual explorers and working scientists from one result"
+  - "Production deployment runs on any camera phone with zero-config minimum setup (OpenAI key only)"
 
 tech_stack:
   - "Next.js 15 (App Router)"
@@ -89,19 +126,6 @@ health_status:
   health_endpoint: "Y"
   security_headers: "Y"
   rate_limiting: "Y"
-  env_validation: "-"
-  analytics: "DEFERRED"
-  structured_logging: "-"
-  dependabot: "Y"
-  secret_scanning: "Y"
-  db_backup: "-"
-health_status:
-  sentry: "-"
-  testing: "-"
-  ci_cd: "Y"
-  health_endpoint: "Y"
-  security_headers: "-"
-  rate_limiting: "-"
   env_validation: "-"
   analytics: "DEFERRED"
   structured_logging: "-"
@@ -160,6 +184,7 @@ Results are presented through an Explore/Research dual-mode tab system: casual u
 ## Results
 
 **For the Research Team:**
+
 - Accurate species identification grounded in regional observation data and precise photo GPS coordinates
 - EXIF-based location proven to correct misidentifications (Broad-billed Hummingbird → Cinnamon Hummingbird with accurate Sierra Occidental coordinates)
 - Verified taxonomy and IUCN status from authoritative sources, not AI guesswork
@@ -168,6 +193,7 @@ Results are presented through an Explore/Research dual-mode tab system: casual u
 - Works on any mobile device with a camera
 
 **Technical Demonstration:**
+
 - Five-API orchestration with graceful degradation at each layer
 - EXIF GPS extraction → reverse geocoding → location-aware AI identification pipeline
 - Real-world problem solving: geographic context dramatically improves AI vision accuracy
