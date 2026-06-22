@@ -53,3 +53,6 @@ next-env.d.ts
 
 # drizzle
 /drizzle/meta
+
+.vercel
+.env*.local
