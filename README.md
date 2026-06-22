@@ -1,5 +1,6 @@
 # BioJalisco Species Identifier
 
+[![Live](https://img.shields.io/badge/Status-Live-success?logo=vercel&logoColor=white)](https://biojalisco.cushlabs.ai)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![GPT-4o](https://img.shields.io/badge/GPT--4o-Vision-412991?logo=openai)
@@ -77,13 +78,13 @@ Copy the example file and fill in your values:
 cp .env.local.example .env.local
 ```
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `OPENAI_API_KEY` | Yes | OpenAI API key with GPT-4o access |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | No | Clerk publishable key (enables auth) |
-| `CLERK_SECRET_KEY` | No | Clerk secret key |
-| `DATABASE_URL` | No | Neon Postgres connection string (enables persistence) |
-| `BLOB_READ_WRITE_TOKEN` | No | Vercel Blob token (enables image storage) |
+| Variable                            | Required | Description                                           |
+| ----------------------------------- | -------- | ----------------------------------------------------- |
+| `OPENAI_API_KEY`                    | Yes      | OpenAI API key with GPT-4o access                     |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | No       | Clerk publishable key (enables auth)                  |
+| `CLERK_SECRET_KEY`                  | No       | Clerk secret key                                      |
+| `DATABASE_URL`                      | No       | Neon Postgres connection string (enables persistence) |
+| `BLOB_READ_WRITE_TOKEN`             | No       | Vercel Blob token (enables image storage)             |
 
 After setting `DATABASE_URL`, push the schema:
 
@@ -99,9 +100,10 @@ pnpm dev
 
 ## Live Demo
 
-**[biojalisco-species-id.vercel.app](https://biojalisco-species-id.vercel.app)**
+**Live in production:** **[biojalisco.cushlabs.ai](https://biojalisco.cushlabs.ai)**
 
 Try it with:
+
 - A photo of any bird, mammal, reptile, or amphibian
 - Grant location permission for better regional accuracy
 - Switch between English and Spanish with the language toggle
@@ -172,16 +174,16 @@ Vercel Pro is recommended. The full pipeline (iNat context + GPT-4o Vision + GBI
 
 ## Results
 
-| Metric | Value |
-|--------|-------|
-| Identification latency | 8-20s (full four-API pipeline) |
-| Image compression | ~1MB per photo (sharp) |
-| Supported organisms | Vertebrates: mammals, birds, reptiles, amphibians |
-| Languages | English + Spanish (bilingual toggle) |
-| Data sources | 4 APIs (iNaturalist, GPT-4o, GBIF, EncicloVida) |
-| Verified data | Taxonomy, IUCN status (GBIF) + NOM-059, endemic status (CONABIO) |
-| Regional context | 50km radius species observations (via iNaturalist) |
-| Mexico-specific data | Endemic/native/exotic classification, NOM-059 protection (via CONABIO) |
+| Metric                 | Value                                                                  |
+| ---------------------- | ---------------------------------------------------------------------- |
+| Identification latency | 8-20s (full four-API pipeline)                                         |
+| Image compression      | ~1MB per photo (sharp)                                                 |
+| Supported organisms    | Vertebrates: mammals, birds, reptiles, amphibians                      |
+| Languages              | English + Spanish (bilingual toggle)                                   |
+| Data sources           | 4 APIs (iNaturalist, GPT-4o, GBIF, EncicloVida)                        |
+| Verified data          | Taxonomy, IUCN status (GBIF) + NOM-059, endemic status (CONABIO)       |
+| Regional context       | 50km radius species observations (via iNaturalist)                     |
+| Mexico-specific data   | Endemic/native/exotic classification, NOM-059 protection (via CONABIO) |
 
 ## Contact
 
@@ -198,4 +200,4 @@ info@cushlabs.ai
 
 ---
 
-*Last Updated: 2026-03-08*
+_Last Updated: 2026-06-21_

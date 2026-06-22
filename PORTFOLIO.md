@@ -60,8 +60,8 @@ hero_images:
 demo_video_url: "/video/biojalisco-brief.mp4"
 demo_video_poster: "/images/portfolio/biojalisco-brief-poster.webp"
 
-live_url: "https://biojalisco-species-id.vercel.app"
-demo_url: "https://biojalisco-species-id.vercel.app"
+live_url: "https://biojalisco.cushlabs.ai"
+demo_url: "https://biojalisco.cushlabs.ai"
 case_study_url: ""
 
 problem_solved: |
