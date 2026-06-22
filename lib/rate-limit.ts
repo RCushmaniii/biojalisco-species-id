@@ -22,8 +22,11 @@ let redis: Redis | null | undefined;
 
 function getRedis(): Redis | null {
   if (redis !== undefined) return redis;
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  // Support both the standard Upstash names and the KV_* names that Vercel's
+  // Upstash marketplace integration injects (KV_REST_API_URL / KV_REST_API_TOKEN).
+  const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+  const token =
+    process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   redis = url && token ? new Redis({ url, token }) : null;
   return redis;
 }
