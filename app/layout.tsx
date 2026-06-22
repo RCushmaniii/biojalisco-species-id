@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: '%s — BioJalisco',
   },
   description: 'AI-powered species identification for Jalisco biodiversity research. Verified against GBIF, iNaturalist, and CONABIO databases.',
-  metadataBase: new URL('https://biojalisco-species-id.vercel.app'),
+  metadataBase: new URL('https://biojalisco.cushlabs.ai'),
   alternates: {
     canonical: '/',
     languages: {

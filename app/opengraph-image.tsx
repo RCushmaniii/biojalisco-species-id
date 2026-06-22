@@ -22,7 +22,7 @@ export default async function Image() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://biojalisco-species-id.vercel.app/images/logo.png"
+          src="https://biojalisco.cushlabs.ai/images/logo.png"
           alt=""
           width={340}
           height={340}

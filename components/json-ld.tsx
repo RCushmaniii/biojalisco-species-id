@@ -3,8 +3,8 @@ export function OrganizationJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'BioJalisco',
-    url: 'https://biojalisco-species-id.vercel.app',
-    logo: 'https://biojalisco-species-id.vercel.app/images/logo.webp',
+    url: 'https://biojalisco.cushlabs.ai',
+    logo: 'https://biojalisco.cushlabs.ai/images/logo.webp',
     description: 'AI-powered species identification platform for Jalisco biodiversity research, verified against GBIF, iNaturalist, and CONABIO databases.',
     foundingDate: '2026',
     parentOrganization: {
@@ -39,7 +39,7 @@ export function WebSiteJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'BioJalisco Species Identifier',
-    url: 'https://biojalisco-species-id.vercel.app',
+    url: 'https://biojalisco.cushlabs.ai',
     description: 'AI-powered species identification for Jalisco biodiversity research.',
     publisher: {
       '@type': 'Organization',
