@@ -1,18 +1,18 @@
-import { db } from '@/lib/db';
-import { observations } from '@/lib/db/schema';
-import { eq, desc } from 'drizzle-orm';
-import { redirect } from 'next/navigation';
-import { ObservationList } from '@/components/observation-list';
-import { DashboardStats } from '@/components/dashboard-stats';
-import { ContributionBanner } from '@/components/contribution-banner';
-import Link from 'next/link';
-import { CameraIcon } from '@/components/icons';
-import { getImageUrl } from '@/lib/blob';
-import type { Observation } from '@/lib/types';
+import { db } from "@/lib/db";
+import { observations } from "@/lib/db/schema";
+import { eq, desc } from "drizzle-orm";
+import { redirect } from "next/navigation";
+import { ObservationList } from "@/components/observation-list";
+import { DashboardStats } from "@/components/dashboard-stats";
+import { ContributionBanner } from "@/components/contribution-banner";
+import Link from "next/link";
+import { CameraIcon } from "@/components/icons";
+import { getImageUrl } from "@/lib/blob";
+import type { Observation } from "@/lib/types";
 
 async function getAuthUserId(): Promise<string | null> {
   try {
-    const { auth } = await import('@clerk/nextjs/server');
+    const { auth } = await import("@clerk/nextjs/server");
     const { userId } = await auth();
     return userId;
   } catch {
@@ -21,18 +21,23 @@ async function getAuthUserId(): Promise<string | null> {
 }
 
 const NOTABLE_STATUSES = new Set([
-  'near threatened', 'nt',
-  'vulnerable', 'vu',
-  'endangered', 'en',
-  'critically endangered', 'cr',
-  'extinct in the wild', 'ew',
+  "near threatened",
+  "nt",
+  "vulnerable",
+  "vu",
+  "endangered",
+  "en",
+  "critically endangered",
+  "cr",
+  "extinct in the wild",
+  "ew",
 ]);
 
 export default async function DashboardPage() {
   const userId = await getAuthUserId();
 
   if (!userId || !process.env.DATABASE_URL) {
-    redirect('/');
+    redirect("/");
   }
 
   const rows = await db
@@ -45,32 +50,33 @@ export default async function DashboardPage() {
   const obs: Observation[] = rows.map((r) => ({
     ...r,
     imageUrl: getImageUrl(r.imageUrl),
-    taxonomy: r.taxonomy as Observation['taxonomy'],
-    ecology: r.ecology as Observation['ecology'],
-    geography: r.geography as Observation['geography'],
-    conservation: r.conservation as Observation['conservation'],
-    similarSpecies: r.similarSpecies as Observation['similarSpecies'],
-    imageOrientation: r.imageOrientation as Observation['imageOrientation'],
-    locationInfo: r.locationInfo as Observation['locationInfo'],
-    imageMetadata: r.imageMetadata as Observation['imageMetadata'],
-    gpsSource: r.gpsSource as Observation['gpsSource'],
+    taxonomy: r.taxonomy as Observation["taxonomy"],
+    ecology: r.ecology as Observation["ecology"],
+    geography: r.geography as Observation["geography"],
+    conservation: r.conservation as Observation["conservation"],
+    similarSpecies: r.similarSpecies as Observation["similarSpecies"],
+    imageOrientation: r.imageOrientation as Observation["imageOrientation"],
+    locationInfo: r.locationInfo as Observation["locationInfo"],
+    imageMetadata: r.imageMetadata as Observation["imageMetadata"],
+    gpsSource: r.gpsSource as Observation["gpsSource"],
     elevation: r.elevation,
     environmentNotes: r.environmentNotes,
-    status: r.status as Observation['status'],
+    status: r.status as Observation["status"],
     reviewerNotes: r.reviewerNotes,
     reviewedBy: r.reviewedBy,
     reviewedAt: r.reviewedAt,
-    originalAiIdentification: r.originalAiIdentification as Observation['originalAiIdentification'],
+    originalAiIdentification:
+      r.originalAiIdentification as Observation["originalAiIdentification"],
     identifiedAt: r.identifiedAt,
     createdAt: r.createdAt,
   }));
 
   // Compute stats
   const uniqueSpeciesSet = new Set(
-    obs.filter((o) => o.scientificName).map((o) => o.scientificName)
+    obs.filter((o) => o.scientificName).map((o) => o.scientificName),
   );
   const conservationNotable = obs.filter((o) => {
-    const status = o.conservation?.iucn_status?.toLowerCase() ?? '';
+    const status = o.conservation?.iucn_status?.toLowerCase() ?? "";
     return NOTABLE_STATUSES.has(status);
   }).length;
   const latestSpecies = obs[0]?.commonName ?? obs[0]?.scientificName ?? null;
@@ -102,7 +108,7 @@ export default async function DashboardPage() {
                 Identify Another
               </Link>
             </div>
-            <ObservationList observations={obs} />
+            <ObservationList observations={obs} from="dashboard" />
           </>
         ) : (
           <DashboardEmpty />
@@ -130,9 +136,13 @@ function DashboardEmpty() {
       <div className="dashboard-empty-tips">
         <h3>Tips for Best Results</h3>
         <ul>
-          <li>Photograph the animal clearly — the closer and sharper, the better</li>
+          <li>
+            Photograph the animal clearly — the closer and sharper, the better
+          </li>
           <li>Include the full body when possible, not just a partial view</li>
-          <li>Natural lighting works best — avoid heavy shadows or flash glare</li>
+          <li>
+            Natural lighting works best — avoid heavy shadows or flash glare
+          </li>
           <li>Enable location services for automatic geotagging</li>
         </ul>
       </div>
