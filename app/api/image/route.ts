@@ -1,15 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getAuthUserId } from '@/lib/auth';
+import { NextRequest, NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 function isAllowedBlobUrl(raw: string): boolean {
   try {
     const parsed = new URL(raw);
     // Must be HTTPS and hostname must end with .blob.vercel-storage.com
     return (
-      parsed.protocol === 'https:' &&
-      parsed.hostname.endsWith('.blob.vercel-storage.com')
+      parsed.protocol === "https:" &&
+      parsed.hostname.endsWith(".blob.vercel-storage.com")
     );
   } catch {
     return false;
@@ -17,20 +16,17 @@ function isAllowedBlobUrl(raw: string): boolean {
 }
 
 export async function GET(request: NextRequest) {
-  // Require authentication — no anonymous blob proxying
-  try {
-    await getAuthUserId();
-  } catch {
-    return new NextResponse('Unauthorized', { status: 401 });
-  }
-
-  const url = request.nextUrl.searchParams.get('url');
+  // Public proxy: the community observations gallery is public and only lists
+  // approved observations. Blob URLs are unguessable, and isAllowedBlobUrl below
+  // restricts fetches to Vercel Blob hosts (SSRF protection). No auth gate here —
+  // an auth requirement breaks images for unauthenticated visitors (see commit 16c9b5f).
+  const url = request.nextUrl.searchParams.get("url");
   if (!url) {
-    return new NextResponse('Missing url param', { status: 400 });
+    return new NextResponse("Missing url param", { status: 400 });
   }
 
   if (!isAllowedBlobUrl(url)) {
-    return new NextResponse('Invalid URL', { status: 400 });
+    return new NextResponse("Invalid URL", { status: 400 });
   }
 
   try {
@@ -42,24 +38,27 @@ export async function GET(request: NextRequest) {
     });
 
     if (!response.ok) {
-      return new NextResponse('Image not found', { status: 404 });
+      return new NextResponse("Image not found", { status: 404 });
     }
 
     // Validate response is actually an image
-    const contentType = response.headers.get('content-type') || '';
-    if (!contentType.startsWith('image/')) {
-      return new NextResponse('Not an image', { status: 400 });
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.startsWith("image/")) {
+      return new NextResponse("Not an image", { status: 400 });
     }
 
     const body = await response.arrayBuffer();
     return new NextResponse(body, {
       headers: {
-        'Content-Type': contentType,
-        'Cache-Control': 'public, max-age=86400, immutable',
+        "Content-Type": contentType,
+        "Cache-Control": "public, max-age=86400, immutable",
       },
     });
   } catch (err) {
-    console.error('Image proxy error:', err instanceof Error ? err.message : err);
-    return new NextResponse('Failed to fetch image', { status: 500 });
+    console.error(
+      "Image proxy error:",
+      err instanceof Error ? err.message : err,
+    );
+    return new NextResponse("Failed to fetch image", { status: 500 });
   }
 }
