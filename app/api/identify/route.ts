@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { identifySpecies } from '@/lib/openai';
-import { getLocalSpecies, formatSpeciesContext } from '@/lib/inaturalist';
-import { enrichFromGBIF } from '@/lib/gbif';
-import { enrichFromEncicloVida } from '@/lib/enciclovida';
-import { reverseGeocode } from '@/lib/nominatim';
-import { getElevation } from '@/lib/elevation';
-import { checkRateLimit } from '@/lib/rate-limit';
-import { randomUUID } from 'crypto';
+import { NextRequest, NextResponse } from "next/server";
+import { identifySpecies } from "@/lib/openai";
+import { getLocalSpecies, formatSpeciesContext } from "@/lib/inaturalist";
+import { enrichFromGBIF } from "@/lib/gbif";
+import { enrichFromEncicloVida } from "@/lib/enciclovida";
+import { reverseGeocode } from "@/lib/nominatim";
+import { getElevation } from "@/lib/elevation";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { randomUUID } from "crypto";
 
 // Extend function timeout (Hobby: max 60s, Pro: max 300s)
 export const maxDuration = 60;
@@ -17,12 +17,12 @@ const RATE_LIMIT_WINDOW = 15 * 60 * 1000;
 
 async function getRequiredUserId(): Promise<string> {
   try {
-    const { auth } = await import('@clerk/nextjs/server');
+    const { auth } = await import("@clerk/nextjs/server");
     const { userId } = await auth();
-    if (!userId) throw new Error('Unauthorized');
+    if (!userId) throw new Error("Unauthorized");
     return userId;
   } catch {
-    throw new Error('Unauthorized');
+    throw new Error("Unauthorized");
   }
 }
 
@@ -33,28 +33,38 @@ export async function POST(request: NextRequest) {
     try {
       userId = await getRequiredUserId();
     } catch {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+      return NextResponse.json(
+        { error: "Authentication required" },
+        { status: 401 },
+      );
     }
 
     // Rate limiting per user
-    const rateCheck = checkRateLimit(`identify:${userId}`, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW);
+    const rateCheck = await checkRateLimit(
+      `identify:${userId}`,
+      RATE_LIMIT_MAX,
+      RATE_LIMIT_WINDOW,
+    );
     if (!rateCheck.allowed) {
       return NextResponse.json(
-        { error: 'Rate limit exceeded. Please wait before trying again.', retryAfterMs: rateCheck.resetMs },
-        { status: 429 }
+        {
+          error: "Rate limit exceeded. Please wait before trying again.",
+          retryAfterMs: rateCheck.resetMs,
+        },
+        { status: 429 },
       );
     }
 
     const body = await request.json();
 
-    let imageData: string = body.image_data || '';
+    let imageData: string = body.image_data || "";
     if (!imageData) {
-      return NextResponse.json({ error: 'No image provided' }, { status: 400 });
+      return NextResponse.json({ error: "No image provided" }, { status: 400 });
     }
 
     // Strip data URI prefix if present
-    if (imageData.includes(',')) {
-      imageData = imageData.split(',')[1];
+    if (imageData.includes(",")) {
+      imageData = imageData.split(",")[1];
     }
 
     // Validate file size (base64 is ~33% larger than raw bytes)
@@ -62,21 +72,28 @@ export async function POST(request: NextRequest) {
     const MAX_BASE64_SIZE = 27 * 1024 * 1024;
     if (imageData.length > MAX_BASE64_SIZE) {
       return NextResponse.json(
-        { error: 'Image too large. Maximum file size is 20MB.', suggestion: 'Try a smaller image or reduce the resolution.' },
-        { status: 400 }
+        {
+          error: "Image too large. Maximum file size is 20MB.",
+          suggestion: "Try a smaller image or reduce the resolution.",
+        },
+        { status: 400 },
       );
     }
 
     // Validate image magic bytes (JPEG, PNG, WebP, HEIC) before sending to OpenAI
     const headerBytes = imageData.slice(0, 16);
-    const isJPEG = headerBytes.startsWith('/9j/');           // FFD8FF in base64
-    const isPNG = headerBytes.startsWith('iVBORw');          // 89504E47 in base64
-    const isWebP = headerBytes.startsWith('UklGR');          // RIFF in base64
-    const isHEIC = headerBytes.startsWith('AAAAIG') || headerBytes.startsWith('AAAAHG'); // ftyp box
+    const isJPEG = headerBytes.startsWith("/9j/"); // FFD8FF in base64
+    const isPNG = headerBytes.startsWith("iVBORw"); // 89504E47 in base64
+    const isWebP = headerBytes.startsWith("UklGR"); // RIFF in base64
+    const isHEIC =
+      headerBytes.startsWith("AAAAIG") || headerBytes.startsWith("AAAAHG"); // ftyp box
     if (!isJPEG && !isPNG && !isWebP && !isHEIC) {
       return NextResponse.json(
-        { error: 'Invalid image format. Please upload a JPEG, PNG, WebP, or HEIC image.' },
-        { status: 400 }
+        {
+          error:
+            "Invalid image format. Please upload a JPEG, PNG, WebP, or HEIC image.",
+        },
+        { status: 400 },
       );
     }
 
@@ -96,31 +113,37 @@ export async function POST(request: NextRequest) {
     const cameraModel: string | null = body.camera_model ?? null;
 
     // Fetch regional species data, reverse geocode, and elevation in parallel
-    let speciesContext = '';
+    let speciesContext = "";
     let locationInfo = null;
     let elevation: number | null = null;
 
     if (latitude != null && longitude != null) {
-      const [speciesResult, geocodeResult, elevationResult] = await Promise.allSettled([
-        getLocalSpecies(latitude, longitude).then(species => {
-          const ctx = formatSpeciesContext(species);
-          if (species.length > 0) {
-            console.log(`iNaturalist: found ${species.length} local species for ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`);
-          }
-          return ctx;
-        }),
-        reverseGeocode(latitude, longitude),
-        getElevation(latitude, longitude),
-      ]);
+      const [speciesResult, geocodeResult, elevationResult] =
+        await Promise.allSettled([
+          getLocalSpecies(latitude, longitude).then((species) => {
+            const ctx = formatSpeciesContext(species);
+            if (species.length > 0) {
+              console.log(
+                `iNaturalist: found ${species.length} local species for ${latitude.toFixed(2)}, ${longitude.toFixed(2)}`,
+              );
+            }
+            return ctx;
+          }),
+          reverseGeocode(latitude, longitude),
+          getElevation(latitude, longitude),
+        ]);
 
-      if (speciesResult.status === 'fulfilled') {
+      if (speciesResult.status === "fulfilled") {
         speciesContext = speciesResult.value;
       }
-      if (geocodeResult.status === 'fulfilled' && geocodeResult.value) {
+      if (geocodeResult.status === "fulfilled" && geocodeResult.value) {
         locationInfo = geocodeResult.value;
         console.log(`Nominatim: resolved to ${locationInfo.displayName}`);
       }
-      if (elevationResult.status === 'fulfilled' && elevationResult.value != null) {
+      if (
+        elevationResult.status === "fulfilled" &&
+        elevationResult.value != null
+      ) {
         elevation = elevationResult.value;
         console.log(`Elevation: ${elevation}m`);
       }
@@ -130,10 +153,18 @@ export async function POST(request: NextRequest) {
     const locationName = locationInfo?.displayName || null;
 
     // Call GPT-4o for identification (with location + regional species context + elevation + environment)
-    const result = await identifySpecies(imageData, latitude, longitude, speciesContext, locationName, elevation, environmentNotes);
+    const result = await identifySpecies(
+      imageData,
+      latitude,
+      longitude,
+      speciesContext,
+      locationName,
+      elevation,
+      environmentNotes,
+    );
 
     // Enrich with verified data from GBIF + EncicloVida (in parallel, best-effort)
-    const isError = 'error' in result;
+    const isError = "error" in result;
     let gbifData = null;
     let evData = null;
     if (!isError) {
@@ -144,7 +175,7 @@ export async function POST(request: NextRequest) {
       ]);
 
       // Process GBIF
-      if (gbifResult.status === 'fulfilled' && gbifResult.value) {
+      if (gbifResult.status === "fulfilled" && gbifResult.value) {
         const enrichment = gbifResult.value;
         gbifData = {
           taxonomy: enrichment.taxonomy,
@@ -160,15 +191,20 @@ export async function POST(request: NextRequest) {
           result.taxonomy = enrichment.taxonomy;
         }
         if (enrichment.iucnCategory) {
-          result.conservation = { ...result.conservation, iucn_status: enrichment.iucnCategory };
+          result.conservation = {
+            ...result.conservation,
+            iucn_status: enrichment.iucnCategory,
+          };
         }
-        console.log(`GBIF: enriched ${sciName} (confidence: ${enrichment.matchConfidence})`);
-      } else if (gbifResult.status === 'rejected') {
-        console.warn('GBIF enrichment failed (non-fatal):', gbifResult.reason);
+        console.log(
+          `GBIF: enriched ${sciName} (confidence: ${enrichment.matchConfidence})`,
+        );
+      } else if (gbifResult.status === "rejected") {
+        console.warn("GBIF enrichment failed (non-fatal):", gbifResult.reason);
       }
 
       // Process EncicloVida
-      if (evResult.status === 'fulfilled' && evResult.value) {
+      if (evResult.status === "fulfilled" && evResult.value) {
         const ev = evResult.value;
         evData = {
           speciesId: ev.speciesId,
@@ -186,9 +222,14 @@ export async function POST(request: NextRequest) {
         if (ev.commonNameEs) {
           result.identification.nombre_comun = ev.commonNameEs;
         }
-        console.log(`EncicloVida: enriched ${sciName} (${ev.distributionTypes.join(', ')})`);
-      } else if (evResult.status === 'rejected') {
-        console.warn('EncicloVida enrichment failed (non-fatal):', evResult.reason);
+        console.log(
+          `EncicloVida: enriched ${sciName} (${ev.distributionTypes.join(", ")})`,
+        );
+      } else if (evResult.status === "rejected") {
+        console.warn(
+          "EncicloVida enrichment failed (non-fatal):",
+          evResult.reason,
+        );
       }
     }
 
@@ -201,16 +242,20 @@ export async function POST(request: NextRequest) {
 
     if (userId && hasDb && hasBlob) {
       try {
-        const { uploadImage } = await import('@/lib/blob');
-        const { db } = await import('@/lib/db');
-        const { observations } = await import('@/lib/db/schema');
+        const { uploadImage } = await import("@/lib/blob");
+        const { db } = await import("@/lib/db");
+        const { observations } = await import("@/lib/db/schema");
 
         const filename = `${userId}-${randomUUID()}`;
         const blob = await uploadImage(imageData, filename);
         imageUrl = blob.url;
 
         id = randomUUID();
-        const confidenceVal = isError ? null : (typeof result.confidence === 'number' ? Math.round(result.confidence) : null);
+        const confidenceVal = isError
+          ? null
+          : typeof result.confidence === "number"
+            ? Math.round(result.confidence)
+            : null;
 
         await db.insert(observations).values({
           id,
@@ -221,7 +266,9 @@ export async function POST(request: NextRequest) {
           longitude,
           commonName: isError ? null : result.identification.common_name,
           nombreComun: isError ? null : result.identification.nombre_comun,
-          scientificName: isError ? null : result.identification.scientific_name,
+          scientificName: isError
+            ? null
+            : result.identification.scientific_name,
           breed: isError ? null : result.identification.breed,
           confidence: confidenceVal,
           taxonomy: isError ? null : result.taxonomy,
@@ -229,31 +276,41 @@ export async function POST(request: NextRequest) {
           geography: isError ? null : result.geography,
           conservation: isError ? null : result.conservation,
           similarSpecies: isError ? null : result.similar_species,
-          imageOrientation: isError ? null : (result.image_orientation || 'landscape'),
+          imageOrientation: isError
+            ? null
+            : result.image_orientation || "landscape",
           description: isError ? null : result.description,
           descripcion: isError ? null : result.descripcion,
           funFact: isError ? null : result.fun_fact,
           error: isError ? result.error : null,
           suggestion: isError ? (result.suggestion ?? null) : null,
           locationInfo: locationInfo || null,
-          imageMetadata: (dateTaken || cameraMake || cameraModel) ? {
-            dateTaken,
-            cameraMake,
-            cameraModel,
-          } : null,
+          imageMetadata:
+            dateTaken || cameraMake || cameraModel
+              ? {
+                  dateTaken,
+                  cameraMake,
+                  cameraModel,
+                }
+              : null,
           gpsSource,
           elevation,
           environmentNotes,
-          status: 'pending',
+          status: "pending",
         });
       } catch (persistError) {
-        console.error('Persistence failed:', persistError instanceof Error ? persistError.message : persistError);
+        console.error(
+          "Persistence failed:",
+          persistError instanceof Error ? persistError.message : persistError,
+        );
         // Reset id so client knows persistence failed
         id = null;
         imageUrl = null;
       }
     } else {
-      console.warn(`Skipping persistence: userId=${!!userId}, DB=${hasDb}, Blob=${hasBlob}`);
+      console.warn(
+        `Skipping persistence: userId=${!!userId}, DB=${hasDb}, Blob=${hasBlob}`,
+      );
     }
 
     // Return the result (+ enrichment data + location + metadata + observation ID if persisted)
@@ -262,19 +319,24 @@ export async function POST(request: NextRequest) {
       ...(gbifData ? { gbif: gbifData } : {}),
       ...(evData ? { enciclovida: evData } : {}),
       ...(locationInfo ? { locationInfo } : {}),
-      ...((dateTaken || cameraMake || cameraModel) ? {
-        imageMetadata: { dateTaken, cameraMake, cameraModel },
-      } : {}),
+      ...(dateTaken || cameraMake || cameraModel
+        ? {
+            imageMetadata: { dateTaken, cameraMake, cameraModel },
+          }
+        : {}),
       ...(elevation != null ? { elevation } : {}),
       ...(environmentNotes ? { environmentNotes } : {}),
       ...(gpsSource ? { gpsSource } : {}),
       ...(id ? { id, imageUrl } : {}),
     });
   } catch (error) {
-    console.error('Identify error:', error instanceof Error ? error.message : error);
+    console.error(
+      "Identify error:",
+      error instanceof Error ? error.message : error,
+    );
     return NextResponse.json(
-      { error: 'Identification failed. Please try again.' },
-      { status: 500 }
+      { error: "Identification failed. Please try again." },
+      { status: 500 },
     );
   }
 }
