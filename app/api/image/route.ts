@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
   // approved observations. Blob URLs are unguessable, and isAllowedBlobUrl below
   // restricts fetches to Vercel Blob hosts (SSRF protection). No auth gate here —
   // an auth requirement breaks images for unauthenticated visitors (see commit 16c9b5f).
-  const rateCheck = checkRateLimit(
+  const rateCheck = await checkRateLimit(
     `image:${getClientIp(request)}`,
     RATE_LIMIT_MAX,
     RATE_LIMIT_WINDOW,
