@@ -28,7 +28,7 @@ export async function reverseGeocode(
 
     const response = await fetch(url.toString(), {
       headers: {
-        'User-Agent': 'BioJalisco-SpeciesID/1.1 (biojalisco-species-id.vercel.app)',
+        'User-Agent': 'BioJalisco-SpeciesID/1.1 (biojalisco.cushlabs.ai)',
         'Accept-Language': 'en,es',
       },
       signal: AbortSignal.timeout(5000),
@@ -83,7 +83,7 @@ export async function forwardGeocode(
 
     const response = await fetch(url.toString(), {
       headers: {
-        'User-Agent': 'BioJalisco-SpeciesID/1.1 (biojalisco-species-id.vercel.app)',
+        'User-Agent': 'BioJalisco-SpeciesID/1.1 (biojalisco.cushlabs.ai)',
         'Accept-Language': 'en,es',
       },
       signal: AbortSignal.timeout(5000),

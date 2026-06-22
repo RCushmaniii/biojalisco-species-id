@@ -67,8 +67,8 @@ export default async function ObservationsPage() {
   return (
     <>
       <BreadcrumbJsonLd items={[
-        { name: 'Home', url: 'https://biojalisco-species-id.vercel.app' },
-        { name: 'Observations', url: 'https://biojalisco-species-id.vercel.app/observations' },
+        { name: 'Home', url: 'https://biojalisco.cushlabs.ai' },
+        { name: 'Observations', url: 'https://biojalisco.cushlabs.ai/observations' },
       ]} />
       <PublicNav />
 
