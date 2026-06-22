@@ -16,6 +16,7 @@ Entries are newest-first. Each entry documents one Claude Code working session.
 - Context-aware bilingual back link on observation detail (dashboard vs observations) (#26).
 - Fixed flash of dark theme on refresh via blocking inline `<head>` script (#27).
 - cushlabs: added `.prettierignore` for generator-owned JSON (#127).
+- Cut **release v1.1.0** (bumped `package.json` 1.0.0 → 1.1.0; first release since the 1.0.0 launch on 2026-03-07) — https://github.com/RCushmaniii/biojalisco-species-id/releases/tag/v1.1.0
 
 ### Decisions Made
 
