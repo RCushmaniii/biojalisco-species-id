@@ -53,6 +53,33 @@ function getLimiter(maxRequests: number, windowMs: number): Ratelimit | null {
 }
 
 // ── In-memory fallback ───────────────────────────────────────────────
+//
+// Reached when Upstash is not configured, or is configured but unreachable.
+// Worth being blunt about what it is: each serverless instance keeps its own
+// Map, so the real limit is the configured one multiplied by however many
+// instances are warm, and it resets on every deploy and cold start. It stops a
+// naive loop from one client and nothing more.
+//
+// It is kept because silently allowing everything would be worse, and because
+// blocking all traffic on a transient Upstash blip would be worse still. What
+// is NOT acceptable is arriving here quietly — see the logging at both call
+// sites below.
+
+/** Warn once per instance rather than on every request. */
+let warnedUnconfigured = false;
+function warnUnconfiguredOnce() {
+  if (warnedUnconfigured) return;
+  warnedUnconfigured = true;
+  if (process.env.NODE_ENV === "production") {
+    console.error(
+      "[rate-limit] No Upstash credentials (UPSTASH_REDIS_REST_URL/TOKEN or " +
+        "KV_REST_API_URL/TOKEN). Rate limiting is per-instance in-memory only, " +
+        "which does NOT hold across serverless instances and resets on every " +
+        "deploy. Connect Upstash via the Vercel marketplace.",
+    );
+  }
+}
+
 interface RateLimitEntry {
   timestamps: number[];
 }
@@ -129,12 +156,27 @@ export async function checkRateLimit(
         remaining,
         resetMs: Math.max(0, reset - Date.now()),
       };
-    } catch {
-      // Redis unreachable — fail open to the in-memory limiter rather than
+    } catch (err) {
+      // Redis unreachable — fall back to the in-memory limiter rather than
       // blocking all traffic on a transient Upstash outage.
+      //
+      // The fallback is NOT equivalent protection. Each serverless instance
+      // keeps its own Map, so the effective limit is multiplied by however many
+      // instances are warm. It is a speed bump, not a limit.
+      //
+      // This used to be a bare `catch {}`. That meant a Redis outage, or a
+      // rotated token, degraded the limiter to near-nothing with no log line
+      // anywhere — indistinguishable from working correctly from the outside.
+      // Loud on the way down is the whole point.
+      console.error(
+        "[rate-limit] Upstash unreachable — falling back to per-instance " +
+          "in-memory limiting, which does NOT hold across instances:",
+        err instanceof Error ? err.message : String(err),
+      );
       return checkRateLimitInMemory(key, maxRequests, windowMs);
     }
   }
 
+  warnUnconfiguredOnce();
   return checkRateLimitInMemory(key, maxRequests, windowMs);
 }
