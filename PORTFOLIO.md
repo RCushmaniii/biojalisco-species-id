@@ -5,7 +5,7 @@
 portfolio_enabled: true
 portfolio_priority: 11
 portfolio_featured: true
-portfolio_last_reviewed: "2026-03-09"
+portfolio_last_reviewed: "2026-09-13"
 
 title: "BioJalisco Species Identifier"
 tagline: "AI-powered species identification for conservation researchers in Mexico — photo in, verified species data out"
@@ -93,6 +93,7 @@ key_outcomes:
   - "Graceful degradation: works with just an OpenAI key, enriched with optional services"
 
 metrics:
+  - "Five-API pipeline returns verified taxonomy, IUCN status and NOM-059 conservation data"
   - "EXIF-based location proven to correct real misidentifications (Broad-billed → Cinnamon Hummingbird)"
   - "Verified taxonomy and IUCN status sourced from GBIF and CONABIO, not AI guesswork"
   - "Dual-mode interface serves both casual explorers and working scientists from one result"
