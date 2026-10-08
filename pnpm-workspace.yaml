@@ -1,0 +1,39 @@
+# pnpm 10.17.0 reads onlyBuiltDependencies here. When packageManager moves to
+# pnpm 11 or later, rename this key to the `allowBuilds:` map (pnpm 11 rename).
+onlyBuiltDependencies:
+  - sharp
+  - "@clerk/shared"
+  - esbuild
+  - unrs-resolver
+
+# Transitive-dependency floors that close Dependabot security alerts.
+#
+# These used to live in package.json under "pnpm.overrides". pnpm 11 stopped
+# reading that block, and Dependabot's pnpm moved past 11 in September 2026,
+# so any lockfile regenerated with pnpm 11+ silently drops the pins and then
+# fails the frozen install (ERR_PNPM_LOCKFILE_CONFIG_MISMATCH) on CI and
+# Vercel. pnpm-workspace.yaml is read by pnpm 10, 11 and 12 alike, so this
+# repo stays safe whenever its packageManager pin moves past 10.
+#
+# Floor = the first patched version named by the alert. Raise, never lower.
+# Every selector and every target is bounded to one major. The previous block
+# was not: "js-yaml@<=4.1.1: >=4.2.0" quietly resolved to js-yaml 5, and
+# "undici@<6.27.0: >=6.27.0" to undici 8, which is where most of the 2026-10
+# alerts came from. A floor must never promote a package past the major its
+# consumer declared.
+overrides:
+  esbuild: ">=0.25.0"
+  flatted: ">=3.4.2"
+  "undici@<7": ">=6.29.0 <7"
+  "undici@>=8": ">=8.10.2 <9"
+  "brace-expansion@<2": ">=1.1.21 <2"
+  "brace-expansion@>=4": ">=5.0.12 <6"
+  "picomatch@<3": ">=2.3.2 <3"
+  "picomatch@>=4": ">=4.0.4 <5"
+  "postcss@>=8": ">=8.5.23 <9"
+  "nanoid@<4": ">=3.3.18 <4"
+  "shell-quote@<2": ">=1.11.0 <2"
+  "form-data@>=4": ">=4.0.6 <5"
+  "js-yaml@<5": ">=4.3.2 <5"
+  "js-yaml@>=5": ">=5.4.1 <6"
+  "@humanfs/node@<0.17": ">=0.16.8 <0.17"
