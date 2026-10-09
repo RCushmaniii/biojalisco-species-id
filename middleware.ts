@@ -17,6 +17,12 @@ const isProtectedRoute = createRouteMatcher([
   "/api/geocode",
 ]);
 
+// Kept as middleware.ts on purpose. Next 16 deprecates this name in favour of
+// proxy.ts, but under proxy.ts (Node runtime) Clerk 7 auth.protect() classifies
+// every request as a page navigation, so signed-out fetch() calls to the
+// protected API routes get a 307 to /sign-in (an HTML page) instead of a 404.
+// Verified locally on 2026-10-09 with Next 16.3.8 + @clerk/nextjs 7.9.11.
+// Re-test before renaming.
 const hasClerkKey = !!process.env.CLERK_SECRET_KEY;
 
 export default hasClerkKey

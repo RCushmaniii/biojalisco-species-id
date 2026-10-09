@@ -53,6 +53,10 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
     setCameraActive(false);
   }, []);
 
+  const [exifData, setExifData] = useState<ExifMetadata | null>(null);
+
+  const [fileError, setFileError] = useState<string | null>(null);
+
   const handleCamera = useCallback(() => {
     // On mobile, use file input with capture
     if (/Mobi|Android/i.test(navigator.userAgent)) {
@@ -90,8 +94,6 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
         cameraInputRef.current?.click();
       });
   }, [cameraActive, stopCamera]);
-
-  const [exifData, setExifData] = useState<ExifMetadata | null>(null);
 
   // Location search state
   const [showLocationSearch, setShowLocationSearch] = useState(false);
@@ -182,8 +184,6 @@ export function CaptureArea({ onIdentify, isLoading }: CaptureAreaProps) {
       });
     }
   };
-
-  const [fileError, setFileError] = useState<string | null>(null);
 
   const processFile = useCallback(
     async (file: File) => {
