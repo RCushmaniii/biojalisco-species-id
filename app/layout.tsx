@@ -85,7 +85,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const content = (
+  const app = (
+    <ThemeProvider>
+      <LanguageProvider>
+        <PWARegister />
+        <PWAInstallPrompt />
+        {children}
+      </LanguageProvider>
+    </ThemeProvider>
+  );
+
+  return (
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Set the theme before first paint to avoid a flash of the wrong
@@ -102,21 +112,8 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body>
-        <ThemeProvider>
-          <LanguageProvider>
-            <PWARegister />
-            <PWAInstallPrompt />
-            {children}
-          </LanguageProvider>
-        </ThemeProvider>
-      </body>
+      {/* Clerk 7 (Core 3) requires ClerkProvider inside <body>, not wrapping <html>. */}
+      <body>{hasClerkKey ? <ClerkProvider>{app}</ClerkProvider> : app}</body>
     </html>
   );
-
-  if (!hasClerkKey) {
-    return content;
-  }
-
-  return <ClerkProvider>{content}</ClerkProvider>;
 }

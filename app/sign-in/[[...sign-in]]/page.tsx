@@ -12,10 +12,10 @@ export default function SignInPage() {
         appearance={{
           variables: {
             colorBackground: '#ffffff',
-            colorText: '#1a1a1a',
-            colorTextSecondary: '#666666',
-            colorInputBackground: '#f5f5f5',
-            colorInputText: '#1a1a1a',
+            colorForeground: '#1a1a1a',
+            colorMutedForeground: '#666666',
+            colorInput: '#f5f5f5',
+            colorInputForeground: '#1a1a1a',
             colorPrimary: '#e7b633',
             colorDanger: '#c44040',
             borderRadius: '12px',
@@ -77,7 +77,8 @@ export default function SignInPage() {
               backgroundColor: '#ffffff',
             },
           },
-          layout: {
+          // Clerk 7 renamed appearance.layout to appearance.options.
+          options: {
             socialButtonsPlacement: 'top',
             showOptionalFields: false,
           },
