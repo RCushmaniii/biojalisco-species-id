@@ -17,6 +17,12 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # @types/node majors track the newest Node release, not the Node this app
+      # runs on. Types ahead of the runtime let code call APIs that do not exist
+      # in production. Raise this by hand when the runtime moves (2026-10-08).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
