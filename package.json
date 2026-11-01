@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^7.9.11",
-    "@neondatabase/serverless": "^0.10.4",
+    "@neondatabase/serverless": "^1.2.0",
     "@upstash/ratelimit": "^2.2.0",
     "@upstash/redis": "^1.39.0",
     "@vercel/blob": "^2.8.1",
